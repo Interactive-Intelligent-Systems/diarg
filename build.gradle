@@ -1,0 +1,41 @@
+plugins {
+    id 'java'
+}
+
+repositories {
+    flatDir {
+        dirs 'lib'
+    }
+}
+
+group 'diarg'
+version '1.0-SNAPSHOT'
+
+sourceCompatibility = 1.8
+
+dependencies {
+    compile group: 'net.sf.tweety', name: 'tweety-full', version: '1.11'
+    testCompile 'org.junit.jupiter:junit-jupiter-api:5.6.1'
+}
+
+configurations.each {
+    c -> c.resolutionStrategy.dependencySubstitution {
+        all { DependencySubstitution dependency ->
+            if (dependency.requested.group == 'org.ojalgo') {
+                dependency.useTarget 'ojalgo:ojalgo:35.0.0'
+            }
+        }
+    }
+}
+
+repositories {
+    mavenCentral()
+    maven {
+        url 'http://tweetyproject.org/mvn/'
+    }
+}
+
+task run(type: JavaExec) {
+    classpath sourceSets.main.runtimeClasspath
+    main = "diarg.DiArg"
+}
