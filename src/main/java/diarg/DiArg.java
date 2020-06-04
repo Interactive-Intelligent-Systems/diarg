@@ -74,10 +74,20 @@ public class DiArg {
             System.out.println(ext);
         }
 
+        DungTheory framework = new DungTheory();
+        framework.add(a);
+        framework.add(b);
+        framework.add(c);
+        framework.add(d);
+        framework.add(new Attack(a, b));
+        framework.add(new Attack(b, c));
+        //framework.add(new Attack(c, b));
+        framework.add(new Attack(c, d));
+        framework.add(new Attack(d, c));
         SimpleCF2Reasoner cf2Reasoner = new SimpleCF2Reasoner();
 
-        for(Extension ext: cf2Reasoner.getModels(theory)){
-            System.out.println("CF2:");
+        for(Extension ext: cf2Reasoner.getModels(framework)){
+            System.out.println("CF2: ({a, b, c ,d}, {(a, b), (b, c), (c, d), (d, c)})");
             System.out.println(ext);
         }
 

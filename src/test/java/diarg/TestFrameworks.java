@@ -4,13 +4,25 @@ import net.sf.tweety.arg.dung.syntax.DungTheory;
 import net.sf.tweety.arg.dung.syntax.Argument;
 import net.sf.tweety.arg.dung.syntax.Attack;
 
-import java.util.Collection;
-import java.util.LinkedList;
+/**
+ * Provides example argumentation frameworks for test purposes
+ * framework1: ({a, b, c, d, e},{(a, b), (b, c), (c, b), (c, d), (d, e), (e, c)})
+ * framework2: ({a, b, c}, {(a, b), (b, a), (b, c), (c, a)})
+ * framework3: ({a, b, c}, {(a, b), (b, c), (c, a)})
+ * framework4: ({a, b}, {(a, b)})
+ * framework5: ({a, b}, {(a, b), (b, a)})
+ * framework6: ({a, b, c,  d}, {(a, b), (b, a), (c, d), (d, c)})
+ * @author Timotheus Kampik
+ */
 
 public final class TestFrameworks {
 
     DungTheory framework1 = new DungTheory();
     DungTheory framework2 = new DungTheory();
+    DungTheory framework3 = new DungTheory();
+    DungTheory framework4 = new DungTheory();
+    DungTheory framework5 = new DungTheory();
+    DungTheory framework6 = new DungTheory();
 
     public TestFrameworks() {
         Argument a = new Argument("a");
@@ -38,6 +50,31 @@ public final class TestFrameworks {
         framework2.add(new Attack(b,a));
         framework2.add(new Attack(b,c));
         framework2.add(new Attack(c,a));
+
+        framework3.add(a);
+        framework3.add(b);
+        framework3.add(c);
+        framework3.add(new Attack(a, b));
+        framework3.add(new Attack(b, c));
+        framework3.add(new Attack(c, a));
+
+        framework4.add(a);
+        framework4.add(b);
+        framework4.add(new Attack(a, b));
+
+        framework5.add(a);
+        framework5.add(b);
+        framework5.add(new Attack(a, b));
+        framework5.add(new Attack(b, a));
+
+        framework6.add(a);
+        framework6.add(b);
+        framework6.add(c);
+        framework6.add(d);
+        framework6.add(new Attack(a, b));
+        framework6.add(new Attack(b, a));
+        framework6.add(new Attack(c, d));
+        framework6.add(new Attack(d, c));
     }
 }
 
