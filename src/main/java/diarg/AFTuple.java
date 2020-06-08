@@ -245,7 +245,7 @@ public class AFTuple {
         Collection<Extension> extensions = semantics.getModels(this.framework2);
         Extension extension = extensions.iterator().next();
 
-        if(extensions.size() == 1 && this.isReferenceIndependent(this.framework1, extension, choice)) {
+        if(extensions.size() == 1 && this.isReferenceIndependent(this.framework1, choice, extension)) {
             this.largestNormalRISubmodules.add(this.framework2);
             return this.largestNormalRISubmodules;
         }
@@ -258,8 +258,7 @@ public class AFTuple {
         this.smallestNormalRIExpansions.clear();
         Collection<Extension> extensions = semantics.getModels(this.framework2);
         Extension extension = extensions.iterator().next();
-
-        if(extensions.size() == 1 && this.isReferenceIndependent(this.framework1, extension, choice)) {
+        if(extensions.size() == 1 && this.isReferenceIndependent(this.framework1, choice, extension)) {
             this.smallestNormalRIExpansions.add(this.framework2);
             return this.smallestNormalRIExpansions;
         }
@@ -284,7 +283,6 @@ public class AFTuple {
         it can potentially be the case that no expansion will be returned although a smallest normal CM expansion exists*/
         this.smallestNormalCMExpansions.clear();
         Collection<Extension> extensions = semantics.getModels(this.framework2);
-        Extension extension = extensions.iterator().next();
 
         if(extensions.size() == 1 && this.isCautiouslyMonotonic(this.framework1, this.framework2, choice, semantics)) {
             this.smallestNormalCMExpansions.add(this.framework2);

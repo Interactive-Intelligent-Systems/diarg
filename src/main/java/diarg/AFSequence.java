@@ -2,6 +2,7 @@ package diarg;
 
 import diarg.enums.ResolutionType;
 import diarg.enums.SequenceType;
+import net.sf.tweety.arg.dung.syntax.Argument;
 import net.sf.tweety.arg.dung.syntax.DungTheory;
 import net.sf.tweety.arg.dung.semantics.Extension;
 
@@ -52,9 +53,6 @@ public class AFSequence {
     public ResolutionType getResolutionType() {
         return this.resolutionType;
     }
-    public SelectionType getSelectionType() {
-        return this.selectionType;
-    }
 
     public boolean addFramework(DungTheory framework) {
         if(this.frameworks.size() == 0 || this.sequenceType == SequenceType.STANDARD) {
@@ -70,17 +68,33 @@ public class AFSequence {
             this.frameworks.add(framework);
             return true;
         }
+        try {
+            throw(new Exception(
+                    "Could not add framework, because this would infringe compliance with " +
+                        this.sequenceType + " sequence."
+            ));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         return false;
     }
 
     public boolean removeFramework(int index) {
         boolean isStandard = this.resolutionType == ResolutionType.STANDARD;
-        if(frameworks.size() == 1 || index == this.frameworks.size()-1 || isStandard) {
+        if(index != this.frameworks.size()-1 || isStandard) {
             this.frameworks.remove(index);
             if(this.resolutions.size() > index) {
                 this.resolutions.remove(index);
             }
             return true;
+        }
+        try {
+            throw(new Exception(
+                    "Could not remove framework, because this would infringe compliance with " +
+                            this.sequenceType + " sequence."
+            ));
+        } catch (Exception e) {
+            e.printStackTrace();
         }
         return false;
 
@@ -98,7 +112,7 @@ public class AFSequence {
                 previousResolution = this.resolutions.get(index-1);
             } catch (Exception e) {
                 new Exception("Previous framework in sequence has not been resolved.").printStackTrace();
-                return new Extension();
+                return null;
             }
         } else {
             sequenceLink = new AFTuple(new DungTheory(), this.frameworks.get(index));
@@ -125,7 +139,14 @@ public class AFSequence {
 
         }
         framework = frameworks.iterator().next();
-        return this.semantics.getModel(framework);
+        Extension resolution = this.semantics.getModel(framework);
+        for(Argument argument: resolution) {
+            if(!this.frameworks.get(index).contains(argument)) {
+                resolution.remove(argument);
+            }
+        }
+        this.resolutions.add(resolution);
+        return resolution;
     }
 
     public Collection<Extension> resolveFrameworks() {

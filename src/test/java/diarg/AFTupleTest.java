@@ -21,7 +21,7 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 public class AFTupleTest {
 
     TestFrameworks testFrameworks;
-    AFTuple tuple1, tuple2, tuple3, tuple4, tuple5, tuple6;
+    AFTuple tuple1, tuple2, tuple3, tuple4, tuple5, tuple6, tuple7;
     Semantics rcfSemantics = new Semantics(SemanticsType.RCF);
 
     @BeforeAll
@@ -33,6 +33,7 @@ public class AFTupleTest {
         tuple4 = new AFTuple(testFrameworks.framework2, testFrameworks.framework3);
         tuple5 = new AFTuple(testFrameworks.framework5, testFrameworks.framework6);
         tuple6 = new AFTuple(testFrameworks.framework4, testFrameworks.framework4);
+        tuple7 = new AFTuple(new DungTheory(), testFrameworks.framework4);
     }
 
     @Test
@@ -184,6 +185,12 @@ public class AFTupleTest {
         }
         assertTrue(snriExpansionIs1a.prettyPrint().equals(snriExpansionShould1a.prettyPrint()));
         assertTrue(snriExpansionIs1b.prettyPrint().equals(snriExpansionShould1b.prettyPrint()));
+
+        Collection<DungTheory> snriExpansions2 =
+                tuple7.determineSmallestNormalRIExpansions(rcfSemantics, choice1);
+        Iterator<DungTheory> iterator2 = snriExpansions2.iterator();
+        assertTrue(iterator2.next().prettyPrint().equals(testFrameworks.framework4.prettyPrint()));
+
     }
 
     @Test
