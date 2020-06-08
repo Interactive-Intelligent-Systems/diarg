@@ -55,7 +55,7 @@ public class DiArg {
         theory.add(new Attack(a,b));
         // theory.add(new Attack(b,a));
         theory.add(new Attack(b,c));
-        theory.add(new Attack(c,b));
+        theory.add(new Attack(c,a));
         theory.add(new Attack(c,d));
         theory.add(new Attack(d,e));
         theory.add(new Attack(e,c));
@@ -90,6 +90,7 @@ public class DiArg {
             System.out.println("CF2: ({a, b, c ,d}, {(a, b), (b, c), (c, d), (d, c)})");
             System.out.println(ext);
         }
+
 
 
     }

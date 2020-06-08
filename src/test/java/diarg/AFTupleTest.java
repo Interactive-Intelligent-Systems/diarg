@@ -1,5 +1,6 @@
 package diarg;
 
+import diarg.enums.SemanticsType;
 import net.sf.tweety.arg.dung.semantics.Extension;
 import net.sf.tweety.arg.dung.syntax.Argument;
 import net.sf.tweety.arg.dung.syntax.Attack;
@@ -123,8 +124,96 @@ public class AFTupleTest {
         assertTrue(lnriSubmoduleIs2d.getSignature().equals(lnriSubmoduleShould2d.getSignature()));
 
 
-        Collection<DungTheory> lnriSubmodules3 = tuple6.determineLargestNormalRISubmodules(rcfSemantics, choice1);
+        Extension choice3 = rcfSemantics.getModel(testFrameworks.framework4);
+        Collection<DungTheory> lnriSubmodules3 = tuple6.determineLargestNormalRISubmodules(rcfSemantics, choice3);
         assertEquals(1,lnriSubmodules3.size());
         assertTrue(testFrameworks.framework4.prettyPrint().equals(lnriSubmodules3.iterator().next().prettyPrint()));
+    }
+
+    @Test
+    void determineLargestNormalCMSubmodules() {
+        Extension choice1 = rcfSemantics.getModel(testFrameworks.framework4);
+        Collection<DungTheory> lncmSubmodules1 = tuple1.determineLargestNormalCMSubmodules(rcfSemantics, choice1);
+        assertEquals(2, lncmSubmodules1.size());
+
+        Iterator<DungTheory> iterator1 = lncmSubmodules1.iterator();
+        DungTheory lncmSubmoduleShould1a = new DungTheory();
+        Argument a = new Argument("a");
+        Argument c = new Argument("c");
+        lncmSubmoduleShould1a.add(a);
+        lncmSubmoduleShould1a.add(c);
+        lncmSubmoduleShould1a.add(new Attack(c, a));
+        DungTheory lncmSubmoduleIs1a = iterator1.next();
+        assertTrue(lncmSubmoduleIs1a.prettyPrint().equals(lncmSubmoduleShould1a.prettyPrint()));
+
+        DungTheory lncmSubmoduleShould1b = new DungTheory();
+        Argument b = new Argument("b");
+        lncmSubmoduleShould1b.add(a);
+        lncmSubmoduleShould1b.add(b);
+        lncmSubmoduleShould1b.add(new Attack(a, b));
+        DungTheory lncmSubmoduleIs1b = iterator1.next();
+        assertTrue(lncmSubmoduleIs1b.getSignature().equals(lncmSubmoduleShould1b.getSignature()));
+
+
+        Extension choice3 = rcfSemantics.getModel(testFrameworks.framework4);
+        Collection<DungTheory> lncmSubmodules3 = tuple6.determineLargestNormalCMSubmodules(rcfSemantics, choice3);
+        assertEquals(1,lncmSubmodules3.size());
+        assertTrue(testFrameworks.framework4.prettyPrint().equals(lncmSubmodules3.iterator().next().prettyPrint()));
+    }
+
+    @Test
+    void determineSmallestNormalRIExpansions() {
+        Extension choice1 = rcfSemantics.getModel(testFrameworks.framework4);
+        Collection<DungTheory> snriExpansions1 = tuple1.determineSmallestNormalRIExpansions(rcfSemantics, choice1);
+        assertEquals(2, snriExpansions1.size());
+
+        Iterator<DungTheory> iterator1 = snriExpansions1.iterator();
+        DungTheory snriExpansionShould1a = new DungTheory();
+        snriExpansionShould1a.add(testFrameworks.framework3);
+        DungTheory snriExpansionShould1b = new DungTheory();
+        snriExpansionShould1b.add(testFrameworks.framework3);
+        DungTheory snriExpansionIs1a = iterator1.next();
+        DungTheory snriExpansionIs1b = iterator1.next();
+        for(Argument argument: snriExpansionIs1a) {
+            if(!snriExpansionShould1a.contains(argument)) {
+                snriExpansionShould1a.add(argument);
+                snriExpansionShould1b.add(argument);
+                snriExpansionShould1a.add(new Attack(argument, new Argument("b")));
+                snriExpansionShould1b.add(new Attack(argument, new Argument("c")));
+            }
+        }
+        assertTrue(snriExpansionIs1a.prettyPrint().equals(snriExpansionShould1a.prettyPrint()));
+        assertTrue(snriExpansionIs1b.prettyPrint().equals(snriExpansionShould1b.prettyPrint()));
+    }
+
+    @Test
+    void determineSmallestNormalCMExpansions() {
+        Extension choice1 = rcfSemantics.getModel(testFrameworks.framework4);
+        Collection<DungTheory> sncmExpansions1 = tuple1.determineSmallestNormalCMExpansions(rcfSemantics, choice1);
+        assertEquals(3, sncmExpansions1.size());
+
+        Iterator<DungTheory> iterator1 = sncmExpansions1.iterator();
+        DungTheory sncmExpansionShould1a = new DungTheory();
+        sncmExpansionShould1a.add(testFrameworks.framework3);
+        DungTheory sncmExpansionShould1b = new DungTheory();
+        sncmExpansionShould1b.add(testFrameworks.framework3);
+        DungTheory sncmExpansionShould1c = new DungTheory();
+        sncmExpansionShould1c.add(testFrameworks.framework3);
+        DungTheory sncmiExpansionIs1a = iterator1.next();
+        DungTheory sncmExpansionIs1b = iterator1.next();
+        DungTheory sncmExpansionIs1c = iterator1.next();
+        for(Argument argument: sncmiExpansionIs1a) {
+            if(!sncmExpansionShould1a.contains(argument)) {
+                sncmExpansionShould1a.add(argument);
+                sncmExpansionShould1b.add(argument);
+                sncmExpansionShould1c.add(argument);
+                sncmExpansionShould1a.add(new Attack(argument, new Argument("a")));
+                sncmExpansionShould1b.add(new Attack(argument, new Argument("b")));
+                sncmExpansionShould1c.add(new Attack(argument, new Argument("c")));
+            }
+        }
+        assertTrue(sncmiExpansionIs1a.prettyPrint().equals(sncmExpansionShould1a.prettyPrint()));
+        assertTrue(sncmExpansionIs1b.prettyPrint().equals(sncmExpansionShould1b.prettyPrint()));
+        assertTrue(sncmExpansionIs1c.prettyPrint().equals(sncmExpansionShould1c.prettyPrint()));
     }
 }

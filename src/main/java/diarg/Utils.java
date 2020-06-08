@@ -11,11 +11,13 @@ public class Utils {
 
     public static DungTheory removeSelfAttackedArguments(DungTheory bbase) {
         Collection<Argument> arguments = bbase.getNodes();
+        Collection<Argument> selfAttackedArguments = new LinkedList<>();
         for (Argument argument : arguments) {
             if (bbase.isAttackedBy(argument, argument)) {
-                bbase.remove(argument);
+                selfAttackedArguments.add(argument);
             }
         }
+        bbase.removeAll(selfAttackedArguments);
         return bbase;
     }
 

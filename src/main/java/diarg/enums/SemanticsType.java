@@ -1,4 +1,4 @@
-package diarg;
+package diarg.enums;
 
 public enum SemanticsType {
     CF2,

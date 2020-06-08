@@ -1,5 +1,6 @@
 package diarg;
 
+import diarg.enums.SemanticsType;
 import net.sf.tweety.arg.dung.semantics.Extension;
 import net.sf.tweety.arg.dung.syntax.Argument;
 import net.sf.tweety.arg.dung.syntax.DungTheory;
