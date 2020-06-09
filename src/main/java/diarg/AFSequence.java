@@ -140,11 +140,13 @@ public class AFSequence {
         }
         framework = frameworks.iterator().next();
         Extension resolution = this.semantics.getModel(framework);
+        Extension annihilatorArguments = new Extension();
         for(Argument argument: resolution) {
             if(!this.frameworks.get(index).contains(argument)) {
-                resolution.remove(argument);
+                annihilatorArguments.add(argument);
             }
         }
+        resolution.removeAll(annihilatorArguments);
         this.resolutions.add(resolution);
         return resolution;
     }
@@ -224,7 +226,7 @@ public class AFSequence {
             }
             return null;
         }
-        resolutions.set(index, extension);
+        resolutions.add(index, extension);
         return extension;
     }
 
@@ -245,29 +247,38 @@ public class AFSequence {
 
     public Collection<DungTheory> determineResolvableFrameworks(int index) {
         DungTheory previousFramework;
+        Extension previousResolution;
         if(index == 0) {
             previousFramework = new DungTheory();
+            previousResolution = new Extension();
         } else {
             previousFramework = this.frameworks.get(index-1);
+            try {
+                previousResolution = this.resolutions.get(index-1);
+
+            } catch (Exception e) {
+                e.printStackTrace();
+                return null;
+            }
         }
         AFTuple sequenceLink  = new AFTuple(previousFramework, this.frameworks.get(index));
         Collection<DungTheory> frameworks;
         switch(this.resolutionType) {
             case EXPANSIONIST_CAUTIOUSLY_MONOTONIC:
                 frameworks =
-                        sequenceLink.determineSmallestNormalCMExpansions(this.semantics, this.resolutions.get(index-1));
+                        sequenceLink.determineSmallestNormalCMExpansions(this.semantics, previousResolution);
                 break;
             case REDUCTIONIST_CAUTIOUSLY_MONOTONIC:
                 frameworks =
-                        sequenceLink.determineLargestNormalCMSubmodules(this.semantics, this.resolutions.get(index-1));
+                        sequenceLink.determineLargestNormalCMSubmodules(this.semantics, previousResolution);
                 break;
             case EXPANSIONIST_REFERENCE_INDEPENDENT:
                 frameworks =
-                        sequenceLink.determineSmallestNormalRIExpansions(this.semantics, this.resolutions.get(index-1));
+                        sequenceLink.determineSmallestNormalRIExpansions(this.semantics, previousResolution);
                 break;
             case REDUCTIONIST_REFERENCE_INDEPENDENT:
                 frameworks =
-                        sequenceLink.determineLargestNormalRISubmodules(this.semantics, this.resolutions.get(index-1));
+                        sequenceLink.determineLargestNormalRISubmodules(this.semantics, previousResolution);
                 break;
             default:
             case STANDARD:
