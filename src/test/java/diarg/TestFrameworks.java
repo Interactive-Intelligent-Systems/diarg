@@ -23,6 +23,12 @@ public final class TestFrameworks {
     DungTheory framework4 = new DungTheory();
     DungTheory framework5 = new DungTheory();
     DungTheory framework6 = new DungTheory();
+    String extensionSerialization1 = "[\"a\"]";
+    String extensionSerialization2 = "[\"a\",\"c\"]";
+    String frameworkSerialization1 = "{\"arguments\":[\"a\",\"b\"],\"attacks\":[[\"a\",\"b\"]]}";
+    String frameworkSerialization2 = "{\"arguments\":[\"a\",\"b\",\"c\",\"d\"]," +
+            "\"attacks\":[[\"a\",\"b\"],[\"c\",\"d\"],[\"b\",\"a\"],[\"d\",\"c\"]]}";
+    String sequenceSerialization1 = "{\"semanticsType\":\"RCF\",\"sequenceType\":\"EXPANDING\",\"resolutionType\":\"EXPANSIONIST_REFERENCE_INDEPENDENT\",\"frameworks\":[{\"framework\":{\"arguments\":[\"a\",\"b\"],\"attacks\":[[\"a\",\"b\"]]},\"resolution\":[\"a\"]},{\"framework\":{\"arguments\":[\"a\",\"b\",\"c\",\"d\"],\"attacks\":[[\"a\",\"b\"],[\"c\",\"d\"],[\"b\",\"a\"],[\"d\",\"c\"]]}}]}";
 
     public TestFrameworks() {
         Argument a = new Argument("a");

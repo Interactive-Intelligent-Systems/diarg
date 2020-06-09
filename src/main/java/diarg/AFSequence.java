@@ -164,10 +164,13 @@ public class AFSequence {
 
     public Extension resolveFramework(int index, Extension extension) {
         DungTheory previousFramework;
+        Extension previousResolution;
         if(index == 0) {
             previousFramework = new DungTheory();
+            previousResolution = new Extension();
         } else {
             previousFramework = this.frameworks.get(index-1);
+            previousResolution = this.resolutions.get(index-1);
         }
         AFTuple sequenceLink  = new AFTuple(previousFramework, this.frameworks.get(index));
         if(this.resolutions.size() > index && this.resolutions.get(index).containsAll(extension)){
@@ -178,7 +181,7 @@ public class AFSequence {
         switch(this.resolutionType) {
             case EXPANSIONIST_CAUTIOUSLY_MONOTONIC:
                 frameworks =
-                        sequenceLink.determineSmallestNormalCMExpansions(this.semantics, this.resolutions.get(index-1));
+                        sequenceLink.determineSmallestNormalCMExpansions(this.semantics, previousResolution);
                 for(DungTheory framework: frameworks) {
                     if(this.semantics.getModel(framework).containsAll(extension)){
                         isResolution = true;
@@ -187,7 +190,7 @@ public class AFSequence {
                 break;
             case REDUCTIONIST_CAUTIOUSLY_MONOTONIC:
                 frameworks =
-                        sequenceLink.determineLargestNormalCMSubmodules(this.semantics, this.resolutions.get(index-1));
+                        sequenceLink.determineLargestNormalCMSubmodules(this.semantics, previousResolution);
                 for(DungTheory framework: frameworks) {
                     if(this.semantics.getModel(framework).containsAll(extension)){
                         isResolution = true;
@@ -196,7 +199,7 @@ public class AFSequence {
                 break;
             case EXPANSIONIST_REFERENCE_INDEPENDENT:
                 frameworks =
-                        sequenceLink.determineSmallestNormalRIExpansions(this.semantics, this.resolutions.get(index-1));
+                        sequenceLink.determineSmallestNormalRIExpansions(this.semantics, previousResolution);
                 for(DungTheory framework: frameworks) {
                     if(this.semantics.getModel(framework).containsAll(extension)){
                         isResolution = true;
@@ -205,7 +208,7 @@ public class AFSequence {
                 break;
             case REDUCTIONIST_REFERENCE_INDEPENDENT:
                 frameworks =
-                        sequenceLink.determineLargestNormalRISubmodules(this.semantics, this.resolutions.get(index-1));
+                        sequenceLink.determineLargestNormalRISubmodules(this.semantics, previousResolution);
                 for(DungTheory framework: frameworks) {
                     if(this.semantics.getModel(framework).containsAll(extension)){
                         isResolution = true;
