@@ -7,24 +7,38 @@ import net.sf.tweety.arg.dung.syntax.DungTheory;
 
 import java.util.Collection;
 
+/**
+ * Utils for manipulating and analyzing argumentation frameworks
+ * @author Timotheus Kampik
+ */
 public class Utils {
 
-    public static DungTheory removeSelfAttackedArguments(DungTheory bbase) {
-        Collection<Argument> arguments = bbase.getNodes();
+    /**
+     * Removes all self-attacking arguments from an argumentation framework.
+     * @param framework Argumentation framework, from which all self-attacking arguments should be removed.
+     * @return Argumentation framework without the self-attacking arguments
+     */
+    public static DungTheory removeSelfAttackedArguments(DungTheory framework) {
+        Collection<Argument> arguments = framework.getNodes();
         Collection<Argument> selfAttackedArguments = new LinkedList<>();
         for (Argument argument : arguments) {
-            if (bbase.isAttackedBy(argument, argument)) {
+            if (framework.isAttackedBy(argument, argument)) {
                 selfAttackedArguments.add(argument);
             }
         }
-        bbase.removeAll(selfAttackedArguments);
-        return bbase;
+        framework.removeAll(selfAttackedArguments);
+        return framework;
     }
 
-    public static Collection<Argument> determineUnattackedArguments(DungTheory bbase) {
+    /**
+     * Determines all unattacked arguments of an argumentation framework.
+     * @param framework The argumentation framework, for which all unattacked arguments should be determined.
+     * @return All unattacked arguments in the provided argumentation framework
+     */
+    public static Collection<Argument> determineUnattackedArguments(DungTheory framework) {
         Collection<Argument> unattackedArguments = new LinkedList<>();
-        for(Argument argument: bbase.getNodes()) {
-            if(bbase.getAttackers(argument).isEmpty()) {
+        for(Argument argument: framework.getNodes()) {
+            if(framework.getAttackers(argument).isEmpty()) {
                 unattackedArguments.add(argument);
             }
         }

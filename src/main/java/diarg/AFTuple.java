@@ -30,11 +30,23 @@ public class AFTuple {
         this.smallestNormalCMExpansions = new LinkedList<>();
     }
 
+    /**
+     * Checks if framework2 is an expansion of framework1.
+     * @param framework1 The framework that is (supposedly) expanded by {@code framework2}
+     * @param framework2 The framework that is (supposedly) expanding {@code framework1}
+     * @return {@code true} or {@code false}
+     */
     private static boolean isExpansion(DungTheory framework1, DungTheory framework2) {
         return  framework2.containsAll(framework1.getNodes()) &&
                 framework2.containsAll(framework1.getAttacks());
     }
 
+    /**
+     * Checks if one argumentation framework is a normal expansion of another argumentation framework.
+     * @param framework1 The framework that is (supposedly) normally expanded by {@code framework2}
+     * @param framework2 The framework that is (supposedly) normally expanding {@code framework1}
+     * @return {@code true} or {@code false}
+     */
     private static boolean isNormalExpansion(DungTheory framework1, DungTheory framework2) {
         if (!isExpansion(framework1, framework2)) {
             return false;
@@ -51,24 +63,49 @@ public class AFTuple {
 
     }
 
-    private static boolean isReferenceIndependent(DungTheory framework1, Extension choice1, Extension choice2) {
-        return !framework1.containsAll(choice2) || choice1.equals(choice2);
+    /**
+     * Checks if an extension ({@code resolution2}) is reference independent w.r.t. a framework ({@code framework1})
+     * and its resolution ({@code resolution1}).
+     * @param framework1 The base framework
+     * @param resolution1 The base framework's resolution
+     * @param resolution2 The new resolution that is supposedly reference independent w.r.t. to the base framework and
+     *                    its resolution
+     * @return {@code true} or {@code false}
+     */
+    private static boolean isReferenceIndependent(DungTheory framework1, Extension resolution1, Extension resolution2) {
+        return !framework1.containsAll(resolution2) || resolution1.equals(resolution2);
     }
 
+    /**
+     * Checks if an argumentation framework {@code framework2} is cautiously monotonic w.r.t. another framework
+     * {@code framework1} and its resolution {@code resolution1}, given a specific semantics {@code semantics}.
+     * @param framework1 The base framework
+     * @param framework2 The framework whose resolution is (supposedly) reference independent w.r.t. to the base framework and
+     *                   its resolution
+     * @param resolution1 The base framework's resolution
+     * @param semantics The semantics that helps resolve {@code framework2}
+     * @return {@code true} or {@code false}
+     */
     private static boolean isCautiouslyMonotonic(DungTheory framework1, DungTheory framework2,
-                                                  Extension choice1, Semantics semantics) {
+                                                  Extension resolution1, Semantics semantics) {
         DungTheory tempFramework = new DungTheory();
         tempFramework.add(framework2);
         Extension extensionAttackingArgs = new Extension();
         for (Argument argument: tempFramework.getNodes()) {
-                if(!framework1.contains(argument) && tempFramework.isAttackedBy(argument, choice1)) {
+                if(!framework1.contains(argument) && tempFramework.isAttackedBy(argument, resolution1)) {
                     extensionAttackingArgs.add(argument);
             }
         }
         tempFramework.removeAll(extensionAttackingArgs);
-        return semantics.getModels(framework2).size() == 1 && semantics.getModel(tempFramework).containsAll(choice1);
+        return semantics.getModels(framework2).size() == 1 && semantics.getModel(tempFramework).containsAll(resolution1);
     }
 
+    /**
+     * Given a framework, determines a new argument with a name that is unique in the framework.
+     * @param framework The argumentation framework, for which a new argument is to be generated.
+     * @param lenght The minimum character length of the newly generated argument.
+     * @return The new argument
+     */
     private static Argument getNewArgument(DungTheory framework, int lenght) {
         String argumentId = java.util.UUID.randomUUID().toString().substring(0,lenght);
         Argument argument = new Argument(argumentId);
@@ -78,24 +115,48 @@ public class AFTuple {
         return argument;
     }
 
+    /**
+     * Checks if {@code framework2} in the tuple is an expansion of {@code framework1}.
+     * @return {@code true} or {@code false}
+     */
     public boolean isExpansion() {
         return this.isExpansion(this.framework1, this.framework2);
     }
 
+    /**
+     * Checks if {@code framework2} in the tuple is a normal expansion of {@code framework1}.
+     * @return {@code true} or {@code false}
+     */
     public boolean isNormalExpansion() {
        return this.isNormalExpansion(this.framework1, this.framework2);
     }
 
+    /**
+     * Checks if {@code framework2} in the tuple is a submodule of {@code framework1}.
+     * @return {@code true} or {@code false}
+     */
     public boolean isSubmodule() {
         return isExpansion(this.framework2, this.framework1);
     }
 
+    /**
+     * Checks if {@code framework2} in the tuple is a normal submodule of {@code framework1}.
+     * @return {@code true} or {@code false}
+     */
     public boolean isNormalSubmodule() {
         return this.isNormalExpansion(this.framework2, this.framework1);
     }
 
+    /**
+     * Determines the largest normal reference independent submodules of a framework w.r.t. to another framework and
+     * its resolution
+     * @param semantics The semantics that is used to determine the extensions of the framework's submodules
+     * @param resolution The "preceding" framework's resolution
+     * @param framework The framework for which the largest normal reference independent submodules are to be returned
+     * @return The framework's largest normal reference independent submodules
+     */
     private Collection<DungTheory> determineLargestNormalRISubmodules(
-            Semantics semantics, Extension choice, DungTheory framework) {
+            Semantics semantics, Extension resolution, DungTheory framework) {
         for(Argument argument: framework.getNodes()) {
             DungTheory submodule = new DungTheory();
             submodule.add(framework);
@@ -114,7 +175,7 @@ public class AFTuple {
             }
             Collection<Extension> extensions = semantics.getModels(submodule);
             Extension extension = extensions.iterator().next();
-            if(extensions.size() == 1 && this.isReferenceIndependent(this.framework1, choice, extension)) {
+            if(extensions.size() == 1 && this.isReferenceIndependent(this.framework1, resolution, extension)) {
                 this.largestNormalRISubmodules.add(submodule);
             }
         }
@@ -123,14 +184,23 @@ public class AFTuple {
                 DungTheory submodule = new DungTheory();
                 submodule.add(framework);
                 submodule.remove(argument);
-                determineLargestNormalRISubmodules(semantics, choice, submodule);
+                determineLargestNormalRISubmodules(semantics, resolution, submodule);
             }
         }
         return this.largestNormalRISubmodules;
     }
 
+    /**
+     * Determines the smallest normal reference independent expansions of a framework w.r.t. to another framework and
+     * its resolution
+     * @param semantics The semantics that is used to determine the extensions of the framework's expansions
+     * @param resolution The "preceding" framework's resolution
+     * @param framework The framework for which the smallest normal reference independent expansions are to be returned
+     * @param newArgument An argument that can be added to the framework to be used as an annihilator
+     * @return The smallest normal reference independent expansions
+     */
     private Collection<DungTheory> determineSmallestNormalRIExpansions(
-            Semantics semantics, Extension choice, DungTheory framework, Argument newArgument) {
+            Semantics semantics, Extension resolution, DungTheory framework, Argument newArgument) {
         for(Argument argument: framework.getNodes()) {
             DungTheory expansion = new DungTheory();
             expansion.add(framework);
@@ -151,7 +221,7 @@ public class AFTuple {
             Collection<Extension> extensions = semantics.getModels(expansion);
             Extension extension = extensions.iterator().next();
             extension.remove(newArgument);
-            boolean isRefIndep = this.isReferenceIndependent(this.framework1, choice, extension);
+            boolean isRefIndep = this.isReferenceIndependent(this.framework1, resolution, extension);
             if(extensions.size() == 1 && isRefIndep) {
                 this.smallestNormalRIExpansions.add(expansion);
             }
@@ -161,17 +231,25 @@ public class AFTuple {
                 DungTheory expansion = new DungTheory();
                 expansion.add(framework);
                 expansion.add(new Attack(newArgument, argument));
-                determineSmallestNormalRIExpansions(semantics, choice, expansion, newArgument);
+                determineSmallestNormalRIExpansions(semantics, resolution, expansion, newArgument);
             }
         }
         return this.smallestNormalRIExpansions;
     }
 
+    /**
+     * Determines the largest normal cautiously monotonic submodules of a framework w.r.t. to another framework and
+     * its resolution
+     * @param semantics The semantics that is used to determine the extensions of the framework's expansions
+     * @param framework The framework for which the largest normal cautiously monotonic submodules are to be returned
+     * @param resolution The "preceding" framework's resolution
+     * @return The framework's largest normal cautiously monotonic submodules
+     */
     private Collection<DungTheory> determineLargestNormalCMSubmodules(
-            DungTheory tempFramework, Extension choice, Semantics semantics) {
-        for(Argument argument: tempFramework.getNodes()) {
+            Semantics semantics, DungTheory framework, Extension resolution) {
+        for(Argument argument: framework.getNodes()) {
             DungTheory submodule = new DungTheory();
-            submodule.add(tempFramework);
+            submodule.add(framework);
             submodule.remove(argument);
             boolean existsLarger = this.largestNormalCMSubmodules.size() > 0 &&
                     this.largestNormalCMSubmodules.iterator().next().size() > submodule.size();
@@ -186,24 +264,33 @@ public class AFTuple {
                 return this.largestNormalCMSubmodules;
             }
             Collection<Extension> extensions = semantics.getModels(submodule);
-            boolean isCautiouslyMonotonic =  this.isCautiouslyMonotonic(this.framework1, submodule, choice, semantics);
+            boolean isCautiouslyMonotonic =  this.isCautiouslyMonotonic(this.framework1, submodule, resolution, semantics);
             if(extensions.size() == 1 && isCautiouslyMonotonic) {
                 this.largestNormalCMSubmodules.add(submodule);
             }
         }
         if(this.largestNormalCMSubmodules.size() == 0) {
-            for (Argument argument: tempFramework.getNodes()) {
+            for (Argument argument: framework.getNodes()) {
                 DungTheory submodule = new DungTheory();
-                submodule.add(tempFramework);
+                submodule.add(framework);
                 submodule.remove(argument);
-                determineLargestNormalCMSubmodules(submodule, choice, semantics);
+                determineLargestNormalCMSubmodules(semantics, submodule, resolution);
             }
         }
         return this.largestNormalCMSubmodules;
     }
 
+    /**
+     Determines the smallest normal cautiously monotonic expansions of a framework w.r.t. to another framework and
+     * its resolution
+     * @param semantics The semantics that is used to determine the extensions of the framework's expansions
+     * @param framework The framework for which the smallest normal cautiously monotonic expansions are to be returned
+     * @param resolution The "preceding" framework's resolution
+     * @param newArgument Annihilator argument
+     * @return The framework's smallest normal cautiously monotonic expansions
+     */
     private Collection<DungTheory> determineSmallestNormalCMExpansions(
-            Semantics semantics, Extension choice, DungTheory framework, Argument newArgument) {
+            Semantics semantics, Extension resolution, DungTheory framework, Argument newArgument) {
         for(Argument argument: framework.getNodes()) {
             DungTheory expansion = new DungTheory();
             expansion.add(framework);
@@ -224,7 +311,7 @@ public class AFTuple {
             Collection<Extension> extensions = semantics.getModels(expansion);
             Extension extension = extensions.iterator().next();
             extension.remove(newArgument);
-            boolean isCM = this.isCautiouslyMonotonic(this.framework1, expansion, choice, semantics);
+            boolean isCM = this.isCautiouslyMonotonic(this.framework1, expansion, resolution, semantics);
             if(isCM) {
                 this.smallestNormalCMExpansions.add(expansion);
             }
@@ -234,31 +321,47 @@ public class AFTuple {
                 DungTheory expansion = new DungTheory();
                 expansion.add(framework);
                 expansion.add(new Attack(newArgument, argument));
-                determineSmallestNormalCMExpansions(semantics, choice, expansion, newArgument);
+                determineSmallestNormalCMExpansions(semantics, resolution, expansion, newArgument);
             }
         }
         return this.smallestNormalCMExpansions;
     }
 
-    public Collection<DungTheory> determineLargestNormalRISubmodules(Semantics semantics, Extension choice) {
+    /**
+     * Determines the largest normal reference independent submodules of the second framework in the tuple w.r.t.
+     * to the first framework in the tuple, its resolution, and the specified argumentation semantics.
+     * @param semantics The semantics that is used to determine the framework's submodules
+     * @param resolution The resolution of the tuple's first framework that is used to determine the framework's
+     *                   submodules
+     * @return The framework's largest normal reference independent submodules
+     */
+    public Collection<DungTheory> determineLargestNormalRISubmodules(Semantics semantics, Extension resolution) {
         this.largestNormalRISubmodules.clear();
         Collection<Extension> extensions = semantics.getModels(this.framework2);
         Extension extension = extensions.iterator().next();
 
-        if(extensions.size() == 1 && this.isReferenceIndependent(this.framework1, choice, extension)) {
+        if(extensions.size() == 1 && this.isReferenceIndependent(this.framework1, resolution, extension)) {
             this.largestNormalRISubmodules.add(this.framework2);
             return this.largestNormalRISubmodules;
         }
-        return this.determineLargestNormalRISubmodules(semantics, choice, this.framework2);
+        return this.determineLargestNormalRISubmodules(semantics, resolution, this.framework2);
     }
 
-    public Collection<DungTheory> determineSmallestNormalRIExpansions(Semantics semantics, Extension choice) {
+    /**
+     * Determines the smallest normal reference independent expansions of the second framework in the tuple w.r.t.
+     * to the first framework in the tuple, its resolution, and the specified argumentation semantics.
+     * @param semantics The semantics that is used to determine the framework's expansions
+     * @param resolution The resolution of the tuple's first framework that is used to determine the framework's
+     *                   expansions
+     * @return The framework's smallest normal reference independent expansions
+     */
+    public Collection<DungTheory> determineSmallestNormalRIExpansions(Semantics semantics, Extension resolution) {
         /* Note: requires the semantics to include all unattacked arguments and to be conflict-free otherwise,
         it can potentially be the case that no expansion will be returned although a smallest normal RI expansion exists*/
         this.smallestNormalRIExpansions.clear();
         Collection<Extension> extensions = semantics.getModels(this.framework2);
         Extension extension = extensions.iterator().next();
-        if(extensions.size() == 1 && this.isReferenceIndependent(this.framework1, choice, extension)) {
+        if(extensions.size() == 1 && this.isReferenceIndependent(this.framework1, resolution, extension)) {
             this.smallestNormalRIExpansions.add(this.framework2);
             return this.smallestNormalRIExpansions;
         }
@@ -266,25 +369,41 @@ public class AFTuple {
         DungTheory tempFramework = new DungTheory();
         tempFramework.add(framework2);
         tempFramework.add(newArgument);
-        return this.determineSmallestNormalRIExpansions(semantics, choice, tempFramework, newArgument);
+        return this.determineSmallestNormalRIExpansions(semantics, resolution, tempFramework, newArgument);
     }
 
-    public Collection<DungTheory> determineLargestNormalCMSubmodules(Semantics semantics, Extension choice) {
+    /**
+     * Determines the largest normal cautiously monotonic submodules of the second framework in the tuple w.r.t.
+     * to the first framework in the tuple, its resolution, and the specified argumentation semantics.
+     * @param semantics The semantics that is used to determine the framework's submodules
+     * @param resolution The resolution of the tuple's first framework that is used to determine the framework's
+     *                   submodules
+     * @return The framework's largest normal cautiously monotonic submodules
+     */
+    public Collection<DungTheory> determineLargestNormalCMSubmodules(Semantics semantics, Extension resolution) {
         this.largestNormalCMSubmodules.clear();
-        if(this.isCautiouslyMonotonic(this.framework1, this.framework2, choice, semantics)) {
+        if(this.isCautiouslyMonotonic(this.framework1, this.framework2, resolution, semantics)) {
             this.largestNormalCMSubmodules.add(this.framework2);
             return this.largestNormalCMSubmodules;
         }
-        return this.determineLargestNormalCMSubmodules(this.framework2, choice, semantics);
+        return this.determineLargestNormalCMSubmodules(semantics, this.framework2, resolution);
     }
 
-    public Collection<DungTheory> determineSmallestNormalCMExpansions(Semantics semantics, Extension choice) {
+    /**
+     * Determines the smallest normal cautiously monotonic expansions of the second framework in the tuple w.r.t.
+     * to the first framework in the tuple, its resolution, and the specified argumentation semantics.
+     * @param semantics The semantics that is used to determine the framework's expansions
+     * @param resolution The resolution of the tuple's first framework that is used to determine the framework's
+     *                   expansions
+     * @return The framework's smallest normal cautiously monotonic expansions
+     */
+    public Collection<DungTheory> determineSmallestNormalCMExpansions(Semantics semantics, Extension resolution) {
         /* Note: requires the semantics to include all unattacked arguments and to be conflict-free otherwise,
         it can potentially be the case that no expansion will be returned although a smallest normal CM expansion exists*/
         this.smallestNormalCMExpansions.clear();
         Collection<Extension> extensions = semantics.getModels(this.framework2);
 
-        if(extensions.size() == 1 && this.isCautiouslyMonotonic(this.framework1, this.framework2, choice, semantics)) {
+        if(extensions.size() == 1 && this.isCautiouslyMonotonic(this.framework1, this.framework2, resolution, semantics)) {
             this.smallestNormalCMExpansions.add(this.framework2);
             return this.smallestNormalCMExpansions;
         }
@@ -292,7 +411,7 @@ public class AFTuple {
         DungTheory tempFramework = new DungTheory();
         tempFramework.add(framework2);
         tempFramework.add(newArgument);
-        return this.determineSmallestNormalCMExpansions(semantics, choice, tempFramework, newArgument);
+        return this.determineSmallestNormalCMExpansions(semantics, resolution, tempFramework, newArgument);
     }
 }
 

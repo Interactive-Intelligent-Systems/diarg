@@ -1,5 +1,10 @@
 package diarg.enums;
 
+/**
+ * Enumerates resolution types, i.e., whether reference independence and cautious monotony should be ensured,
+ * and which approach should be used for ensuring it.
+ * @author Timotheus Kampik
+ */
 public enum ResolutionType {
     STANDARD,
     REDUCTIONIST_REFERENCE_INDEPENDENT,

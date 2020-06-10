@@ -7,6 +7,10 @@ import net.sf.tweety.arg.dung.syntax.DungTheory;
 
 import java.util.Collection;
 
+/**
+ * Provides an interface to different abstract argumentation semantics
+ * @author Timotheus Kampik
+ */
 public class Semantics {
 
     public SemanticsType semanticsType;
@@ -15,38 +19,48 @@ public class Semantics {
         this.semanticsType = semanticsType;
     }
 
-    public Collection<Extension> getModels(DungTheory bbase) {
+    /**
+     * Determines semantics' extensions for the specified argumentation framework.
+     * @param framework The argumentation framework, for which the extensions should be returned
+     * @return The argumentation framework's extension
+     */
+    public Collection<Extension> getModels(DungTheory framework) {
         switch (this.semanticsType) {
             case CF2:
                 SimpleCF2Reasoner cf2Reasoner = new SimpleCF2Reasoner();
-                return cf2Reasoner.getModels(bbase);
+                return cf2Reasoner.getModels(framework);
             case COMPLETE:
                 SimpleCompleteReasoner completeReasoner = new SimpleCompleteReasoner();
-                return completeReasoner.getModels(bbase);
+                return completeReasoner.getModels(framework);
             case GROUNDED:
                 SimpleGroundedReasoner groundedReasoner = new SimpleGroundedReasoner();
-                return groundedReasoner.getModels(bbase);
+                return groundedReasoner.getModels(framework);
             case IDEAL:
                 SimpleIdealReasoner idealReasoner = new SimpleIdealReasoner();
-                return idealReasoner.getModels(bbase);
+                return idealReasoner.getModels(framework);
             case PREFERRED:
                 SimplePreferredReasoner preferredReasoner = new SimplePreferredReasoner();
-                return preferredReasoner.getModels(bbase);
+                return preferredReasoner.getModels(framework);
             case RCF:
                 SimpleRCFReasoner rcfReasoner = new SimpleRCFReasoner();
-                return rcfReasoner.getModels(bbase);
+                return rcfReasoner.getModels(framework);
             case RS:
                 SimpleRSReasoner rsReasoner = new SimpleRSReasoner();
-                return rsReasoner.getModels(bbase);
+                return rsReasoner.getModels(framework);
             default:
             case STAGE:
                 SimpleStageReasoner stageReasoner = new SimpleStageReasoner();
-                return stageReasoner.getModels(bbase);
+                return stageReasoner.getModels(framework);
         }
     }
 
-    public Extension getModel(DungTheory bbase) {
-        Collection<Extension> extensions = this.getModels(bbase);
+    /**
+     * Returns one extension the semantics returns for the specified argumentation framework.
+     * @param framework The argumentation framework for which the extension should be determined
+     * @return An extension of the argumentation framework
+     */
+    public Extension getModel(DungTheory framework) {
+        Collection<Extension> extensions = this.getModels(framework);
         return extensions.iterator().next();
     }
 }
