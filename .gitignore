@@ -27,3 +27,7 @@ out/
 .idea/
 build/
 gradle/
+examples/.gradle/
+examples/build/
+
+.DS_Store

@@ -1,0 +1,33 @@
+plugins {
+    id 'java'
+}
+
+group 'diarg-example'
+version '0.1-SNAPSHOT'
+
+sourceCompatibility = 1.8
+
+repositories {
+    maven {
+        url 'https://people.cs.umu.se/~tkampik/mvn/'
+    }
+    mavenCentral()
+    maven {
+        url 'http://tweetyproject.org/mvn/'
+    }
+}
+
+dependencies {
+    implementation('net.sf.tweety:tweety-full:1.16') {
+        exclude group: 'org.ojalgo', module: 'ojalgo'
+        exclude group: 'jspf', module: 'core'
+    }
+    compile group: 'diarg', name: 'di-arg', version: '0.1-SNAPSHOT'
+    testCompile 'org.junit.jupiter:junit-jupiter-api:5.6.1'
+
+}
+
+task run(type: JavaExec) {
+    classpath sourceSets.main.runtimeClasspath
+    main = "examples.Example"
+}

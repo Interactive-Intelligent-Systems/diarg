@@ -3,6 +3,8 @@ package diarg;
 import diarg.enums.ResolutionType;
 import diarg.enums.SemanticsType;
 import diarg.enums.SequenceType;
+import net.sf.tweety.arg.dung.semantics.Extension;
+import net.sf.tweety.arg.dung.syntax.Argument;
 import org.codehaus.jettison.json.JSONArray;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
@@ -22,7 +24,7 @@ public class SerializerTest {
     @BeforeAll
     void init() {
         sequence = new AFSequence(SequenceType.EXPANDING, ResolutionType.EXPANSIONIST_REFERENCE_INDEPENDENT,
-                rcfSemantics);
+                rcfSemantics, true);
         sequence.addFramework(testFrameworks.framework4);
         sequence.addFramework(testFrameworks.framework6);
         sequence.resolveFramework(0);
@@ -47,6 +49,13 @@ public class SerializerTest {
     void sequenceToJSON() {
         JSONObject jSequence = serializer.sequenceToJSON(sequence);
         assertTrue(jSequence.toString().equals(testFrameworks.sequenceSerialization1));
+    }
+
+    @Test
+    void contextToJSON() {
+        Context context = new Context("testContext", rcfSemantics.getModel(testFrameworks.framework4));
+        JSONObject jContext = serializer.contextToJSON(context);
+        assertTrue(jContext.toString().equals(testFrameworks.contextSerialization1));
     }
 
     @Test
@@ -89,5 +98,18 @@ public class SerializerTest {
         assertTrue(serializer.sequenceToJSON(sequenceShould).equals(serializer.sequenceToJSON(sequence)));
     }
 
-
+    @Test
+    void contextFromJSON() {
+        JSONObject jContext = new JSONObject();
+        Extension extension = new Extension();
+        extension.add(new Argument("a"));
+        Context context = new Context("testContext", extension);
+        try {
+            jContext = new JSONObject(testFrameworks.contextSerialization1);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        Context contextShould = serializer.contextFromJSON(jContext);
+        assertTrue(serializer.contextToJSON(contextShould).equals(serializer.contextToJSON(context)));
+    }
 }

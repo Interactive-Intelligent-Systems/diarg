@@ -3,6 +3,7 @@ package diarg;
 import diarg.enums.ResolutionType;
 import diarg.enums.SequenceType;
 import net.sf.tweety.arg.dung.syntax.Argument;
+import net.sf.tweety.arg.dung.syntax.Attack;
 import net.sf.tweety.arg.dung.syntax.DungTheory;
 import net.sf.tweety.arg.dung.semantics.Extension;
 
@@ -21,12 +22,16 @@ public class AFSequence {
     private SequenceType sequenceType;
     private ResolutionType resolutionType;
     private Semantics semantics;
+    private boolean contextSupport;
+    private ArrayList<Collection<Context>> contexts = new ArrayList<>();
+    private ArrayList<Extension> contextSummaries = new ArrayList<>();
 
     public AFSequence(SequenceType sequenceType, ResolutionType resolutionType,
-                      Semantics semantics) {
+                      Semantics semantics, boolean contextSupport) {
         this.sequenceType = sequenceType;
         this.resolutionType = resolutionType;
         this.semantics = semantics;
+        this.contextSupport = contextSupport;
     }
 
     public Semantics getSemantics() {
@@ -53,28 +58,113 @@ public class AFSequence {
         return this.sequenceType;
     }
 
+    public ArrayList<Collection<Context>> getContexts() {
+        return this.contexts;
+    }
+
+    public Collection<Context> getContext(int index) {
+        return this.contexts.get(index);
+    }
+
+    public Collection<Extension> getContextSummaries () {
+        return this.contextSummaries;
+    }
+
+    public Extension getContextSummary(int index) {
+        return this.contextSummaries.get(index);
+    }
+
+    public boolean getContextSupport () {
+        return this.contextSupport;
+    }
+
     public ResolutionType getResolutionType() {
         return this.resolutionType;
+    }
+
+    /**
+     * For expanding and normall expanding sequence types, determines an argumentation framework's
+     * nearest predecessor (as index in sequenece) with an identical context summary
+     * (the context summary is the union of all arguments in the framework's contexts).
+     * @param currentFramework The framework whose relevant predecessor should be determined
+     * @param index The index of the framework whose relevant predecessor should be determined
+     * @return relevant predecessor's index
+     */
+    private int determineRelevantPredecessor(int index, DungTheory currentFramework) {
+        if(index == 0) {
+            return -1;
+        }
+        if (this.sequenceType == SequenceType.STANDARD) {
+            return index - 1;
+        }
+        for(int i = index-1; i >= 0; i--) {
+            DungTheory previousFramework = this.frameworks.get(i);
+            if(this.sequenceType == SequenceType.EXPANDING &&
+                    currentFramework.getNodes().contains(previousFramework.getNodes())){
+                return i;
+            }
+            if(this.sequenceType == SequenceType.NORMALLY_EXPANDING && currentFramework.containsAll(previousFramework)){
+                return i;
+            }
+        }
+        return -1;
     }
 
     /**
      * Adds an argumentation framework to the sequence; only adds the framework if it is compliant with the configured
      * sequence type.
      * @param framework The argumentation framework that is to be added to the sequence
+     * @param contexts The contexts that should be active for the framework
      * @return {@code true} if the framework was successfully added; else {@code false}.
      */
-    public boolean addFramework(DungTheory framework) {
-        if(this.frameworks.size() == 0 || this.sequenceType == SequenceType.STANDARD) {
-            this.frameworks.add(framework);
-            return true;
+    public boolean addFramework(DungTheory framework, Collection<Context> contexts) {
+        if(!this.contextSupport && contexts.size() > 0) {
+            try {
+                throw(new Exception(
+                        "Could not add context(s), because this sequence is not configured to support contexts."
+                ));
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            contexts = new LinkedList<>();
         }
-        AFTuple sequenceLink = new AFTuple(this.frameworks.get(this.frameworks.size() - 1), framework);
-        if(this.sequenceType == SequenceType.EXPANDING && sequenceLink.isExpansion()) {
-            this.frameworks.add(framework);
-            return true;
+        Collection<Collection<Argument>> sccs = framework.getStronglyConnectedComponents();
+        Extension contextSummary = new Extension();
+        for(Context context: contexts) {
+            Extension contextArguments = context.getArguments();
+            for(Argument contextArgument: contextArguments) {
+                boolean isInLoop = false;
+                for(Collection<Argument> scc: sccs) {
+                    Attack selfAttack = new Attack(contextArgument, contextArgument);
+                    if(scc.contains(contextArgument) && (scc.size() == 1 || framework.containsAttack(selfAttack))) {
+                        isInLoop = true;
+                        try {
+                            throw(new Exception(
+                                    "Argument " + contextArgument.getName() + " ignored, because it is in loop."
+                            ));
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                        break;
+                    }
+                }
+                if(!isInLoop) {
+                    contextSummary.add(contextArgument);
+                }
+            }
         }
-        if(this.sequenceType == SequenceType.NORMALLY_EXPANDING && sequenceLink.isNormalExpansion()) {
+        DungTheory previousFramework = new DungTheory();
+        if(this.frameworks.size() != 0) previousFramework = this.frameworks.get(this.frameworks.size() - 1);
+        AFTuple sequenceLink = new AFTuple(previousFramework, framework);
+        boolean canBeAdded = this.frameworks.size() == 0 ||
+                this.sequenceType == SequenceType.STANDARD ||
+                this.sequenceType == SequenceType.EXPANDING && sequenceLink.isExpansion() ||
+                this.sequenceType == SequenceType.NORMALLY_EXPANDING && sequenceLink.isNormalExpansion();
+        if(canBeAdded) {
+            framework.removeAll(contextSummary);
             this.frameworks.add(framework);
+            this.contexts.add(contexts);
+            this.contextSummaries.add(contextSummary);
             return true;
         }
         try {
@@ -89,6 +179,17 @@ public class AFSequence {
     }
 
     /**
+     * Adds an argumentation framework to the sequence; only adds the framework if it is compliant with the configured
+     * sequence type.
+     * @param framework The argumentation framework that is to be added to the sequence
+     * @return {@code true} if the framework was successfully added; else {@code false}.
+     */
+    public boolean addFramework(DungTheory framework) {
+        Collection<Context> contexts = new LinkedList<>();
+        return addFramework(framework, contexts);
+    }
+
+    /**
      * Removes framework at the specified index; in case of reference independent and cautiously monotonic resolution
      * approaches, the last framework in the sequence cannot be removed to ensure principle compliance.
      * @param index The index of the argumentation framework that is to be removed from the sequence.
@@ -98,6 +199,8 @@ public class AFSequence {
         boolean isStandard = this.resolutionType == ResolutionType.STANDARD;
         if(index != this.frameworks.size()-1 || isStandard) {
             this.frameworks.remove(index);
+            this.contexts.remove(index);
+            this.contextSummaries.remove(index);
             if(this.resolutions.size() > index) {
                 this.resolutions.remove(index);
             }
@@ -126,11 +229,12 @@ public class AFSequence {
             return this.resolutions.get(index);
         }
         AFTuple sequenceLink;
+        int predecessorIndex = this.determineRelevantPredecessor(index, this.frameworks.get(index));
         Extension previousResolution = new Extension();
-        if(index != 0) {
+        if(predecessorIndex >= 0) {
             try {
-                sequenceLink = new AFTuple(this.frameworks.get(index-1), this.frameworks.get(index));
-                previousResolution = this.resolutions.get(index-1);
+                sequenceLink = new AFTuple(this.frameworks.get(predecessorIndex), this.frameworks.get(index));
+                previousResolution = this.resolutions.get(predecessorIndex);
             } catch (Exception e) {
                 new Exception("Previous framework in sequence has not been resolved.").printStackTrace();
                 return null;
@@ -197,12 +301,13 @@ public class AFSequence {
     public Extension resolveFramework(int index, Extension extension) {
         DungTheory previousFramework;
         Extension previousResolution;
-        if(index == 0) {
+        int predecessorIndex = this.determineRelevantPredecessor(index, this.frameworks.get(index));
+        if(predecessorIndex < 0) {
             previousFramework = new DungTheory();
             previousResolution = new Extension();
         } else {
-            previousFramework = this.frameworks.get(index-1);
-            previousResolution = this.resolutions.get(index-1);
+            previousFramework = this.frameworks.get(predecessorIndex);
+            previousResolution = this.resolutions.get(predecessorIndex);
         }
         AFTuple sequenceLink  = new AFTuple(previousFramework, this.frameworks.get(index));
         if(this.resolutions.size() > index && this.resolutions.get(index).containsAll(extension)){

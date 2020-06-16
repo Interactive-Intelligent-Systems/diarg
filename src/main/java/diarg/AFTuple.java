@@ -17,13 +17,21 @@ import java.util.LinkedList;
  */
 
 public class AFTuple {
-    private DungTheory framework1, framework2;
+    private DungTheory framework1, framework2, smallerEqualFramework, largerEqualFramework;
     private Collection<DungTheory>  largestNormalRISubmodules, largestNormalCMSubmodules,
                                     smallestNormalRIExpansions, smallestNormalCMExpansions;
 
     public AFTuple(DungTheory framework1, DungTheory framework2) {
         this.framework1 = framework1;
         this.framework2 = framework2;
+        if(this.framework2.containsAll(framework1.getNodes()) &&
+                !(this.framework1.containsAll(framework2) && this.framework1.size() > this.framework2.size())) {
+            this.smallerEqualFramework = framework1;
+            this.largerEqualFramework = framework2;
+        } else {
+            this.smallerEqualFramework = framework2;
+            this.largerEqualFramework = framework1;
+        }
         this.largestNormalRISubmodules = new LinkedList<>();
         this.largestNormalCMSubmodules = new LinkedList<>();
         this.smallestNormalRIExpansions = new LinkedList<>();
@@ -264,8 +272,8 @@ public class AFTuple {
                 return this.largestNormalCMSubmodules;
             }
             Collection<Extension> extensions = semantics.getModels(submodule);
-            boolean isCautiouslyMonotonic =  this.isCautiouslyMonotonic(this.framework1, submodule, resolution, semantics);
-            if(extensions.size() == 1 && isCautiouslyMonotonic) {
+            boolean isCM =  this.isCautiouslyMonotonic(this.framework1, submodule, resolution, semantics);
+            if(extensions.size() == 1 && isCM) {
                 this.largestNormalCMSubmodules.add(submodule);
             }
         }

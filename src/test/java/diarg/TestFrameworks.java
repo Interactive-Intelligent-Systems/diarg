@@ -28,7 +28,8 @@ public final class TestFrameworks {
     String frameworkSerialization1 = "{\"arguments\":[\"a\",\"b\"],\"attacks\":[[\"a\",\"b\"]]}";
     String frameworkSerialization2 = "{\"arguments\":[\"a\",\"b\",\"c\",\"d\"]," +
             "\"attacks\":[[\"a\",\"b\"],[\"c\",\"d\"],[\"b\",\"a\"],[\"d\",\"c\"]]}";
-    String sequenceSerialization1 = "{\"semanticsType\":\"RCF\",\"sequenceType\":\"EXPANDING\",\"resolutionType\":\"EXPANSIONIST_REFERENCE_INDEPENDENT\",\"frameworks\":[{\"framework\":{\"arguments\":[\"a\",\"b\"],\"attacks\":[[\"a\",\"b\"]]},\"resolution\":[\"a\"]},{\"framework\":{\"arguments\":[\"a\",\"b\",\"c\",\"d\"],\"attacks\":[[\"a\",\"b\"],[\"c\",\"d\"],[\"b\",\"a\"],[\"d\",\"c\"]]}}]}";
+    String sequenceSerialization1 = "{\"semanticsType\":\"RCF\",\"sequenceType\":\"EXPANDING\",\"resolutionType\":\"EXPANSIONIST_REFERENCE_INDEPENDENT\",\"frameworks\":[{\"framework\":{\"arguments\":[\"a\",\"b\"],\"attacks\":[[\"a\",\"b\"]]},\"contextSummary\":[],\"contexts\":[],\"resolution\":[\"a\"]},{\"framework\":{\"arguments\":[\"a\",\"b\",\"c\",\"d\"],\"attacks\":[[\"a\",\"b\"],[\"c\",\"d\"],[\"b\",\"a\"],[\"d\",\"c\"]]},\"contextSummary\":[],\"contexts\":[]}]}";
+    String contextSerialization1 = "{\"name\":\"testContext\",\"arguments\":[\"a\"]}";
 
     public TestFrameworks() {
         Argument a = new Argument("a");

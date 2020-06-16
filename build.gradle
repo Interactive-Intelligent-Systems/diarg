@@ -1,5 +1,7 @@
 plugins {
     id 'java'
+    id 'maven-publish'
+    // id 'signing'
 }
 
 repositories {
@@ -8,25 +10,15 @@ repositories {
     }
 }
 
+java {
+    withJavadocJar()
+    withSourcesJar()
+}
+
 group 'diarg'
-version '1.0-SNAPSHOT'
+version '0.1-SNAPSHOT'
 
 sourceCompatibility = 1.8
-
-dependencies {
-    compile group: 'net.sf.tweety', name: 'tweety-full', version: '1.11'
-    testCompile 'org.junit.jupiter:junit-jupiter-api:5.6.1'
-}
-
-configurations.each {
-    c -> c.resolutionStrategy.dependencySubstitution {
-        all { DependencySubstitution dependency ->
-            if (dependency.requested.group == 'org.ojalgo') {
-                dependency.useTarget 'ojalgo:ojalgo:35.0.0'
-            }
-        }
-    }
-}
 
 repositories {
     mavenCentral()
@@ -35,7 +27,72 @@ repositories {
     }
 }
 
+dependencies {
+    implementation('net.sf.tweety:tweety-full:1.12') { // 1.16
+        exclude group: 'org.ojalgo', module: 'ojalgo'
+        exclude group: 'jspf', module: 'core'
+    }
+    testCompile 'org.junit.jupiter:junit-jupiter-api:5.6.1'
+
+}
+
 task run(type: JavaExec) {
     classpath sourceSets.main.runtimeClasspath
     main = "diarg.DiArg"
 }
+
+javadoc {
+    source = sourceSets.main.allJava
+    classpath = configurations.compileClasspath
+
+    options
+            {
+                setMemberLevel JavadocMemberLevel.PUBLIC
+                setAuthor true
+            }
+}
+
+publishing {
+    publications {
+        mavenJava(MavenPublication) {
+            artifactId = 'di-arg'
+            from components.java
+            versionMapping {
+                usage('java-api') {
+                    fromResolutionOf('runtimeClasspath')
+                }
+                usage('java-runtime') {
+                    fromResolutionResult()
+                }
+            }
+            pom {
+                name = 'DiArg'
+                description = 'An Argumentation-Based Dialogue Reasoner'
+                url = 'https://github.com/TimKam/diarg'
+                licenses {
+                    license {
+                        name = 'BSD 2-Clause License'
+                        url = 'https://github.com/TimKam/diarg/LICENSE'
+                    }
+                }
+                developers {
+                    developer {
+                        id = 'TimKam'
+                        name = 'Timotheus Kampik'
+                        email = 'tkampik@cs.umu.se'
+                    }
+                }
+            }
+        }
+    }
+    /* repositories {
+        maven {
+            // change to point to your repo, e.g. http://my.org/repo
+            url = "$buildDir/repo"
+        }
+    } */
+}
+
+/*signing {
+    sign publishing.publications.mavenJava
+}*/

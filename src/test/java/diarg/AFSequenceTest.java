@@ -39,16 +39,16 @@ public class AFSequenceTest {
 
     @BeforeEach
     public void empty() {
-        standardSequence = new AFSequence(SequenceType.STANDARD, ResolutionType.STANDARD, rcfSemantics);
-        expandingSequence = new AFSequence(SequenceType.EXPANDING, ResolutionType.STANDARD, rcfSemantics);
+        standardSequence = new AFSequence(SequenceType.STANDARD, ResolutionType.STANDARD, rcfSemantics, true);
+        expandingSequence = new AFSequence(SequenceType.EXPANDING, ResolutionType.STANDARD, rcfSemantics, true);
         eriSequence = new AFSequence(SequenceType.NORMALLY_EXPANDING, ResolutionType.EXPANSIONIST_REFERENCE_INDEPENDENT,
-                rcfSemantics);
+                rcfSemantics, true);
         rriSequence = new AFSequence(SequenceType.NORMALLY_EXPANDING, ResolutionType.REDUCTIONIST_REFERENCE_INDEPENDENT,
-                rcfSemantics);
+                rcfSemantics, true);
         ecmSequence = new AFSequence(SequenceType.NORMALLY_EXPANDING, ResolutionType.EXPANSIONIST_CAUTIOUSLY_MONOTONIC,
-                rcfSemantics);
+                rcfSemantics, true);
         rcmSequence = new AFSequence(SequenceType.NORMALLY_EXPANDING, ResolutionType.REDUCTIONIST_CAUTIOUSLY_MONOTONIC,
-                rcfSemantics);
+                rcfSemantics, true);
     }
 
     @Test

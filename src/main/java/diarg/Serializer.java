@@ -12,6 +12,10 @@ import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
 import org.codehaus.jettison.json.JSONArray;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.LinkedList;
+
 /**
  * Provides JSON serialization and de-serialization support for argumentation frameworks, extensions, and sequences
  * @author Timotheus Kampik
@@ -34,6 +38,15 @@ public final class Serializer {
                 DungTheory framework = sequence.getFramework(i);
                 JSONObject jFramework = new JSONObject();
                 jFramework.put("framework", frameworkToJSON(framework));
+                Extension contextSummary = sequence.getContextSummary(i);
+                jFramework.put("contextSummary", extensionToJSON(contextSummary));
+                Collection<Context> contexts = sequence.getContext(i);
+                JSONArray jContexts = new JSONArray();
+                for(Context context: contexts) {
+                    JSONObject jContext = contextToJSON(context);
+                    jContexts.put(jContext);
+                }
+                jFramework.put("contexts", jContexts);
                 if(sequence.getResolutions().size() > i) {
                     Extension resolution = sequence.getResolution(i);
                     jFramework.put("resolution", extensionToJSON(resolution));
@@ -55,8 +68,9 @@ public final class Serializer {
      *                  {@code sequenceType}, and {@code resolutionType} that specify the sequence's configuration,
      *                  as well as the the key {@code frameworks} that references an array of objects. Each object
      *                  has the key {@code framework}, which references an argumentation framework
-     *                  (see: {@code frameworkFromJSON}) and can have the key {@code resolution}, which then references
-     *                  an extension (see: {@code extensionFromJSON}).
+     *                  (see: {@code frameworkFromJSON}) and can have the keys {@code resolution}.
+     *                  (see: {@code extensionFromJSON}), and can have a key {@code contexts}, which references an
+     *                  array of {@code contexts} (see: {@code contextFromJSON}).
      * @return Argumentation framework sequence object
      */
     public AFSequence sequenceFromJSON(JSONObject jSequence) {
@@ -65,11 +79,20 @@ public final class Serializer {
             SequenceType sequenceType = SequenceType.valueOf(jSequence.get("sequenceType").toString());
             ResolutionType resolutionType = ResolutionType.valueOf(jSequence.get("resolutionType").toString());
             Semantics semantics = new Semantics(semanticsType);
-            AFSequence sequence = new AFSequence(sequenceType, resolutionType, semantics);
+            AFSequence sequence = new AFSequence(sequenceType, resolutionType, semantics, true);
             JSONArray jFrameworks = jSequence.getJSONArray("frameworks");
             for(int i = 0; i < jFrameworks.length(); i++) {
                 JSONObject jFramework = jFrameworks.getJSONObject(i);
-                sequence.addFramework(frameworkFromJSON(jFramework.getJSONObject("framework")));
+                Collection<Context> contexts = new LinkedList<>();
+                if(jFramework.has("contexts")){
+                    JSONArray jContexts = jFramework.getJSONArray("contexts");
+                    for(int j = 0; j < jContexts.length(); j++) {
+                        JSONObject jContext = jContexts.getJSONObject(j);
+                        Context context = contextFromJSON(jContext);
+                        contexts.add(context);
+                    }
+                }
+                sequence.addFramework(frameworkFromJSON(jFramework.getJSONObject("framework")), contexts);
                 if(jFramework.has("resolution")){
                     JSONArray jResolution = jFramework.getJSONArray("resolution");
                     Extension resolution = extensionFromJSON(jResolution);
@@ -165,5 +188,39 @@ public final class Serializer {
             }
         }
         return extension;
+    }
+
+    /**
+     * Takes an {@code Context} object and turns it into a JSON object.
+     * @param context The context that should be turned into a JSON array
+     * @return JSON-ified context object
+     */
+    public JSONObject contextToJSON(Context context) {
+        JSONObject jContext = new JSONObject();
+        try {
+            jContext.put("name", context.getName());
+            jContext.put("arguments", this.extensionToJSON(context.getArguments()));
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return jContext;
+    }
+
+    /**
+     * Takes a JSON object (with the (key,value)-pairs ("name", String) and ("arguments", array) and turns it into a
+     * {@code context} object.
+     * @param jContext The JSON-ified context
+     * @return Context object
+     */
+    public Context contextFromJSON(JSONObject jContext) {
+        Context context = null;
+        try {
+            String name = jContext.getString("name");
+            Extension extension = this.extensionFromJSON(jContext.getJSONArray("arguments"));
+            context = new Context(name, extension);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return context;
     }
 }
