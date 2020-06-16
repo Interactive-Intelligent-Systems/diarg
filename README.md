@@ -1,3 +1,5 @@
+![Java CI with Gradle](https://github.com/TimKam/diarg/workflows/Java%20CI%20with%20Gradle/badge.svg)
+
 # DiArg - An Argumentation-based Dialogue Reasoner
 
 DiArg is a Java library for argumentation-based dialogue reasoning.
