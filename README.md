@@ -152,8 +152,8 @@ It follows that the conclusion is \{an_b, c\}, *i.e.*, the conclusion is \{c\} w
 
 In our application scenario, the conclusion \{c\} implies that our recommender system suggests *Go hiking* as the
 stress-relieving activity to the end-user.
-Now, let us assume that the user wants to reject the recommendation because she does not have time to go hiking during
-on weekdays.
+Now, let us assume that the user wants to reject the recommendation because she does not have time to go hiking on
+weekdays.
 For this, she inserts this feedback through the system's user interface, which generates
 the next framework in our sequence:
 
