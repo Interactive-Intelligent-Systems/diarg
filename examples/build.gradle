@@ -22,7 +22,7 @@ dependencies {
         exclude group: 'org.ojalgo', module: 'ojalgo'
         exclude group: 'jspf', module: 'core'
     }
-    compile group: 'diarg', name: 'di-arg', version: '0.1-SNAPSHOT'
+    compile group: 'diarg', name: 'di-arg', version: '0.3-SNAPSHOT'
     testCompile 'org.junit.jupiter:junit-jupiter-api:5.6.1'
 
 }

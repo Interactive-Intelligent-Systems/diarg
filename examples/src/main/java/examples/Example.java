@@ -4,11 +4,12 @@ package examples;
 import diarg.*;
 import diarg.enums.*;
 
-import net.sf.tweety.arg.dung.reasoner.SimpleCF2Reasoner;
 import net.sf.tweety.arg.dung.semantics.Extension;
 import net.sf.tweety.arg.dung.syntax.Argument;
-import net.sf.tweety.arg.dung.syntax.Attack;
 import net.sf.tweety.arg.dung.syntax.DungTheory;
+
+import java.util.Collection;
+import java.util.LinkedList;
 
 /**
  * Example code: argumentation-based dialogue reasoning in a health recommender system,
@@ -41,8 +42,8 @@ public class Example {
         sequence.addFramework(initialFramework);
 
         // Resolve initial framework
-        Extension resolution = sequence.resolveFramework(0);
-        System.out.println(resolution);
+        Extension resolution0 = sequence.resolveFramework(0);
+        System.out.println(String.format("Initial recommendation: %s", resolution0));
 
         // Add user feedback to recommendation
         DungTheory initialUserFeedback = new DungTheory();
@@ -51,15 +52,21 @@ public class Example {
         initialUserFeedback.add(d);
         initialUserFeedback.addAttack(d, c);
         sequence.addFramework(initialUserFeedback);
-        sequence.resolveFramework(1);
+        Extension resolution1 = sequence.resolveFramework(1);
+        System.out.println(String.format("Recommendation after user feedback: %s", resolution1));
 
         // create "weekend" context with argument "d"
         Extension contextArguments = new Extension();
+        contextArguments.add(d);
         Context context = new Context("weekend", contextArguments);
+        Collection<Context> contexts = new LinkedList();
+        contexts.add(context);
 
         // Add same framework with weekend context
+        sequence.addFramework(initialUserFeedback, contexts);
 
-
-
+        // Resolve framework with weekend context
+        Extension resolution2 = sequence.resolveFramework(2);
+        System.out.println(String.format("Recommendation after context switch: %s", resolution2));
     }
 }

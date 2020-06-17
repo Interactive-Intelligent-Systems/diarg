@@ -43,7 +43,7 @@ Then, the dependency to DiArg can be added as follows:
 
 ```
 dependencies {
-    compile group: 'diarg', name: 'di-arg', version: '0.1-SNAPSHOT'
+    compile group: 'diarg', name: 'di-arg', version: '0.3-SNAPSHOT'
     ...
 }
 ```
@@ -61,6 +61,13 @@ dependencies {
 ```
 
 Note that this excludes some Tweety dependencies that are not required for most Tweety/DiArg applications.
+
+Finally, import DiArg as follows:
+
+```
+import diarg.*;
+import diarg.enums.*;
+```
 
 ## Tutorial
 To show how DiArg can be applied, let us introduce the following application example. We are developing a digital
@@ -91,25 +98,32 @@ initialFramework.addAttack(c, a);
 initialFramework.addAttack(a, c);
 ```
 
-In the program code above, we defined the argumentation framework
+In the program code above, we define the argumentation framework
 AF = (\{a, b, c\}, \{(a, b), (b, a), (b, c), (c, b), (c, a), (a, c)\}).
 It is clear that a relatively credulous argumentation semantics should be used for the application
 scenario.
+In this example, we use Rational Conflict-Free (RCF) semantics:
+
+```java
+Semantics rcfSemantics = new Semantics(SemanticsType.RCF);
+```
+
 Then, the recommender system can either allow the user to choose any of the extensions a specific
 semantics returns for the framework, or it can add an *annihilator argument* to the framework to
 enforce a unique extension.
 
-Let us assume we want the system to do the later.
+Let us assume we want the system to do the latter.
 For this, we add the following program code:
 
 ```java
 AFSequence sequence = new AFSequence(
-    SequenceType.NORMALLY_EXPANDING,
-    ResolutionType.EXPANSIONIST_REFERENCE_INDEPENDENT,
-    rcfSemantics,
-    true);
-sequence.add(initialFramework);
+        SequenceType.NORMALLY_EXPANDING,
+        ResolutionType.EXPANSIONIST_REFERENCE_INDEPENDENT,
+        rcfSemantics,
+        true);
+sequence.addFramework(initialFramework);
 ```
+
 Note that we have configured the sequence to have the following properties:
 
 * In the sequence, each argumentation framework must be a normal expansion of its predecessor.
@@ -123,14 +137,79 @@ Note that we have configured the sequence to have the following properties:
 Now, we resolve the initial framework:
 
 ```java
-sequence.resolve(0)
+Extension resolution0 = sequence.resolveFramework(0);
+System.out.println(String.format("Initial recommendation: %s", resolution0));
 ```
 
 The system adds an annhilator argument to the initial framework to generate a normal expansion that has exactly one
 extension, given the specified semantics.
-In our case, the system adds the argument an_a (the name may differ) to the framework, and the attack (an, a).
-It follows that the conclusion is \{an_a, b\}.
+In our case, the system adds the argument an_a (the name may differ) to the framework, and the attack (an_b, b).
+It follows that the conclusion is \{an_b, c\}, *i.e.*, the conclusion is \{c\} when excluding the annihilator.
 
+```
+>>> Initial recommendation: {c}
+```
+
+In our application scenario, the conclusion \{c\} implies that our recommender system suggests *Go hiking* as the
+stress-relieving activity to the end-user.
+Now, let us assume that the user wants to reject the recommendation because she does not have time to go hiking during
+on weekdays.
+For this, she inserts this feedback through the system's user interace, which generates
+the next framework in our sequence:
+
+```java
+DungTheory initialUserFeedback = new DungTheory();
+initialUserFeedback.add(initialFramework);
+Argument d = new Argument("d");
+initialUserFeedback.add(d);
+initialUserFeedback.addAttack(d, c);
+sequence.addFramework(initialUserFeedback);
+```
+
+The sequence is then resolved as follows:
+
+```java
+Extension resolution1 = sequence.resolveFramework(1);
+System.out.println(String.format("Recommendation after user feedback: %s", resolution1));
+>>> Recommendation after user feedback: {b,d}
+```
+
+Note that because of the remaining attack cycle "a attacks b attacks a", the system again uses an annihilator argument
+to generate a single recommendation (exactly one extension).
+
+We assume that to manage the temporal dimension of user feedback ("on weekdays"), the system supports temporal
+contexts.
+For the sake of simplicity, let us say the temporal context can be `weekdays` or `weekend` (or none).
+Hence, upon receiving the user feedback, the system also creates the weekend context and adds argument d to it, which
+implies that argument d and its attacks are not considered when resolving a framework in the sequence that has the 
+weekend context assigned to it:
+
+```java
+Extension contextArguments = new Extension();
+contextArguments.add(d);
+Context context = new Context("weekend", contextArguments);
+Collection<Context> contexts = new LinkedList();
+contexts.add(context);
+```
+
+The system can then generate a recommendation with an active weekend context as follows:
+
+```java
+sequence.addFramework(initialUserFeedback, contexts);
+Extension resolution2 = sequence.resolveFramework(2);
+```
+
+The framework is resolved in a consistent manner w.r.t. to its closest predecessor with whose contexts it is aligned;
+*i.e.*, in our case, the system again generates the initial recommendation:
+
+```java
+System.out.println(String.format("Recommendation after context switch: %s", resolution2));
+>>> Recommendation after context switch: {c}
+```
+
+Note that the enforcement of *consistency* implies that given an argumentation framework AF' and its predecessor AF,
+with AF' being a normal expansion of AF, if the conclusion derived AF' is different from the conclusion derived from AF,
+the conclusion of AF' must contain an argument that is not in AF. 
 
 The full source code of the example is available [here](./examples).
 

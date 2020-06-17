@@ -107,6 +107,8 @@ public class AFSequenceTest {
         Extension resolutionShould2b = new Extension();
         resolutionShould2b.add(c);
         Extension resolutionIs2b = eriSequence.resolveFramework(1);
+        System.out.println(resolutionIs2b);
+        System.out.println(resolutionShould2b);
         assertTrue(resolutionIs2b.containsAll(resolutionShould2b));
 
         rriSequence.addFramework(testFrameworks.framework4);
@@ -248,6 +250,40 @@ public class AFSequenceTest {
         assertTrue(resolutionIs3a.containsAll(resolutionShould3a));
         assertEquals(resolutionShould3b.size(), resolutionIs3b.size());
         assertTrue(resolutionIs3b.containsAll(resolutionShould3b));
+    }
+
+    @Test
+    // Note: this is more like integration test; we test if AFSequences manages contexts correctly.
+    public void testContext() {
+        AFSequence sequence = new AFSequence(
+                SequenceType.NORMALLY_EXPANDING,
+                ResolutionType.EXPANSIONIST_REFERENCE_INDEPENDENT,
+                rcfSemantics, true
+        );
+        DungTheory framework0 = testFrameworks.framework3;
+        sequence.addFramework(framework0);
+        Extension resolution0 = sequence.resolveFramework(0);
+        DungTheory framework1 = new DungTheory();
+        framework1.add(framework0);
+        Argument d = new Argument("d");
+        framework1.add(d);
+        framework1.add(new Attack(d, c));
+        sequence.addFramework(framework1);
+        Extension resolution1 = sequence.resolveFramework(1);
+        Extension resolutionShould1 = new Extension();
+        resolutionShould1.add(a);
+        resolutionShould1.add(d);
+        assertEquals(2, resolution1.size());
+        assertTrue(resolution1.containsAll(resolutionShould1));
+        Extension contextArguments = new Extension();
+        contextArguments.add(d);
+        Context context = new Context("weekend", contextArguments);
+        Collection<Context> contexts = new LinkedList();
+        contexts.add(context);
+        sequence.addFramework(framework1, contexts);
+        Extension resolution2 = sequence.resolveFramework(2);
+        assertEquals(1, resolution2.size());
+        assertTrue(resolution2.equals(resolution0));
     }
 
 }

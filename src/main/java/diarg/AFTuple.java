@@ -218,7 +218,7 @@ public class AFTuple {
                             expansion.getAttacks().size();
             boolean isIn = false;
             for(DungTheory snriExpansion: this.smallestNormalRIExpansions) {
-                if(snriExpansion.prettyPrint() == expansion.prettyPrint()) {
+                if(snriExpansion.prettyPrint().equals(expansion.prettyPrint())) {
                     isIn = true;
                     break;
                 }
@@ -229,7 +229,7 @@ public class AFTuple {
             Collection<Extension> extensions = semantics.getModels(expansion);
             Extension extension = extensions.iterator().next();
             extension.remove(newArgument);
-            boolean isRefIndep = this.isReferenceIndependent(this.framework1, resolution, extension);
+            boolean isRefIndep = isReferenceIndependent(this.framework1, resolution, extension);
             if(extensions.size() == 1 && isRefIndep) {
                 this.smallestNormalRIExpansions.add(expansion);
             }

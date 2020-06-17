@@ -1,7 +1,6 @@
 plugins {
     id 'java'
     id 'maven-publish'
-    // id 'signing'
 }
 
 repositories {
@@ -16,7 +15,7 @@ java {
 }
 
 group 'diarg'
-version '0.1-SNAPSHOT'
+version '0.3-SNAPSHOT'
 
 sourceCompatibility = 1.8
 
@@ -33,7 +32,6 @@ dependencies {
         exclude group: 'jspf', module: 'core'
     }
     testCompile 'org.junit.jupiter:junit-jupiter-api:5.6.1'
-
 }
 
 task run(type: JavaExec) {
@@ -85,14 +83,4 @@ publishing {
             }
         }
     }
-    /* repositories {
-        maven {
-            // change to point to your repo, e.g. http://my.org/repo
-            url = "$buildDir/repo"
-        }
-    } */
 }
-
-/*signing {
-    sign publishing.publications.mavenJava
-}*/

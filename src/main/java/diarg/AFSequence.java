@@ -100,10 +100,15 @@ public class AFSequence {
         for(int i = index-1; i >= 0; i--) {
             DungTheory previousFramework = this.frameworks.get(i);
             if(this.sequenceType == SequenceType.EXPANDING &&
-                    currentFramework.getNodes().contains(previousFramework.getNodes())){
+                    currentFramework.getNodes().containsAll(previousFramework.getNodes())){
                 return i;
             }
-            if(this.sequenceType == SequenceType.NORMALLY_EXPANDING && currentFramework.containsAll(previousFramework)){
+            if(
+                    this.sequenceType == SequenceType.NORMALLY_EXPANDING &&
+                    currentFramework.containsAll(previousFramework.getNodes()) &&
+                    currentFramework.containsAll(previousFramework.getAttacks())
+            ){
+
                 return i;
             }
         }
@@ -136,7 +141,7 @@ public class AFSequence {
                 boolean isInLoop = false;
                 for(Collection<Argument> scc: sccs) {
                     Attack selfAttack = new Attack(contextArgument, contextArgument);
-                    if(scc.contains(contextArgument) && (scc.size() == 1 || framework.containsAttack(selfAttack))) {
+                    if(scc.contains(contextArgument) && (scc.size() != 1 || framework.containsAttack(selfAttack))) {
                         isInLoop = true;
                         try {
                             throw(new Exception(
@@ -161,8 +166,10 @@ public class AFSequence {
                 this.sequenceType == SequenceType.EXPANDING && sequenceLink.isExpansion() ||
                 this.sequenceType == SequenceType.NORMALLY_EXPANDING && sequenceLink.isNormalExpansion();
         if(canBeAdded) {
-            framework.removeAll(contextSummary);
-            this.frameworks.add(framework);
+            DungTheory prunedFramework = new DungTheory();
+            prunedFramework.add(framework);
+            prunedFramework.removeAll(contextSummary);
+            this.frameworks.add(prunedFramework);
             this.contexts.add(contexts);
             this.contextSummaries.add(contextSummary);
             return true;
