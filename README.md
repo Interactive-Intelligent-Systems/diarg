@@ -154,7 +154,7 @@ In our application scenario, the conclusion \{c\} implies that our recommender s
 stress-relieving activity to the end-user.
 Now, let us assume that the user wants to reject the recommendation because she does not have time to go hiking during
 on weekdays.
-For this, she inserts this feedback through the system's user interace, which generates
+For this, she inserts this feedback through the system's user interface, which generates
 the next framework in our sequence:
 
 ```java
