@@ -1,5 +1,6 @@
 package diarg;
 
+import net.sf.tweety.arg.dung.syntax.Attack;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -18,7 +19,7 @@ public class SimpleRCFReasonerTest {
         TestFrameworks testFrameworks = new TestFrameworks();
         DungTheory framework1 = testFrameworks.framework1;
         Collection<Extension> extensions1 = rcfReasoner.getModels(framework1);
-        assertEquals(extensions1.size(), 3);
+        assertEquals(3,extensions1.size());
         Extension extension1a = new Extension();
         extension1a.add(new Argument("a"));
         extension1a.add(new Argument("c"));
@@ -44,5 +45,9 @@ public class SimpleRCFReasonerTest {
         Extension extension2c = new Extension();
         extension2c.add(new Argument("c"));
         assertTrue(extensions2.contains(extension2c));
+
+        DungTheory framework3 = testFrameworks.framework7;
+        Collection<Extension> extensions3 = rcfReasoner.getModels(framework3);
+        assertEquals( 1, extensions3.size());
     }
 }

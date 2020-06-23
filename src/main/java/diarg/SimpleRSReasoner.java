@@ -11,6 +11,9 @@ import net.sf.tweety.arg.dung.reasoner.AbstractExtensionReasoner;
 
 /**
  * Implements Restricted Stage (RS) semantics by providing a wrapper around the Tweety SimpleStageReasoner
+ * RS semantics are like stage semantics, but:
+ * 1. unattacked arguments, and arguments only attacked by self-attacking arguments must be in any extension
+ * 2. the range of a set of arguments does not include self-attacking arguments
  * @author Timotheus Kampik
  */
 public class SimpleRSReasoner extends AbstractExtensionReasoner  {
