@@ -21,42 +21,53 @@ public class SimpleRCFReasoner extends AbstractExtensionReasoner{
      */
     @Override
     public Collection<Extension> getModels(DungTheory bbase) {
-        Collection<Argument> unattackedArguments = Utils.determineUnattackedArguments(bbase);
-        Collection<Extension> prefilteredExtensions = cfReasoner.getModels(Utils.removeSelfAttackedArguments(bbase));
-        Collection<Extension> prelimRCFExtensions = new LinkedList<>();
+        Collection<Argument> arguments = bbase.getNodes();
+        for(Argument argument: arguments) {
+            if(bbase.isAttackedBy(argument, argument)) {
+                bbase.remove(argument);
+            }
+        }
+        Collection<Extension> initialExtensions = cfReasoner.getModels(bbase);
+        Collection<Extension> prefilteredExtensions = new ArrayList<>();
+        prefilteredExtensions.addAll(initialExtensions);
+        for(Extension iExtension: initialExtensions) {
+            for(Extension jExtension: initialExtensions) {
+                boolean isGreater = jExtension.containsAll(iExtension)
+                        && jExtension.size() > iExtension.size();
+                if(isGreater) {
+                    prefilteredExtensions.remove(iExtension);
+                }
+            }
+        }
+        ArrayList<Extension> rsExtensions = new ArrayList<>();
+        ArrayList<Collection<Argument>> reachableDefenses = new ArrayList<>();
         for(Extension extension: prefilteredExtensions) {
-            if(extension.containsAll(unattackedArguments)) {
-                prelimRCFExtensions.add(extension);
+            Collection<Argument> reachableRange = Utils.determineReachableRange(extension, bbase);
+            boolean isMaxReachableRange = reachableRange.size() == bbase.getNodes().size();
+            if(isMaxReachableRange) {
+                rsExtensions.add(extension);
+                reachableDefenses.add(Utils.determineReachableDefense(extension, bbase));
             }
         }
-        Collection<Extension> ranges = new LinkedList<>();
-        for(Extension prelimRCFExtension: prelimRCFExtensions) {
-            Extension range = new Extension();
-            range.addAll(prelimRCFExtension);
-            for(Argument afArgument: bbase.getNodes()) {
-                for(Argument extArgument: prelimRCFExtension) {
-                    if(bbase.isAttackedBy(afArgument, extArgument) && !bbase.isAttackedBy(extArgument, afArgument)) {
-                        range.add(afArgument);
-                    }
-                }
-            }
-            ranges.add(range);
-        }
-        Collection<Extension> rcfExtensions = new LinkedList<>();
+        ArrayList<Extension> toBeRemovedExtensions = new ArrayList<>();
         int index = 0;
-        for(Extension rangeI: ranges) {
-            boolean isIn = true;
-            for(Extension rangeJ: ranges) {
-                if(rangeJ.containsAll(rangeI) && rangeJ.size() > rangeI.size()) {
-                    isIn = false;
+        for(Extension extension: rsExtensions) {
+            boolean toBeRemoved = false;
+            for(Collection<Argument> reachableDefense: reachableDefenses) {
+                boolean isGreater = reachableDefense.containsAll(reachableDefenses.get(index))
+                        && reachableDefense.size() > reachableDefenses.get(index).size();
+                if(isGreater) {
+                    toBeRemoved = true;
+                    break;
                 }
             }
-            if (isIn) {
-                rcfExtensions.add(((LinkedList<Extension>) prelimRCFExtensions).get(index));
+            if(toBeRemoved) {
+                toBeRemovedExtensions.add(extension);
             }
             index++;
         }
-        return rcfExtensions;
+        rsExtensions.removeAll(toBeRemovedExtensions);
+        return rsExtensions;
     }
 
     /* (non-Javadoc)
