@@ -13,7 +13,7 @@ managed in an *argumentation sequence* object), as well as the following feature
     sequence is, with respect to its predecessor, an expansion (only additions to the preceding framework), or a normal
     expansion (only additions of arguments and no additions of attack relations between existing arguments).
     
-2. **Enforcement of consistent conclusions**. DiArg can enforce the consistency of the conclusions that are made at the
+2. **Enforcement of consistent (reference independent) conclusions**. DiArg can enforce the reference independence of the conclusions that are made at the
     different iteration steps; *i.e.*, when normally expanding an argumentation framework, an argument that has
     previously been considered a valid conclusion can only be discarded if any of the new arguments is now considered
     a valid conclusion. Similarly, DiArg can enforce cautious monotony across iterations.
@@ -199,7 +199,7 @@ sequence.addFramework(initialUserFeedback, contexts);
 Extension resolution2 = sequence.resolveFramework(2);
 ```
 
-The framework is resolved in a consistent manner w.r.t. to its closest predecessor with whose contexts it is aligned;
+The framework is resolved in a reference independent manner w.r.t. to its closest predecessor with whose contexts it is aligned;
 *i.e.*, in our case, the system again generates the initial recommendation:
 
 ```java
@@ -207,7 +207,7 @@ System.out.println(String.format("Recommendation after context switch: %s", reso
 >>> Recommendation after context switch: {c}
 ```
 
-Note that the enforcement of *consistency* implies that given an argumentation framework AF' and its predecessor AF,
+Note that the enforcement of *reference independence* implies that given an argumentation framework AF' and its predecessor AF,
 with AF' being a normal expansion of AF, if the conclusion derived AF' is different from the conclusion derived from AF,
 the conclusion of AF' must contain an argument that is not in AF. 
 
