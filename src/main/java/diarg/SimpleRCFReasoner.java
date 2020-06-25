@@ -21,12 +21,7 @@ public class SimpleRCFReasoner extends AbstractExtensionReasoner{
      */
     @Override
     public Collection<Extension> getModels(DungTheory bbase) {
-        Collection<Argument> arguments = bbase.getNodes();
-        for(Argument argument: arguments) {
-            if(bbase.isAttackedBy(argument, argument)) {
-                bbase.remove(argument);
-            }
-        }
+        bbase = Utils.removeSelfAttackedArguments(bbase);
         Collection<Extension> initialExtensions = cfReasoner.getModels(bbase);
         Collection<Extension> prefilteredExtensions = new ArrayList<>();
         prefilteredExtensions.addAll(initialExtensions);
@@ -40,22 +35,22 @@ public class SimpleRCFReasoner extends AbstractExtensionReasoner{
             }
         }
         ArrayList<Extension> rsExtensions = new ArrayList<>();
-        ArrayList<Collection<Argument>> reachableDefenses = new ArrayList<>();
+        ArrayList<Collection<Argument>> reachablyDefendedRanges = new ArrayList<>();
         for(Extension extension: prefilteredExtensions) {
             Collection<Argument> reachableRange = Utils.determineReachableRange(extension, bbase);
             boolean isMaxReachableRange = reachableRange.size() == bbase.getNodes().size();
             if(isMaxReachableRange) {
                 rsExtensions.add(extension);
-                reachableDefenses.add(Utils.determineReachableDefense(extension, bbase));
+                reachablyDefendedRanges.add(Utils.reachablyDefendedRanges(extension, bbase));
             }
         }
         ArrayList<Extension> toBeRemovedExtensions = new ArrayList<>();
-        int index = 0;
+        int indexI = 0;
         for(Extension extension: rsExtensions) {
             boolean toBeRemoved = false;
-            for(Collection<Argument> reachableDefense: reachableDefenses) {
-                boolean isGreater = reachableDefense.containsAll(reachableDefenses.get(index))
-                        && reachableDefense.size() > reachableDefenses.get(index).size();
+            Collection<Argument> rangeI = reachablyDefendedRanges.get(indexI);
+            for(Collection<Argument> rangeJ: reachablyDefendedRanges) {
+                boolean isGreater = rangeJ.containsAll(rangeI) && rangeJ.size() > rangeI.size();
                 if(isGreater) {
                     toBeRemoved = true;
                     break;
@@ -64,7 +59,7 @@ public class SimpleRCFReasoner extends AbstractExtensionReasoner{
             if(toBeRemoved) {
                 toBeRemovedExtensions.add(extension);
             }
-            index++;
+            indexI++;
         }
         rsExtensions.removeAll(toBeRemovedExtensions);
         return rsExtensions;

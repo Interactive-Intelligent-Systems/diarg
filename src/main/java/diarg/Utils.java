@@ -67,12 +67,12 @@ public class Utils {
     }
 
     /**
-     * Determines the all arguments in a set that are reachably defended by the set
+     * Determines sets union with all arguments are attacked by the set's reachably defended arguments
      * @param set The set whose reachable defense should be determined
      * @param framework The framework from which the set is taken
      * @return The arguments in the set that are reachably defended by the set
      */
-    public static Collection<Argument> determineReachableDefense(Collection<Argument> set, DungTheory framework) {
+    public static Collection<Argument> reachablyDefendedRanges(Collection<Argument> set, DungTheory framework) {
         Collection<Argument> reachableDefense = new LinkedList<>();
         for(Argument sArgument: set) {
             boolean isReachableDefense = true;
@@ -92,6 +92,7 @@ public class Utils {
                                 !sArgumentPrime.equals(sArgument)
                         ) {
                             isReachableDefense = true;
+                            break;
                         }
                     }
                 }
@@ -100,7 +101,12 @@ public class Utils {
                 reachableDefense.add(sArgument);
             }
         }
-        return reachableDefense;
+        Collection<Argument> reachablyDefendedRange = new LinkedList<>();
+        reachablyDefendedRange.addAll(set);
+        for(Argument argument: reachableDefense) {
+            reachablyDefendedRange.addAll(framework.getAttacked(argument));
+        }
+        return reachablyDefendedRange;
     }
 }
 
