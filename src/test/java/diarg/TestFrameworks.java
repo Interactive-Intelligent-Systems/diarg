@@ -13,6 +13,7 @@ import net.sf.tweety.arg.dung.syntax.Attack;
  * framework5: ({a, b}, {(a, b), (b, a)})
  * framework6: ({a, b, c,  d}, {(a, b), (b, a), (c, d), (d, c)})
  * framework7: ({a, b, c, d}, {(a, b), (b, c), (c, a), (d, a)})
+ * framework8 ({a, b, c, d}, {(a, b), (b, a), (b, c), (c, d), (d, c)})
  * @author Timotheus Kampik
  */
 
@@ -25,6 +26,7 @@ public final class TestFrameworks {
     DungTheory framework5 = new DungTheory();
     DungTheory framework6 = new DungTheory();
     DungTheory framework7 = new DungTheory();
+    DungTheory framework8 = new DungTheory();
     String extensionSerialization1 = "[\"a\"]";
     String extensionSerialization2 = "[\"a\",\"c\"]";
     String frameworkSerialization1 = "{\"arguments\":[\"a\",\"b\"],\"attacks\":[[\"a\",\"b\"]]}";
@@ -93,6 +95,16 @@ public final class TestFrameworks {
         framework7.add(new Attack(b, c));
         framework7.add(new Attack(c, a));
         framework7.add(new Attack(d, a));
+
+        framework8.add(a);
+        framework8.add(b);
+        framework8.add(c);
+        framework8.add(d);
+        framework8.add(new Attack (a, b));
+        framework8.add(new Attack (b, a));
+        framework8.add(new Attack (b, c));
+        framework8.add(new Attack (c, d));
+        framework8.add(new Attack (d, c));
     }
 }
 

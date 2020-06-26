@@ -55,6 +55,27 @@ public class SimpleRCFReasonerTest {
         DungTheory framework3 = testFrameworks.framework7;
         Collection<Extension> extensions3 = rcfReasoner.getModels(framework3);
         assertEquals( 1, extensions3.size());
+        Extension extension3 = new Extension();
+        extension3.add(d);
+        extension3.add(b);
+        assertTrue(extensions3.contains(extension3));
+
+        DungTheory framework4 = testFrameworks.framework8;
+        Collection<Extension> extensions4 = rcfReasoner.getModels(framework4);
+        assertEquals(3, extensions4.size());
+        Extension extension4a = new Extension();
+        extension4a.add(a);
+        extension4a.add(c);
+        assertTrue(extensions4.contains(extension4a));
+        Extension extension4b = new Extension();
+        extension4b.add(a);
+        extension4b.add(d);
+        assertTrue(extensions4.contains(extension4b));
+        Extension extension4c = new Extension();
+        extension4c.add(b);
+        extension4c.add(d);
+        assertTrue(extensions4.contains(extension4c));
+
 
         /* Test against all example frameworks from
          * Baroni, Pietro, Martin Caminada, and Massimiliano Giacomin.
