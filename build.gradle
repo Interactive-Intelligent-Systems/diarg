@@ -15,7 +15,7 @@ java {
 }
 
 group 'diarg'
-version '0.3-SNAPSHOT'
+version '0.4-SNAPSHOT'
 
 sourceCompatibility = 1.8
 
