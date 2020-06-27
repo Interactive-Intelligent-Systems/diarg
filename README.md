@@ -216,7 +216,7 @@ The full source code of the example is available [here](./examples).
 ## Rational Conflict-Free Semantics
 DiArg provides a reasoner for Rational Conflict-Free (RCF)
 RCF semantics are a non-SCC-recursive, CF2-like semantics
-(with the difference that RCF is resilient to (not affected by) self-attacking arguments.
+(with the difference that RCF is resilient to (not affected by) self-attacking arguments).
 Given an argumentation framework AF = (AR, AT) a set S subset of (or equal to) AR is a RCT extension iff:
 
 1. S is a maximal conflict-free subset of AF and all arguments that are only attacked by self-attacking arguments are
