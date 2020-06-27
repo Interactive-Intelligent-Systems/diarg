@@ -43,7 +43,7 @@ Then, the dependency to DiArg can be added as follows:
 
 ```
 dependencies {
-    compile group: 'diarg', name: 'di-arg', version: '0.3-SNAPSHOT'
+    compile group: 'diarg', name: 'di-arg', version: '0.4-SNAPSHOT'
     ...
 }
 ```
@@ -212,6 +212,67 @@ with AF' being a normal expansion of AF, if the conclusion derived AF' is differ
 the conclusion of AF' must contain an argument that is not in AF. 
 
 The full source code of the example is available [here](./examples).
+
+## Rational Conflict-Free Semantics
+DiArg provides a reasoner for Rational Conflict-Free (RCF)
+RCF semantics are a non-SCC-recursive, CF2-like semantics
+(with the difference that RCF is resilient to (not affected by) self-attacking arguments).
+Given an argumentation framework AF = (AR, AT) a set S subset of (or equal to) AR is a RCT extension iff:
+
+1. S is a maximal conflict-free subset of AF and all arguments that are only attacked by self-attacking arguments are
+   in S.
+2. The reachable range of S is maximal (w.r.t. set inclusion) among all sets that fulfill 1.
+3. The reachably defended range of S is maximal (w.r.t. set inclusion) among all sets that fulfill 1.
+
+, where:
+* the reachable range of a set S is the union of S with all arguments that are reachable from S;
+* the reachably defended range of a set S is the union of S with all arguments that are attacked by an
+  argument a of S, such that a is defended by arguments in S that are not reachable from a against all  attackers that
+  are reachable from a.
+
+The reasoner can be used as follows:
+
+```java
+import diarg.SimpleRCFReasoner;
+
+import net.sf.tweety.arg.dung.syntax.Argument;
+import net.sf.tweety.arg.dung.syntax.Attack;
+import net.sf.tweety.arg.dung.syntax.DungTheory;
+import net.sf.tweety.arg.dung.semantics.Extension;
+
+import java.util.Collection;
+
+public class RCFExample {
+
+    public static void main(String[] args){
+        SimpleRCFReasoner rcfReasoner = new SimpleRCFReasoner();
+
+        DungTheory framework = new DungTheory();
+        Argument a = new Argument("a");
+        Argument b = new Argument("b");
+        Argument c = new Argument("c");
+        Argument d = new Argument("d");
+
+        framework.add(a);
+        framework.add(b);
+        framework.add(c);
+        framework.add(d);
+        framework.add(new Attack(a, b));
+        framework.add(new Attack(b, a));
+        framework.add(new Attack(a, c));
+        framework.add(new Attack(b, c));
+        framework.add(new Attack(c, d));
+
+        Collection<Extension> extensions = rcfReasoner.getModels(framework);
+        System.out.println(extensions);
+
+    }
+}
+```
+
+A set of examples is available as test cases
+[here](https://github.com/TimKam/diarg/blob/master/src/test/java/diarg/SimpleRCFReasonerTest.java).
+
 
 ## Development and Testing
 Checkout the source code:
