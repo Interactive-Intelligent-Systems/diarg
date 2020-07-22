@@ -18,8 +18,8 @@ import java.util.LinkedList;
 
 public class AFTuple {
     private DungTheory framework1, framework2, smallerEqualFramework, largerEqualFramework;
-    private Collection<DungTheory>  largestNormalRISubmodules, largestNormalCMSubmodules,
-                                    smallestNormalRIExpansions, smallestNormalCMExpansions;
+    private Collection<DungTheory>  largestNormalRISubmodules, largestNormalRMSubmodules,
+                                    smallestNormalRIExpansions, smallestNormalRMExpansions;
 
     public AFTuple(DungTheory framework1, DungTheory framework2) {
         this.framework1 = framework1;
@@ -33,9 +33,9 @@ public class AFTuple {
             this.largerEqualFramework = framework1;
         }
         this.largestNormalRISubmodules = new LinkedList<>();
-        this.largestNormalCMSubmodules = new LinkedList<>();
+        this.largestNormalRMSubmodules = new LinkedList<>();
         this.smallestNormalRIExpansions = new LinkedList<>();
-        this.smallestNormalCMExpansions = new LinkedList<>();
+        this.smallestNormalRMExpansions = new LinkedList<>();
     }
 
     /**
@@ -253,39 +253,39 @@ public class AFTuple {
      * @param resolution The "preceding" framework's resolution
      * @return The framework's largest normal rationally monotonic submodules
      */
-    private Collection<DungTheory> determineLargestNormalCMSubmodules(
+    private Collection<DungTheory> determineLargestNormalRMSubmodules(
             Semantics semantics, DungTheory framework, Extension resolution) {
         for(Argument argument: framework.getNodes()) {
             DungTheory submodule = new DungTheory();
             submodule.add(framework);
             submodule.remove(argument);
-            boolean existsLarger = this.largestNormalCMSubmodules.size() > 0 &&
-                    this.largestNormalCMSubmodules.iterator().next().size() > submodule.size();
+            boolean existsLarger = this.largestNormalRMSubmodules.size() > 0 &&
+                    this.largestNormalRMSubmodules.iterator().next().size() > submodule.size();
             boolean isIn = false;
-            for(DungTheory lncmSubmodule: this.largestNormalCMSubmodules) {
-                if(lncmSubmodule.getSignature().equals(submodule.getSignature())) {
+            for(DungTheory lnrmSubmodule: this.largestNormalRMSubmodules) {
+                if(lnrmSubmodule.getSignature().equals(submodule.getSignature())) {
                     isIn = true;
                     break;
                 }
             }
             if(existsLarger || isIn) {
-                return this.largestNormalCMSubmodules;
+                return this.largestNormalRMSubmodules;
             }
             Collection<Extension> extensions = semantics.getModels(submodule);
-            boolean isCM =  this.isRationallyMonotonic(this.framework1, submodule, resolution, semantics);
-            if(extensions.size() == 1 && isCM) {
-                this.largestNormalCMSubmodules.add(submodule);
+            boolean isRM =  this.isRationallyMonotonic(this.framework1, submodule, resolution, semantics);
+            if(extensions.size() == 1 && isRM) {
+                this.largestNormalRMSubmodules.add(submodule);
             }
         }
-        if(this.largestNormalCMSubmodules.size() == 0) {
+        if(this.largestNormalRMSubmodules.size() == 0) {
             for (Argument argument: framework.getNodes()) {
                 DungTheory submodule = new DungTheory();
                 submodule.add(framework);
                 submodule.remove(argument);
-                determineLargestNormalCMSubmodules(semantics, submodule, resolution);
+                determineLargestNormalRMSubmodules(semantics, submodule, resolution);
             }
         }
-        return this.largestNormalCMSubmodules;
+        return this.largestNormalRMSubmodules;
     }
 
     /**
@@ -297,42 +297,42 @@ public class AFTuple {
      * @param newArgument Annihilator argument
      * @return The framework's smallest normal rationally monotonic expansions
      */
-    private Collection<DungTheory> determineSmallestNormalCMExpansions(
+    private Collection<DungTheory> determineSmallestNormalRMExpansions(
             Semantics semantics, Extension resolution, DungTheory framework, Argument newArgument) {
         for(Argument argument: framework.getNodes()) {
             DungTheory expansion = new DungTheory();
             expansion.add(framework);
             expansion.add(new Attack(newArgument, argument));
-            boolean existsSmaller = this.smallestNormalCMExpansions.size() > 0 &&
-                    this.smallestNormalCMExpansions.iterator().next().getAttacks().size() <
+            boolean existsSmaller = this.smallestNormalRMExpansions.size() > 0 &&
+                    this.smallestNormalRMExpansions.iterator().next().getAttacks().size() <
                             expansion.getAttacks().size();
             boolean isIn = false;
-            for(DungTheory sncmExpansion: this.smallestNormalCMExpansions) {
-                if(sncmExpansion.prettyPrint() == expansion.prettyPrint()) {
+            for(DungTheory snrmExpansion: this.smallestNormalRMExpansions) {
+                if(snrmExpansion.prettyPrint() == expansion.prettyPrint()) {
                     isIn = true;
                     break;
                 }
             }
             if(existsSmaller || isIn) {
-                return this.smallestNormalCMExpansions;
+                return this.smallestNormalRMExpansions;
             }
             Collection<Extension> extensions = semantics.getModels(expansion);
             Extension extension = extensions.iterator().next();
             extension.remove(newArgument);
-            boolean isCM = this.isRationallyMonotonic(this.framework1, expansion, resolution, semantics);
-            if(isCM) {
-                this.smallestNormalCMExpansions.add(expansion);
+            boolean isRM = this.isRationallyMonotonic(this.framework1, expansion, resolution, semantics);
+            if(isRM) {
+                this.smallestNormalRMExpansions.add(expansion);
             }
         }
-        if(this.smallestNormalCMExpansions.size() == 0) {
+        if(this.smallestNormalRMExpansions.size() == 0) {
             for (Argument argument: framework.getNodes()) {
                 DungTheory expansion = new DungTheory();
                 expansion.add(framework);
                 expansion.add(new Attack(newArgument, argument));
-                determineSmallestNormalCMExpansions(semantics, resolution, expansion, newArgument);
+                determineSmallestNormalRMExpansions(semantics, resolution, expansion, newArgument);
             }
         }
-        return this.smallestNormalCMExpansions;
+        return this.smallestNormalRMExpansions;
     }
 
     /**
@@ -388,13 +388,13 @@ public class AFTuple {
      *                   submodules
      * @return The framework's largest normal rationally monotonic submodules
      */
-    public Collection<DungTheory> determineLargestNormalCMSubmodules(Semantics semantics, Extension resolution) {
-        this.largestNormalCMSubmodules.clear();
+    public Collection<DungTheory> determineLargestNormalRMSubmodules(Semantics semantics, Extension resolution) {
+        this.largestNormalRMSubmodules.clear();
         if(this.isRationallyMonotonic(this.framework1, this.framework2, resolution, semantics)) {
-            this.largestNormalCMSubmodules.add(this.framework2);
-            return this.largestNormalCMSubmodules;
+            this.largestNormalRMSubmodules.add(this.framework2);
+            return this.largestNormalRMSubmodules;
         }
-        return this.determineLargestNormalCMSubmodules(semantics, this.framework2, resolution);
+        return this.determineLargestNormalRMSubmodules(semantics, this.framework2, resolution);
     }
 
     /**
@@ -405,21 +405,21 @@ public class AFTuple {
      *                   expansions
      * @return The framework's smallest normal rationally monotonic expansions
      */
-    public Collection<DungTheory> determineSmallestNormalCMExpansions(Semantics semantics, Extension resolution) {
+    public Collection<DungTheory> determineSmallestNormalRMExpansions(Semantics semantics, Extension resolution) {
         /* Note: requires the semantics to include all unattacked arguments and to be conflict-free otherwise,
-        it can potentially be the case that no expansion will be returned although a smallest normal CM expansion exists*/
-        this.smallestNormalCMExpansions.clear();
+        it can potentially be the case that no expansion will be returned although a smallest normal RM expansion exists*/
+        this.smallestNormalRMExpansions.clear();
         Collection<Extension> extensions = semantics.getModels(this.framework2);
 
         if(extensions.size() == 1 && this.isRationallyMonotonic(this.framework1, this.framework2, resolution, semantics)) {
-            this.smallestNormalCMExpansions.add(this.framework2);
-            return this.smallestNormalCMExpansions;
+            this.smallestNormalRMExpansions.add(this.framework2);
+            return this.smallestNormalRMExpansions;
         }
         Argument newArgument = this.getNewArgument(this.framework2, 1);
         DungTheory tempFramework = new DungTheory();
         tempFramework.add(framework2);
         tempFramework.add(newArgument);
-        return this.determineSmallestNormalCMExpansions(semantics, resolution, tempFramework, newArgument);
+        return this.determineSmallestNormalRMExpansions(semantics, resolution, tempFramework, newArgument);
     }
 }
 

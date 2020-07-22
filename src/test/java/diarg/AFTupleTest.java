@@ -132,9 +132,9 @@ public class AFTupleTest {
     }
 
     @Test
-    void determineLargestNormalCMSubmodules() {
+    void determineLargestNormalRMSubmodules() {
         Extension choice1 = rcfSemantics.getModel(testFrameworks.framework4);
-        Collection<DungTheory> lncmSubmodules1 = tuple1.determineLargestNormalCMSubmodules(rcfSemantics, choice1);
+        Collection<DungTheory> lncmSubmodules1 = tuple1.determineLargestNormalRMSubmodules(rcfSemantics, choice1);
         assertEquals(2, lncmSubmodules1.size());
 
         Iterator<DungTheory> iterator1 = lncmSubmodules1.iterator();
@@ -157,7 +157,7 @@ public class AFTupleTest {
 
 
         Extension choice3 = rcfSemantics.getModel(testFrameworks.framework4);
-        Collection<DungTheory> lncmSubmodules3 = tuple6.determineLargestNormalCMSubmodules(rcfSemantics, choice3);
+        Collection<DungTheory> lncmSubmodules3 = tuple6.determineLargestNormalRMSubmodules(rcfSemantics, choice3);
         assertEquals(1,lncmSubmodules3.size());
         assertTrue(testFrameworks.framework4.prettyPrint().equals(lncmSubmodules3.iterator().next().prettyPrint()));
     }
@@ -194,9 +194,9 @@ public class AFTupleTest {
     }
 
     @Test
-    void determineSmallestNormalCMExpansions() {
+    void determineSmallestNormalRMExpansions() {
         Extension choice1 = rcfSemantics.getModel(testFrameworks.framework4);
-        Collection<DungTheory> sncmExpansions1 = tuple1.determineSmallestNormalCMExpansions(rcfSemantics, choice1);
+        Collection<DungTheory> sncmExpansions1 = tuple1.determineSmallestNormalRMExpansions(rcfSemantics, choice1);
         assertEquals(3, sncmExpansions1.size());
 
         Iterator<DungTheory> iterator1 = sncmExpansions1.iterator();

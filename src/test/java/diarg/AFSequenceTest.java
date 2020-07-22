@@ -24,7 +24,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 public class AFSequenceTest {
     TestFrameworks testFrameworks;
-    AFSequence standardSequence, expandingSequence, eriSequence, rriSequence, ecmSequence, rcmSequence;
+    AFSequence standardSequence, expandingSequence, eriSequence, rriSequence, ermSequence, rrmSequence;
     Argument a, b, c;
     Semantics rcfSemantics;
 
@@ -45,9 +45,9 @@ public class AFSequenceTest {
                 rcfSemantics, true);
         rriSequence = new AFSequence(SequenceType.NORMALLY_EXPANDING, ResolutionType.REDUCTIONIST_REFERENCE_INDEPENDENT,
                 rcfSemantics, true);
-        ecmSequence = new AFSequence(SequenceType.NORMALLY_EXPANDING, ResolutionType.EXPANSIONIST_RATIONALLY_MONOTONIC,
+        ermSequence = new AFSequence(SequenceType.NORMALLY_EXPANDING, ResolutionType.EXPANSIONIST_RATIONALLY_MONOTONIC,
                 rcfSemantics, true);
-        rcmSequence = new AFSequence(SequenceType.NORMALLY_EXPANDING, ResolutionType.REDUCTIONIST_RATIONALLY_MONOTONIC,
+        rrmSequence = new AFSequence(SequenceType.NORMALLY_EXPANDING, ResolutionType.REDUCTIONIST_RATIONALLY_MONOTONIC,
                 rcfSemantics, true);
     }
 
@@ -122,24 +122,24 @@ public class AFSequenceTest {
         Extension resolutionIs3b = rriSequence.resolveFramework(1);
         assertTrue(resolutionIs3b.containsAll(resolutionShould3b));
 
-        ecmSequence.addFramework(testFrameworks.framework4);
-        ecmSequence.addFramework(testFrameworks.framework3);
-        Extension resolutionIs4a = ecmSequence.resolveFramework(0);
+        ermSequence.addFramework(testFrameworks.framework4);
+        ermSequence.addFramework(testFrameworks.framework3);
+        Extension resolutionIs4a = ermSequence.resolveFramework(0);
         Extension resolutionShould4a = new Extension();
         resolutionShould4a.add(a);
         assertTrue(resolutionIs4a.containsAll(resolutionShould4a));
         Extension resolutionShould4b = new Extension();
-        Extension resolutionIs4b = ecmSequence.resolveFramework(1);
+        Extension resolutionIs4b = ermSequence.resolveFramework(1);
         assertTrue(resolutionIs4b.containsAll(resolutionShould4b));
 
-        rcmSequence.addFramework(testFrameworks.framework4);
-        rcmSequence.addFramework(testFrameworks.framework3);
-        Extension resolutionIs5a = rcmSequence.resolveFramework(0);
+        rrmSequence.addFramework(testFrameworks.framework4);
+        rrmSequence.addFramework(testFrameworks.framework3);
+        Extension resolutionIs5a = rrmSequence.resolveFramework(0);
         Extension resolutionShould5a = new Extension();
         resolutionIs5a.add(a);
         assertTrue(resolutionIs5a.containsAll(resolutionShould5a));
         Extension resolutionShould5b = new Extension();
-        Extension resolutionIs5b = rcmSequence.resolveFramework(1);
+        Extension resolutionIs5b = rrmSequence.resolveFramework(1);
         assertTrue(resolutionIs5b.containsAll(resolutionShould5b));
 
 
@@ -170,15 +170,15 @@ public class AFSequenceTest {
         assertEquals(2, resolutionsIs3.size());
         assertTrue(resolutionsIs3.containsAll(resolutionsShould1));
 
-        rcmSequence.addFramework(testFrameworks.framework4);
-        rcmSequence.addFramework(testFrameworks.framework3);
-        Collection<Extension> resolutionsIs4 = rcmSequence.resolveFrameworks();
+        rrmSequence.addFramework(testFrameworks.framework4);
+        rrmSequence.addFramework(testFrameworks.framework3);
+        Collection<Extension> resolutionsIs4 = rrmSequence.resolveFrameworks();
         assertEquals(2, resolutionsIs4.size());
         assertTrue(resolutionsIs4.containsAll(resolutionsShould1));
 
-        ecmSequence.addFramework(testFrameworks.framework4);
-        ecmSequence.addFramework(testFrameworks.framework3);
-        Collection<Extension> resolutionsIs5 = ecmSequence.resolveFrameworks();
+        ermSequence.addFramework(testFrameworks.framework4);
+        ermSequence.addFramework(testFrameworks.framework3);
+        Collection<Extension> resolutionsIs5 = ermSequence.resolveFrameworks();
         assertEquals(2, resolutionsIs5.size());
         assertTrue(resolutionsIs5.containsAll(resolutionsShould1));
     }

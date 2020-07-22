@@ -253,10 +253,10 @@ public class AFSequence {
         DungTheory framework;
         switch (this.resolutionType) {
             case EXPANSIONIST_RATIONALLY_MONOTONIC:
-                frameworks = sequenceLink.determineSmallestNormalCMExpansions(this.semantics, previousResolution);
+                frameworks = sequenceLink.determineSmallestNormalRMExpansions(this.semantics, previousResolution);
                 break;
             case REDUCTIONIST_RATIONALLY_MONOTONIC:
-                frameworks = sequenceLink.determineLargestNormalCMSubmodules(this.semantics, previousResolution);
+                frameworks = sequenceLink.determineLargestNormalRMSubmodules(this.semantics, previousResolution);
                 break;
             case EXPANSIONIST_REFERENCE_INDEPENDENT:
                 frameworks = sequenceLink.determineSmallestNormalRIExpansions(this.semantics, previousResolution);
@@ -325,7 +325,7 @@ public class AFSequence {
         switch(this.resolutionType) {
             case EXPANSIONIST_RATIONALLY_MONOTONIC:
                 frameworks =
-                        sequenceLink.determineSmallestNormalCMExpansions(this.semantics, previousResolution);
+                        sequenceLink.determineSmallestNormalRMExpansions(this.semantics, previousResolution);
                 for(DungTheory framework: frameworks) {
                     if(this.semantics.getModel(framework).containsAll(extension)){
                         isResolution = true;
@@ -334,7 +334,7 @@ public class AFSequence {
                 break;
             case REDUCTIONIST_RATIONALLY_MONOTONIC:
                 frameworks =
-                        sequenceLink.determineLargestNormalCMSubmodules(this.semantics, previousResolution);
+                        sequenceLink.determineLargestNormalRMSubmodules(this.semantics, previousResolution);
                 for(DungTheory framework: frameworks) {
                     if(this.semantics.getModel(framework).containsAll(extension)){
                         isResolution = true;
@@ -425,11 +425,11 @@ public class AFSequence {
         switch(this.resolutionType) {
             case EXPANSIONIST_RATIONALLY_MONOTONIC:
                 frameworks =
-                        sequenceLink.determineSmallestNormalCMExpansions(this.semantics, previousResolution);
+                        sequenceLink.determineSmallestNormalRMExpansions(this.semantics, previousResolution);
                 break;
             case REDUCTIONIST_RATIONALLY_MONOTONIC:
                 frameworks =
-                        sequenceLink.determineLargestNormalCMSubmodules(this.semantics, previousResolution);
+                        sequenceLink.determineLargestNormalRMSubmodules(this.semantics, previousResolution);
                 break;
             case EXPANSIONIST_REFERENCE_INDEPENDENT:
                 frameworks =
