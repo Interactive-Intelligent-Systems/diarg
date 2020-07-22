@@ -16,7 +16,7 @@ managed in an *argumentation sequence* object), as well as the following feature
 2. **Enforcement of consistent (reference independent) conclusions**. DiArg can enforce the reference independence of the conclusions that are made at the
     different iteration steps; *i.e.*, when normally expanding an argumentation framework, an argument that has
     previously been considered a valid conclusion can only be discarded if any of the new arguments is now considered
-    a valid conclusion. Similarly, DiArg can enforce cautious monotony across iterations.
+    a valid conclusion. Similarly, DiArg can enforce rational monotony across iterations.
 
 3. **Context management**. DiArg provides a *context* abstraction that allows for the deactivation of specific argument
     sets at any iteration step. For example, given the application scenario of a health recommender system, certain

@@ -15,7 +15,7 @@ import java.util.LinkedList;
  * Example code: argumentation-based dialogue reasoning in a health recommender system,
  * see: https://github.com/TimKam/diarg/blob/master/README.md.
  */
-public class Example {
+public class DigitalAssistantExample {
     public static void main(String[] args){
         // Specify initial argumentation framework:
         DungTheory initialFramework = new DungTheory();

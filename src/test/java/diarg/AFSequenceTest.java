@@ -45,9 +45,9 @@ public class AFSequenceTest {
                 rcfSemantics, true);
         rriSequence = new AFSequence(SequenceType.NORMALLY_EXPANDING, ResolutionType.REDUCTIONIST_REFERENCE_INDEPENDENT,
                 rcfSemantics, true);
-        ecmSequence = new AFSequence(SequenceType.NORMALLY_EXPANDING, ResolutionType.EXPANSIONIST_CAUTIOUSLY_MONOTONIC,
+        ecmSequence = new AFSequence(SequenceType.NORMALLY_EXPANDING, ResolutionType.EXPANSIONIST_RATIONALLY_MONOTONIC,
                 rcfSemantics, true);
-        rcmSequence = new AFSequence(SequenceType.NORMALLY_EXPANDING, ResolutionType.REDUCTIONIST_CAUTIOUSLY_MONOTONIC,
+        rcmSequence = new AFSequence(SequenceType.NORMALLY_EXPANDING, ResolutionType.REDUCTIONIST_RATIONALLY_MONOTONIC,
                 rcfSemantics, true);
     }
 

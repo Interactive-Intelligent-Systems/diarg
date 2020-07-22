@@ -197,7 +197,7 @@ public class AFSequence {
     }
 
     /**
-     * Removes framework at the specified index; in case of reference independent and cautiously monotonic resolution
+     * Removes framework at the specified index; in case of reference independent and rationally monotonic resolution
      * approaches, the last framework in the sequence cannot be removed to ensure principle compliance.
      * @param index The index of the argumentation framework that is to be removed from the sequence.
      * @return {@code true} if the framework was successfully removed; else {@code false}.
@@ -227,7 +227,7 @@ public class AFSequence {
 
     /**
      * Resolves an argumentation framework in the sequence using the specified semantics and, if configured, the
-     * specified approach to ensure reference independence or cautious monotony.
+     * specified approach to ensure reference independence or rational monotony.
      * @param index The index of the to-be-resolve framework
      * @return The resolution (i.e. one extension) of the framework
      */
@@ -252,10 +252,10 @@ public class AFSequence {
         Collection<DungTheory> frameworks;
         DungTheory framework;
         switch (this.resolutionType) {
-            case EXPANSIONIST_CAUTIOUSLY_MONOTONIC:
+            case EXPANSIONIST_RATIONALLY_MONOTONIC:
                 frameworks = sequenceLink.determineSmallestNormalCMExpansions(this.semantics, previousResolution);
                 break;
-            case REDUCTIONIST_CAUTIOUSLY_MONOTONIC:
+            case REDUCTIONIST_RATIONALLY_MONOTONIC:
                 frameworks = sequenceLink.determineLargestNormalCMSubmodules(this.semantics, previousResolution);
                 break;
             case EXPANSIONIST_REFERENCE_INDEPENDENT:
@@ -323,7 +323,7 @@ public class AFSequence {
         boolean isResolution = false;
         Collection<DungTheory> frameworks;
         switch(this.resolutionType) {
-            case EXPANSIONIST_CAUTIOUSLY_MONOTONIC:
+            case EXPANSIONIST_RATIONALLY_MONOTONIC:
                 frameworks =
                         sequenceLink.determineSmallestNormalCMExpansions(this.semantics, previousResolution);
                 for(DungTheory framework: frameworks) {
@@ -332,7 +332,7 @@ public class AFSequence {
                     }
                 }
                 break;
-            case REDUCTIONIST_CAUTIOUSLY_MONOTONIC:
+            case REDUCTIONIST_RATIONALLY_MONOTONIC:
                 frameworks =
                         sequenceLink.determineLargestNormalCMSubmodules(this.semantics, previousResolution);
                 for(DungTheory framework: frameworks) {
@@ -400,7 +400,7 @@ public class AFSequence {
 
     /**
      * For the framework at the specified index, determines all expansions or submodules that can be resolved to a
-     * reference independent or cautiously monotonic extension.
+     * reference independent or rationally monotonic extension.
      * @param index index of the framework in the sequence
      * @return The resolvable frameworks if resolution type is not {@code STANDARD}; else {@code null}.
      */
@@ -423,11 +423,11 @@ public class AFSequence {
         AFTuple sequenceLink  = new AFTuple(previousFramework, this.frameworks.get(index));
         Collection<DungTheory> frameworks;
         switch(this.resolutionType) {
-            case EXPANSIONIST_CAUTIOUSLY_MONOTONIC:
+            case EXPANSIONIST_RATIONALLY_MONOTONIC:
                 frameworks =
                         sequenceLink.determineSmallestNormalCMExpansions(this.semantics, previousResolution);
                 break;
-            case REDUCTIONIST_CAUTIOUSLY_MONOTONIC:
+            case REDUCTIONIST_RATIONALLY_MONOTONIC:
                 frameworks =
                         sequenceLink.determineLargestNormalCMSubmodules(this.semantics, previousResolution);
                 break;

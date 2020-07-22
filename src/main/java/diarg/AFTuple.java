@@ -11,7 +11,7 @@ import java.util.LinkedList;
 /**
  * Provides abstractions for argumentation framework tuples.
  * Can check if a tuple forms a (normal or ordinary) expansion or submodule.
- * Can check for reference independent and cautiously monotonic (normal or ordinary) smallest expansions and largest
+ * Can check for reference independent and rationally monotonic (normal or ordinary) smallest expansions and largest
  * submodules.
  * @author Timotheus Kampik
  */
@@ -85,7 +85,7 @@ public class AFTuple {
     }
 
     /**
-     * Checks if an argumentation framework {@code framework2} is cautiously monotonic w.r.t. another framework
+     * Checks if an argumentation framework {@code framework2} is rationally monotonic w.r.t. another framework
      * {@code framework1} and its resolution {@code resolution1}, given a specific semantics {@code semantics}.
      * @param framework1 The base framework
      * @param framework2 The framework whose resolution is (supposedly) reference independent w.r.t. to the base framework and
@@ -94,7 +94,7 @@ public class AFTuple {
      * @param semantics The semantics that helps resolve {@code framework2}
      * @return {@code true} or {@code false}
      */
-    private static boolean isCautiouslyMonotonic(DungTheory framework1, DungTheory framework2,
+    private static boolean isRationallyMonotonic(DungTheory framework1, DungTheory framework2,
                                                   Extension resolution1, Semantics semantics) {
         DungTheory tempFramework = new DungTheory();
         tempFramework.add(framework2);
@@ -246,12 +246,12 @@ public class AFTuple {
     }
 
     /**
-     * Determines the largest normal cautiously monotonic submodules of a framework w.r.t. to another framework and
+     * Determines the largest normal rationally monotonic submodules of a framework w.r.t. to another framework and
      * its resolution
      * @param semantics The semantics that is used to determine the extensions of the framework's expansions
-     * @param framework The framework for which the largest normal cautiously monotonic submodules are to be returned
+     * @param framework The framework for which the largest normal rationally monotonic submodules are to be returned
      * @param resolution The "preceding" framework's resolution
-     * @return The framework's largest normal cautiously monotonic submodules
+     * @return The framework's largest normal rationally monotonic submodules
      */
     private Collection<DungTheory> determineLargestNormalCMSubmodules(
             Semantics semantics, DungTheory framework, Extension resolution) {
@@ -272,7 +272,7 @@ public class AFTuple {
                 return this.largestNormalCMSubmodules;
             }
             Collection<Extension> extensions = semantics.getModels(submodule);
-            boolean isCM =  this.isCautiouslyMonotonic(this.framework1, submodule, resolution, semantics);
+            boolean isCM =  this.isRationallyMonotonic(this.framework1, submodule, resolution, semantics);
             if(extensions.size() == 1 && isCM) {
                 this.largestNormalCMSubmodules.add(submodule);
             }
@@ -289,13 +289,13 @@ public class AFTuple {
     }
 
     /**
-     Determines the smallest normal cautiously monotonic expansions of a framework w.r.t. to another framework and
+     Determines the smallest normal rationally monotonic expansions of a framework w.r.t. to another framework and
      * its resolution
      * @param semantics The semantics that is used to determine the extensions of the framework's expansions
-     * @param framework The framework for which the smallest normal cautiously monotonic expansions are to be returned
+     * @param framework The framework for which the smallest normal rationally monotonic expansions are to be returned
      * @param resolution The "preceding" framework's resolution
      * @param newArgument Annihilator argument
-     * @return The framework's smallest normal cautiously monotonic expansions
+     * @return The framework's smallest normal rationally monotonic expansions
      */
     private Collection<DungTheory> determineSmallestNormalCMExpansions(
             Semantics semantics, Extension resolution, DungTheory framework, Argument newArgument) {
@@ -319,7 +319,7 @@ public class AFTuple {
             Collection<Extension> extensions = semantics.getModels(expansion);
             Extension extension = extensions.iterator().next();
             extension.remove(newArgument);
-            boolean isCM = this.isCautiouslyMonotonic(this.framework1, expansion, resolution, semantics);
+            boolean isCM = this.isRationallyMonotonic(this.framework1, expansion, resolution, semantics);
             if(isCM) {
                 this.smallestNormalCMExpansions.add(expansion);
             }
@@ -381,16 +381,16 @@ public class AFTuple {
     }
 
     /**
-     * Determines the largest normal cautiously monotonic submodules of the second framework in the tuple w.r.t.
+     * Determines the largest normal rationally monotonic submodules of the second framework in the tuple w.r.t.
      * to the first framework in the tuple, its resolution, and the specified argumentation semantics.
      * @param semantics The semantics that is used to determine the framework's submodules
      * @param resolution The resolution of the tuple's first framework that is used to determine the framework's
      *                   submodules
-     * @return The framework's largest normal cautiously monotonic submodules
+     * @return The framework's largest normal rationally monotonic submodules
      */
     public Collection<DungTheory> determineLargestNormalCMSubmodules(Semantics semantics, Extension resolution) {
         this.largestNormalCMSubmodules.clear();
-        if(this.isCautiouslyMonotonic(this.framework1, this.framework2, resolution, semantics)) {
+        if(this.isRationallyMonotonic(this.framework1, this.framework2, resolution, semantics)) {
             this.largestNormalCMSubmodules.add(this.framework2);
             return this.largestNormalCMSubmodules;
         }
@@ -398,12 +398,12 @@ public class AFTuple {
     }
 
     /**
-     * Determines the smallest normal cautiously monotonic expansions of the second framework in the tuple w.r.t.
+     * Determines the smallest normal rationally monotonic expansions of the second framework in the tuple w.r.t.
      * to the first framework in the tuple, its resolution, and the specified argumentation semantics.
      * @param semantics The semantics that is used to determine the framework's expansions
      * @param resolution The resolution of the tuple's first framework that is used to determine the framework's
      *                   expansions
-     * @return The framework's smallest normal cautiously monotonic expansions
+     * @return The framework's smallest normal rationally monotonic expansions
      */
     public Collection<DungTheory> determineSmallestNormalCMExpansions(Semantics semantics, Extension resolution) {
         /* Note: requires the semantics to include all unattacked arguments and to be conflict-free otherwise,
@@ -411,7 +411,7 @@ public class AFTuple {
         this.smallestNormalCMExpansions.clear();
         Collection<Extension> extensions = semantics.getModels(this.framework2);
 
-        if(extensions.size() == 1 && this.isCautiouslyMonotonic(this.framework1, this.framework2, resolution, semantics)) {
+        if(extensions.size() == 1 && this.isRationallyMonotonic(this.framework1, this.framework2, resolution, semantics)) {
             this.smallestNormalCMExpansions.add(this.framework2);
             return this.smallestNormalCMExpansions;
         }
