@@ -27,7 +27,7 @@ public class Semantics {
     public Collection<Extension> getModels(DungTheory framework) {
         switch (this.semanticsType) {
             case CF2:
-                SimpleCF2Reasoner cf2Reasoner = new SimpleCF2Reasoner();
+                SccCF2Reasoner cf2Reasoner = new SccCF2Reasoner();
                 return cf2Reasoner.getModels(framework);
             case COMPLETE:
                 SimpleCompleteReasoner completeReasoner = new SimpleCompleteReasoner();
