@@ -23,7 +23,7 @@ import java.util.List;
  *    2.1. Add the argument to the Shkop framework and add all attack relations in AT that exist between the argument
  *         and arguments in the Shkop framework.
  *    2.2. If the argument "closes a loop" in the Shkop framework, i.e., if the argument is self-attacking or in an SCC
- *         such that |SCC| > 1, remove the argument from the Shkop framework.
+ *         such that |SCC| greater than 1, remove the argument from the Shkop framework.
  * 3. Remove duplicated Shkop frameworks, then determine their grounded extensions.
  *    Note that Shkop-frameworks are always acyclic.
  * 4. Return the grounded extensions.
@@ -54,7 +54,7 @@ public class SimpleShkopReasoner extends AbstractExtensionReasoner {
                 Collection<Collection<Argument>> sccs = counterfactualFramework.getStronglyConnectedComponents();
                 boolean addsCycle = false;
                 for(Collection<Argument> scc: sccs) {
-                    if(scc.size() > 1) {
+                    if(scc.size() > 1 || bbase.contains(new Attack(argument, argument))) {
                         addsCycle = true;
                         break;
                     }
@@ -64,7 +64,6 @@ public class SimpleShkopReasoner extends AbstractExtensionReasoner {
                 }
             }
             if(!permutationFrameworks.contains(framework)){
-                System.out.println(framework);
                 permutationFrameworks.add(framework);
             }
         }
