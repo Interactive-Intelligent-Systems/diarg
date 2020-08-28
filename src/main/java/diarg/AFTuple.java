@@ -173,7 +173,7 @@ public class AFTuple {
                                     this.largestNormalRISubmodules.iterator().next().size() > submodule.size();
             boolean isIn = false;
             for(DungTheory lnriSubmodule: this.largestNormalRISubmodules) {
-                if(lnriSubmodule.getSignature().equals(submodule.getSignature())) {
+                if(lnriSubmodule.prettyPrint().equals(submodule.prettyPrint())) {
                     isIn = true;
                     break;
                 }
@@ -263,7 +263,7 @@ public class AFTuple {
                     this.largestNormalCMSubmodules.iterator().next().size() > submodule.size();
             boolean isIn = false;
             for(DungTheory lncmSubmodule: this.largestNormalCMSubmodules) {
-                if(lncmSubmodule.getSignature().equals(submodule.getSignature())) {
+                if(lncmSubmodule.prettyPrint().equals(submodule.prettyPrint())) {
                     isIn = true;
                     break;
                 }
