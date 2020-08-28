@@ -41,12 +41,15 @@ public class Semantics {
             case PREFERRED:
                 SimplePreferredReasoner preferredReasoner = new SimplePreferredReasoner();
                 return preferredReasoner.getModels(framework);
-            case RCF:
-                SimpleRCFReasoner rcfReasoner = new SimpleRCFReasoner();
+            case NSACF2:
+                SimpleNSACF2Reasoner rcfReasoner = new SimpleNSACF2Reasoner();
                 return rcfReasoner.getModels(framework);
             case RS:
                 SimpleRSReasoner rsReasoner = new SimpleRSReasoner();
                 return rsReasoner.getModels(framework);
+            case SCF2:
+                SCF2Reasoner scf2Reasoner = new SCF2Reasoner();
+                return scf2Reasoner.getModels(framework);
             default:
             case STAGE:
                 SimpleStageReasoner stageReasoner = new SimpleStageReasoner();

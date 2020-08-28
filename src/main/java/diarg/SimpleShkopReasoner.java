@@ -17,7 +17,7 @@ import java.util.List;
 /**
  * Determines the Shkop extensions, given any argumentation framework AF = (AR, AT), as follows:
  * 1. Generate all permutation sequences of AR.
- * 2. For each permutation, construct the permution's Shkop framework.
+ * 2. For each permutation, construct the permutation's Shkop framework.
  *    Start with an empty framework ("Shkop framework") and add the permutation's arguments one-by-one,
  *    following the order of the permutation sequence. For each argument:
  *    2.1. Add the argument to the Shkop framework and add all attack relations in AT that exist between the argument
@@ -25,7 +25,7 @@ import java.util.List;
  *    2.2. If the argument "closes a loop" in the Shkop framework, i.e., if the argument is self-attacking or in an SCC
  *         such that |SCC| greater than 1, remove the argument from the Shkop framework.
  * 3. Remove duplicated Shkop frameworks, then determine their grounded extensions.
- *    Note that Shkop-frameworks are always acyclic.
+ *    Note that Shkop frameworks are always acyclic.
  * 4. Return the grounded extensions.
  *
  * @author Timotheus Kampik
