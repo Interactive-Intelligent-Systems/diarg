@@ -294,3 +294,5 @@ Run unit tests:
 ## Authors
 
 * [Timotheus Kampik](https://github.com/TimKam/)
+
+Implements theoretical work by Timotheus Kampik, Dov Gabbay, and Juan Carlos Nieves.
