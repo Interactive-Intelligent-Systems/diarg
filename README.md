@@ -102,10 +102,10 @@ In the program code above, we define the argumentation framework
 AF = (\{a, b, c\}, \{(a, b), (b, a), (b, c), (c, b), (c, a), (a, c)\}).
 It is clear that a relatively credulous argumentation semantics should be used for the application
 scenario.
-In this example, we use Rational Conflict-Free (RCF) semantics:
+In this example, we use CF2 semantics:
 
 ```java
-Semantics rcfSemantics = new Semantics(SemanticsType.RCF);
+Semantics cf2Semantics = new Semantics(SemanticsType.CF2);
 ```
 
 Then, the recommender system can either allow the user to choose any of the extensions a specific
@@ -119,7 +119,7 @@ For this, we add the following program code:
 AFSequence sequence = new AFSequence(
         SequenceType.NORMALLY_EXPANDING,
         ResolutionType.EXPANSIONIST_REFERENCE_INDEPENDENT,
-        rcfSemantics,
+        cf2Semantics,
         true);
 sequence.addFramework(initialFramework);
 ```
@@ -233,7 +233,7 @@ Given an argumentation framework AF = (AR, AT) a set S subset of (or equal to) A
 The reasoner can be used as follows:
 
 ```java
-import diarg.SimpleRCFReasoner;
+import diarg.SimpleNSACF2Reasoner;
 
 import net.sf.tweety.arg.dung.syntax.Argument;
 import net.sf.tweety.arg.dung.syntax.Attack;

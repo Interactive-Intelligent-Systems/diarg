@@ -9,8 +9,9 @@ public enum SemanticsType {
     COMPLETE,
     GROUNDED,
     IDEAL,
+    NSACF2,
     PREFERRED,
-    RCF,
     RS,
+    SCF2,
     STAGE
 }

@@ -11,7 +11,7 @@ import net.sf.tweety.arg.dung.syntax.DungTheory;
 import java.util.Collection;
 
 public class SimpleRCFReasonerTest {
-    SimpleRCFReasoner rcfReasoner = new SimpleRCFReasoner();
+    SimpleNSACF2Reasoner rcfReasoner = new SimpleNSACF2Reasoner();
 
     @Test
     void testRCFReasoner() {

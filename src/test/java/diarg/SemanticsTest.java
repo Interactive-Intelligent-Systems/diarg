@@ -13,7 +13,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 
 public class SemanticsTest {
-    Semantics rcfSemantics = new Semantics(SemanticsType.RCF);
+    Semantics rcfSemantics = new Semantics(SemanticsType.NSACF2);
     TestFrameworks testFrameworks = new TestFrameworks();
 
     @Test

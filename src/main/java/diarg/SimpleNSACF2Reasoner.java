@@ -12,7 +12,7 @@ import net.sf.tweety.arg.dung.reasoner.AbstractExtensionReasoner;
  * Implements Rational Conflict-Free (RCF) semantics by providing a wrapper around the Tweety SimpleCF2Reasoner
  * @author Timotheus Kampik
  */
-public class SimpleRCFReasoner extends AbstractExtensionReasoner{
+public class SimpleNSACF2Reasoner extends AbstractExtensionReasoner{
 
     private SimpleConflictFreeReasoner cfReasoner = new SimpleConflictFreeReasoner();
 

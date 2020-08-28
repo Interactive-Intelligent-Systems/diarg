@@ -16,7 +16,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 public class SerializerTest {
-    Semantics rcfSemantics = new Semantics(SemanticsType.RCF);
+    Semantics rcfSemantics = new Semantics(SemanticsType.NSACF2);
     TestFrameworks testFrameworks = new TestFrameworks();
     Serializer serializer = new Serializer();
     AFSequence sequence;

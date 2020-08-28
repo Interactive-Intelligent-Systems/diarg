@@ -33,11 +33,11 @@ public class Example {
         initialFramework.addAttack(a, c);
 
         // Initialize argumentation sequence and add initial framework:
-        Semantics rcfSemantics = new Semantics(SemanticsType.RCF);
+        Semantics cf2Semantics = new Semantics(SemanticsType.CF2);
         AFSequence sequence = new AFSequence(
                 SequenceType.NORMALLY_EXPANDING,
                 ResolutionType.EXPANSIONIST_REFERENCE_INDEPENDENT,
-                rcfSemantics,
+                cf2Semantics,
                 true);
         sequence.addFramework(initialFramework);
 

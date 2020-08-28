@@ -31,7 +31,7 @@ public class AFSequenceTest {
     @BeforeAll
     public void init() {
         testFrameworks = new TestFrameworks();
-        rcfSemantics = new Semantics(SemanticsType.RCF);
+        rcfSemantics = new Semantics(SemanticsType.NSACF2);
         a = new Argument("a");
         b = new Argument("b");
         c = new Argument("c");

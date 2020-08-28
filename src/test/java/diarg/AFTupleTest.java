@@ -22,7 +22,7 @@ public class AFTupleTest {
 
     TestFrameworks testFrameworks;
     AFTuple tuple1, tuple2, tuple3, tuple4, tuple5, tuple6, tuple7;
-    Semantics rcfSemantics = new Semantics(SemanticsType.RCF);
+    Semantics rcfSemantics = new Semantics(SemanticsType.NSACF2);
 
     @BeforeAll
     public void init() {
