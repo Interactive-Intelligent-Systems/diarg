@@ -50,6 +50,9 @@ public class Semantics {
             case SCF2:
                 SCF2Reasoner scf2Reasoner = new SCF2Reasoner();
                 return scf2Reasoner.getModels(framework);
+            case SHKOP:
+                SimpleShkopReasoner shkopReasoner = new SimpleShkopReasoner();
+                return shkopReasoner.getModels(framework);
             default:
             case STAGE:
                 SimpleStageReasoner stageReasoner = new SimpleStageReasoner();

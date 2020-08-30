@@ -24,31 +24,35 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 public class AFSequenceTest {
     TestFrameworks testFrameworks;
-    AFSequence standardSequence, expandingSequence, eriSequence, rriSequence, ecmSequence, rcmSequence;
+    DungTheory oneArgFramework = new DungTheory();
+    AFSequence standardSequence, expandingSequence, eriSequence, rriSequence, ecmSequence, rcmSequence, shkopSequence;
     Argument a, b, c;
-    Semantics rcfSemantics;
+    Semantics nsaCF2Semantics;
 
     @BeforeAll
     public void init() {
         testFrameworks = new TestFrameworks();
-        rcfSemantics = new Semantics(SemanticsType.NSACF2);
+        nsaCF2Semantics = new Semantics(SemanticsType.NSACF2);
         a = new Argument("a");
         b = new Argument("b");
         c = new Argument("c");
+        oneArgFramework.add(a);
     }
 
     @BeforeEach
     public void empty() {
-        standardSequence = new AFSequence(SequenceType.STANDARD, ResolutionType.STANDARD, rcfSemantics, true);
-        expandingSequence = new AFSequence(SequenceType.EXPANDING, ResolutionType.STANDARD, rcfSemantics, true);
+        standardSequence = new AFSequence(SequenceType.STANDARD, ResolutionType.STANDARD, nsaCF2Semantics, true);
+        expandingSequence = new AFSequence(SequenceType.EXPANDING, ResolutionType.STANDARD, nsaCF2Semantics, true);
         eriSequence = new AFSequence(SequenceType.NORMALLY_EXPANDING, ResolutionType.EXPANSIONIST_REFERENCE_INDEPENDENT,
-                rcfSemantics, true);
+                nsaCF2Semantics, true);
         rriSequence = new AFSequence(SequenceType.NORMALLY_EXPANDING, ResolutionType.REDUCTIONIST_REFERENCE_INDEPENDENT,
-                rcfSemantics, true);
+                nsaCF2Semantics, true);
         ecmSequence = new AFSequence(SequenceType.NORMALLY_EXPANDING, ResolutionType.EXPANSIONIST_CAUTIOUSLY_MONOTONIC,
-                rcfSemantics, true);
+                nsaCF2Semantics, true);
         rcmSequence = new AFSequence(SequenceType.NORMALLY_EXPANDING, ResolutionType.REDUCTIONIST_CAUTIOUSLY_MONOTONIC,
-                rcfSemantics, true);
+                nsaCF2Semantics, true);
+        shkopSequence = new AFSequence(SequenceType.SHKOP, ResolutionType.SHKOP, new Semantics(SemanticsType.SHKOP),
+                true);
     }
 
     @Test
@@ -67,6 +71,15 @@ public class AFSequenceTest {
         eriSequence.addFramework(testFrameworks.framework4);
         eriSequence.addFramework(testFrameworks.framework2);
         assertEquals(2, eriSequence.getFrameworks().size());
+
+        shkopSequence.addFramework(testFrameworks.framework5);
+        assertEquals(0, shkopSequence.getFrameworks().size());
+        shkopSequence.addFramework(oneArgFramework);
+        shkopSequence.addFramework(testFrameworks.framework5);
+        shkopSequence.addFramework(testFrameworks.framework3);
+        assertEquals(2, shkopSequence.getFrameworks().size());
+        shkopSequence.addFramework(testFrameworks.framework2);
+        assertEquals(3, shkopSequence.getFrameworks().size());
     }
 
     @Test
@@ -107,8 +120,6 @@ public class AFSequenceTest {
         Extension resolutionShould2b = new Extension();
         resolutionShould2b.add(c);
         Extension resolutionIs2b = eriSequence.resolveFramework(1);
-        System.out.println(resolutionIs2b);
-        System.out.println(resolutionShould2b);
         assertTrue(resolutionIs2b.containsAll(resolutionShould2b));
 
         rriSequence.addFramework(testFrameworks.framework4);
@@ -142,7 +153,19 @@ public class AFSequenceTest {
         Extension resolutionIs5b = rcmSequence.resolveFramework(1);
         assertTrue(resolutionIs5b.containsAll(resolutionShould5b));
 
-
+        shkopSequence.addFramework(oneArgFramework);
+        shkopSequence.addFramework(testFrameworks.framework5);
+        shkopSequence.addFramework(testFrameworks.framework2);
+        Extension resolutionIs6a = shkopSequence.resolveFramework(0);
+        Extension resolutionShould6a = new Extension();
+        resolutionShould6a.add(a);
+        assertTrue(resolutionIs6a.containsAll(resolutionShould6a));
+        Extension resolutionIs6b = shkopSequence.resolveFramework(1);
+        assertTrue(resolutionIs6b.containsAll(resolutionShould6a));
+        Extension resolutionIs6c = shkopSequence.resolveFramework(2);
+        Extension resolutionShould6c = new Extension();
+        resolutionShould6c.add(c);
+        assertTrue(resolutionIs6c.containsAll(resolutionShould6c));
     }
 
     @Test
@@ -181,6 +204,20 @@ public class AFSequenceTest {
         Collection<Extension> resolutionsIs5 = ecmSequence.resolveFrameworks();
         assertEquals(2, resolutionsIs5.size());
         assertTrue(resolutionsIs5.containsAll(resolutionsShould1));
+
+        shkopSequence.addFramework(oneArgFramework);
+        shkopSequence.addFramework(testFrameworks.framework5);
+        shkopSequence.addFramework(testFrameworks.framework2);
+        Collection<Extension> resolutionsIs6 = shkopSequence.resolveFrameworks();
+        Collection<Extension> resolutionsShould6 = new LinkedList<>();
+        Extension aExtension = new Extension();
+        aExtension.add(a);
+        resolutionsShould6.add(aExtension);
+        resolutionsShould6.add(aExtension);
+        Extension cExtension = new Extension();
+        cExtension.add(c);
+        resolutionsShould6.add(cExtension);
+        assertTrue(resolutionsIs6.containsAll(resolutionsShould6));
     }
 
     @Test
@@ -242,9 +279,9 @@ public class AFSequenceTest {
         assertTrue(resolvableFrameworkIs3a.prettyPrint().equals(resolvableFrameworkShould3b.prettyPrint()));
         assertTrue(resolvableFrameworkIs3b.prettyPrint().equals(testFrameworks.framework4.prettyPrint()));
 
-        Extension resolutionShould3a = rcfSemantics.getModel(resolvableFrameworkIs3a);
+        Extension resolutionShould3a = nsaCF2Semantics.getModel(resolvableFrameworkIs3a);
         Extension resolutionIs3a = rriSequence.resolveFramework(1, resolutionShould3a);
-        Extension resolutionShould3b = rcfSemantics.getModel(resolvableFrameworkIs3b);
+        Extension resolutionShould3b = nsaCF2Semantics.getModel(resolvableFrameworkIs3b);
         Extension resolutionIs3b = rriSequence.resolveFramework(1, resolutionShould3b);
         assertEquals(resolutionShould3a.size(), resolutionIs3a.size());
         assertTrue(resolutionIs3a.containsAll(resolutionShould3a));
@@ -258,7 +295,7 @@ public class AFSequenceTest {
         AFSequence sequence = new AFSequence(
                 SequenceType.NORMALLY_EXPANDING,
                 ResolutionType.EXPANSIONIST_REFERENCE_INDEPENDENT,
-                rcfSemantics, true
+                nsaCF2Semantics, true
         );
         DungTheory framework0 = testFrameworks.framework3;
         sequence.addFramework(framework0);

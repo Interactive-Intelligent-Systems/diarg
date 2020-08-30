@@ -21,7 +21,7 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 public class AFTupleTest {
 
     TestFrameworks testFrameworks;
-    AFTuple tuple1, tuple2, tuple3, tuple4, tuple5, tuple6, tuple7;
+    AFTuple tuple1, tuple2, tuple3, tuple4, tuple5, tuple6, tuple7, tuple8;
     Semantics nsaCF2Semantics = new Semantics(SemanticsType.NSACF2);
 
     @BeforeAll
@@ -34,6 +34,7 @@ public class AFTupleTest {
         tuple5 = new AFTuple(testFrameworks.framework5, testFrameworks.framework6);
         tuple6 = new AFTuple(testFrameworks.framework4, testFrameworks.framework4);
         tuple7 = new AFTuple(new DungTheory(), testFrameworks.framework4);
+        tuple8 = new AFTuple(testFrameworks.framework6, testFrameworks.framework5);
     }
 
     @Test
@@ -50,6 +51,16 @@ public class AFTupleTest {
         assertFalse(tuple3.isNormalExpansion());
         assertFalse(tuple2.isNormalExpansion());
         assertFalse(tuple4.isNormalExpansion());
+        assertTrue(tuple5.isNormalExpansion());
+    }
+
+    @Test
+    void isShkopExpansion() {
+        assertTrue(tuple1.isShkopExpansion());
+        assertFalse(tuple3.isShkopExpansion());
+        assertFalse(tuple2.isShkopExpansion());
+        assertFalse(tuple4.isShkopExpansion());
+        assertFalse(tuple5.isShkopExpansion());
     }
 
     @Test
@@ -66,6 +77,16 @@ public class AFTupleTest {
         assertFalse(tuple3.isNormalSubmodule());
         assertTrue(tuple2.isNormalSubmodule());
         assertFalse(tuple4.isNormalSubmodule());
+        assertTrue(tuple8.isNormalSubmodule());
+    }
+
+    @Test
+    void isShkopSubmodule() {
+        assertFalse(tuple1.isShkopSubmodule());
+        assertFalse(tuple3.isShkopSubmodule());
+        assertTrue(tuple2.isShkopSubmodule());
+        assertFalse(tuple4.isShkopSubmodule());
+        assertFalse(tuple8.isShkopSubmodule());
     }
 
     @Test
