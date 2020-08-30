@@ -26,6 +26,9 @@ managed in an *argumentation sequence* object), as well as the following feature
 You find the Javadoc of this project at
 [https://people.cs.umu.se/~tkampik/docs/diarg/](https://people.cs.umu.se/~tkampik/docs/diarg/).
 
+Note that DiArg supports the *Shkop* argumentation approach.
+You find a tutorial [here](./Shkop.md).
+
 ## Installation
 The installation instructions assume [Gradle](https://gradle.org/) is used for the build setup.
 The library is available in a custom Maven repository, which needs to be added to the project's configuration.
@@ -294,5 +297,6 @@ Run unit tests:
 ## Authors
 
 * [Timotheus Kampik](https://github.com/TimKam/)
+* Dov Gabbay
 
 Implements theoretical work by Timotheus Kampik, Dov Gabbay, and Juan Carlos Nieves.

@@ -33,7 +33,10 @@ dependencies {
         exclude group: 'jspf', module: 'core'
     }
     implementation("com.google.guava:guava:29.0-jre")
-    testCompile 'org.junit.jupiter:junit-jupiter-api:5.6.1'
+    compile 'org.junit.jupiter:junit-jupiter-api:5.6.1'
+    testRuntimeOnly("org.junit.platform:junit-platform-launcher:1.6.2")
+    testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:5.6.2")
+    testRuntimeOnly("org.junit.vintage:junit-vintage-engine:5.6.2")
 }
 
 task run(type: JavaExec) {
@@ -50,6 +53,21 @@ javadoc {
                 setMemberLevel JavadocMemberLevel.PUBLIC
                 setAuthor true
             }
+}
+
+sourceSets {
+    main {
+        java {
+            srcDir 'src'
+            srcDir 'test'
+        }
+    }
+}
+
+test {
+    useJUnitPlatform {
+        includeEngines 'junit-jupiter'
+    }
 }
 
 publishing {

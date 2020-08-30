@@ -13,5 +13,6 @@ public enum SemanticsType {
     PREFERRED,
     RS,
     SCF2,
+    SHKOP,
     STAGE
 }

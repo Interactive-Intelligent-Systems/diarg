@@ -2,6 +2,7 @@ package diarg;
 
 import diarg.enums.ResolutionType;
 import diarg.enums.SequenceType;
+import net.sf.tweety.arg.dung.reasoner.SimpleGroundedReasoner;
 import net.sf.tweety.arg.dung.syntax.Argument;
 import net.sf.tweety.arg.dung.syntax.Attack;
 import net.sf.tweety.arg.dung.syntax.DungTheory;
@@ -18,6 +19,7 @@ import java.util.LinkedList;
 public class AFSequence {
 
     private ArrayList<DungTheory> frameworks = new ArrayList<>();
+    private ArrayList<DungTheory> shadowFrameworks = new ArrayList<>();
     private ArrayList<Extension> resolutions = new ArrayList<>();
     private SequenceType sequenceType;
     private ResolutionType resolutionType;
@@ -83,8 +85,8 @@ public class AFSequence {
     }
 
     /**
-     * For expanding and normall expanding sequence types, determines an argumentation framework's
-     * nearest predecessor (as index in sequenece) with an identical context summary
+     * For expanding, normally expanding, and Shkop sequence types, determines an argumentation framework's
+     * nearest predecessor (as index in sequence) with an identical context summary
      * (the context summary is the union of all arguments in the framework's contexts).
      * @param currentFramework The framework whose relevant predecessor should be determined
      * @param index The index of the framework whose relevant predecessor should be determined
@@ -161,10 +163,11 @@ public class AFSequence {
         DungTheory previousFramework = new DungTheory();
         if(this.frameworks.size() != 0) previousFramework = this.frameworks.get(this.frameworks.size() - 1);
         AFTuple sequenceLink = new AFTuple(previousFramework, framework);
-        boolean canBeAdded = this.frameworks.size() == 0 ||
+        boolean canBeAdded =
                 this.sequenceType == SequenceType.STANDARD ||
                 this.sequenceType == SequenceType.EXPANDING && sequenceLink.isExpansion() ||
-                this.sequenceType == SequenceType.NORMALLY_EXPANDING && sequenceLink.isNormalExpansion();
+                this.sequenceType == SequenceType.NORMALLY_EXPANDING && sequenceLink.isNormalExpansion() ||
+                this.sequenceType == SequenceType.SHKOP && sequenceLink.isShkopExpansion();
         if(canBeAdded) {
             DungTheory prunedFramework = new DungTheory();
             prunedFramework.add(framework);
@@ -264,6 +267,47 @@ public class AFSequence {
             case REDUCTIONIST_REFERENCE_INDEPENDENT:
                 frameworks = sequenceLink.determineLargestNormalRISubmodules(this.semantics, previousResolution);
                 break;
+            case SHKOP:
+                DungTheory currentFramework = this.frameworks.get(index);
+                shadowFrameworks.add(currentFramework);
+                DungTheory previousFramework;
+                DungTheory previousShadowFramework;
+                DungTheory counterfactualFramework;
+                Argument newArg;
+                if(index == 0) {
+                    previousFramework = new DungTheory();
+                    previousShadowFramework = new DungTheory();
+                } else {
+                    previousFramework = this.frameworks.get(index - 1);
+                    previousShadowFramework = this.shadowFrameworks.get(index - 1);
+                }
+                counterfactualFramework = new DungTheory();
+                counterfactualFramework.add(previousFramework);
+                for(Argument arg: currentFramework.getNodes()) {
+                    if(!previousShadowFramework.getNodes().contains(arg)) {
+                        newArg = arg;
+                        counterfactualFramework.add(newArg);
+                        break;
+                    }
+                }
+                for(Attack attack: currentFramework.getAttacks()) {
+                    if(
+                        counterfactualFramework.contains(attack.getAttacker()) &&
+                        counterfactualFramework.contains(attack.getAttacked())
+                    ) {
+                        counterfactualFramework.add(attack);
+                    }
+                }
+                if(counterfactualFramework.containsCycle()) {
+                    framework = previousFramework;
+                    this.frameworks.set(index, previousFramework);
+                } else {
+                    framework = counterfactualFramework;
+                    this.frameworks.set(index, counterfactualFramework);
+                }
+                Extension resolution = new SimpleGroundedReasoner().getModel(framework);
+                this.resolutions.add(resolution);
+                return resolution;
             case STANDARD:
             default:
                 frameworks = new LinkedList<>();

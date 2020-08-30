@@ -21,8 +21,8 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 public class AFTupleTest {
 
     TestFrameworks testFrameworks;
-    AFTuple tuple1, tuple2, tuple3, tuple4, tuple5, tuple6, tuple7;
-    Semantics rcfSemantics = new Semantics(SemanticsType.NSACF2);
+    AFTuple tuple1, tuple2, tuple3, tuple4, tuple5, tuple6, tuple7, tuple8;
+    Semantics nsaCF2Semantics = new Semantics(SemanticsType.NSACF2);
 
     @BeforeAll
     public void init() {
@@ -34,6 +34,7 @@ public class AFTupleTest {
         tuple5 = new AFTuple(testFrameworks.framework5, testFrameworks.framework6);
         tuple6 = new AFTuple(testFrameworks.framework4, testFrameworks.framework4);
         tuple7 = new AFTuple(new DungTheory(), testFrameworks.framework4);
+        tuple8 = new AFTuple(testFrameworks.framework6, testFrameworks.framework5);
     }
 
     @Test
@@ -50,6 +51,16 @@ public class AFTupleTest {
         assertFalse(tuple3.isNormalExpansion());
         assertFalse(tuple2.isNormalExpansion());
         assertFalse(tuple4.isNormalExpansion());
+        assertTrue(tuple5.isNormalExpansion());
+    }
+
+    @Test
+    void isShkopExpansion() {
+        assertTrue(tuple1.isShkopExpansion());
+        assertFalse(tuple3.isShkopExpansion());
+        assertFalse(tuple2.isShkopExpansion());
+        assertFalse(tuple4.isShkopExpansion());
+        assertFalse(tuple5.isShkopExpansion());
     }
 
     @Test
@@ -66,12 +77,22 @@ public class AFTupleTest {
         assertFalse(tuple3.isNormalSubmodule());
         assertTrue(tuple2.isNormalSubmodule());
         assertFalse(tuple4.isNormalSubmodule());
+        assertTrue(tuple8.isNormalSubmodule());
+    }
+
+    @Test
+    void isShkopSubmodule() {
+        assertFalse(tuple1.isShkopSubmodule());
+        assertFalse(tuple3.isShkopSubmodule());
+        assertTrue(tuple2.isShkopSubmodule());
+        assertFalse(tuple4.isShkopSubmodule());
+        assertFalse(tuple8.isShkopSubmodule());
     }
 
     @Test
     void determineLargestNormalRISubmodules() {
-        Extension choice1 = rcfSemantics.getModel(testFrameworks.framework4);
-        Collection<DungTheory> lnriSubmodules1 = tuple1.determineLargestNormalRISubmodules(rcfSemantics, choice1);
+        Extension choice1 = nsaCF2Semantics.getModel(testFrameworks.framework4);
+        Collection<DungTheory> lnriSubmodules1 = tuple1.determineLargestNormalRISubmodules(nsaCF2Semantics, choice1);
         assertEquals(2, lnriSubmodules1.size());
 
         Iterator<DungTheory> iterator1 = lnriSubmodules1.iterator();
@@ -82,7 +103,7 @@ public class AFTupleTest {
         lnriSubmoduleShould1a.add(c);
         lnriSubmoduleShould1a.add(new Attack(c, a));
         DungTheory lnriSubmoduleIs1a = iterator1.next();
-        assertTrue(lnriSubmoduleIs1a.prettyPrint().equals(lnriSubmoduleShould1a.prettyPrint()));
+        assertEquals(lnriSubmoduleIs1a.prettyPrint(), lnriSubmoduleShould1a.prettyPrint());
 
         DungTheory lnriSubmoduleShould1b = new DungTheory();
         Argument b = new Argument("b");
@@ -90,11 +111,11 @@ public class AFTupleTest {
         lnriSubmoduleShould1b.add(b);
         lnriSubmoduleShould1b.add(new Attack(a, b));
         DungTheory lnriSubmoduleIs1b = iterator1.next();
-        assertTrue(lnriSubmoduleIs1b.getSignature().equals(lnriSubmoduleShould1b.getSignature()));
+        assertEquals(lnriSubmoduleIs1b.prettyPrint(),lnriSubmoduleShould1b.prettyPrint());
 
 
         Extension choice2 = new Extension();
-        Collection<DungTheory> lnriSubmodules2 = tuple5.determineLargestNormalRISubmodules(rcfSemantics, choice2);
+        Collection<DungTheory> lnriSubmodules2 = tuple5.determineLargestNormalRISubmodules(nsaCF2Semantics, choice2);
         assertEquals(4, lnriSubmodules2.size());
 
 
@@ -104,37 +125,37 @@ public class AFTupleTest {
         lnriSubmoduleShould2a.add(b);
         lnriSubmoduleShould2a.add(d);
         DungTheory lnriSubmoduleIs2a = iterator2.next();
-        assertTrue(lnriSubmoduleIs2a.getSignature().equals(lnriSubmoduleShould2a.getSignature()));
+        assertEquals(lnriSubmoduleIs2a.prettyPrint(),lnriSubmoduleShould2a.prettyPrint());
 
         DungTheory lnriSubmoduleShould2b = new DungTheory();
         lnriSubmoduleShould2b.add(b);
         lnriSubmoduleShould2b.add(c);
         DungTheory lnriSubmoduleIs2b = iterator2.next();
-        assertTrue(lnriSubmoduleIs2b.getSignature().equals(lnriSubmoduleShould2b.getSignature()));
+        assertTrue(lnriSubmoduleIs2b.prettyPrint().equals(lnriSubmoduleShould2b.prettyPrint()));
 
         DungTheory lnriSubmoduleShould2c = new DungTheory();
         lnriSubmoduleShould2c.add(a);
         lnriSubmoduleShould2c.add(d);
         DungTheory lnriSubmoduleIs2c = iterator2.next();
-        assertTrue(lnriSubmoduleIs2c.getSignature().equals(lnriSubmoduleShould2c.getSignature()));
+        assertTrue(lnriSubmoduleIs2c.prettyPrint().equals(lnriSubmoduleShould2c.prettyPrint()));
 
         DungTheory lnriSubmoduleShould2d = new DungTheory();
         lnriSubmoduleShould2d.add(a);
         lnriSubmoduleShould2d.add(c);
         DungTheory lnriSubmoduleIs2d = iterator2.next();
-        assertTrue(lnriSubmoduleIs2d.getSignature().equals(lnriSubmoduleShould2d.getSignature()));
+        assertTrue(lnriSubmoduleIs2d.prettyPrint().equals(lnriSubmoduleShould2d.prettyPrint()));
 
 
-        Extension choice3 = rcfSemantics.getModel(testFrameworks.framework4);
-        Collection<DungTheory> lnriSubmodules3 = tuple6.determineLargestNormalRISubmodules(rcfSemantics, choice3);
+        Extension choice3 = nsaCF2Semantics.getModel(testFrameworks.framework4);
+        Collection<DungTheory> lnriSubmodules3 = tuple6.determineLargestNormalRISubmodules(nsaCF2Semantics, choice3);
         assertEquals(1,lnriSubmodules3.size());
         assertTrue(testFrameworks.framework4.prettyPrint().equals(lnriSubmodules3.iterator().next().prettyPrint()));
     }
 
     @Test
     void determineLargestNormalCMSubmodules() {
-        Extension choice1 = rcfSemantics.getModel(testFrameworks.framework4);
-        Collection<DungTheory> lncmSubmodules1 = tuple1.determineLargestNormalCMSubmodules(rcfSemantics, choice1);
+        Extension choice1 = nsaCF2Semantics.getModel(testFrameworks.framework4);
+        Collection<DungTheory> lncmSubmodules1 = tuple1.determineLargestNormalCMSubmodules(nsaCF2Semantics, choice1);
         assertEquals(2, lncmSubmodules1.size());
 
         Iterator<DungTheory> iterator1 = lncmSubmodules1.iterator();
@@ -153,19 +174,19 @@ public class AFTupleTest {
         lncmSubmoduleShould1b.add(b);
         lncmSubmoduleShould1b.add(new Attack(a, b));
         DungTheory lncmSubmoduleIs1b = iterator1.next();
-        assertTrue(lncmSubmoduleIs1b.getSignature().equals(lncmSubmoduleShould1b.getSignature()));
+        assertTrue(lncmSubmoduleIs1b.prettyPrint().equals(lncmSubmoduleShould1b.prettyPrint()));
 
 
-        Extension choice3 = rcfSemantics.getModel(testFrameworks.framework4);
-        Collection<DungTheory> lncmSubmodules3 = tuple6.determineLargestNormalCMSubmodules(rcfSemantics, choice3);
+        Extension choice3 = nsaCF2Semantics.getModel(testFrameworks.framework4);
+        Collection<DungTheory> lncmSubmodules3 = tuple6.determineLargestNormalCMSubmodules(nsaCF2Semantics, choice3);
         assertEquals(1,lncmSubmodules3.size());
         assertTrue(testFrameworks.framework4.prettyPrint().equals(lncmSubmodules3.iterator().next().prettyPrint()));
     }
 
     @Test
     void determineSmallestNormalRIExpansions() {
-        Extension choice1 = rcfSemantics.getModel(testFrameworks.framework4);
-        Collection<DungTheory> snriExpansions1 = tuple1.determineSmallestNormalRIExpansions(rcfSemantics, choice1);
+        Extension choice1 = nsaCF2Semantics.getModel(testFrameworks.framework4);
+        Collection<DungTheory> snriExpansions1 = tuple1.determineSmallestNormalRIExpansions(nsaCF2Semantics, choice1);
         assertEquals(2, snriExpansions1.size());
 
         Iterator<DungTheory> iterator1 = snriExpansions1.iterator();
@@ -187,7 +208,7 @@ public class AFTupleTest {
         assertTrue(snriExpansionIs1b.prettyPrint().equals(snriExpansionShould1b.prettyPrint()));
 
         Collection<DungTheory> snriExpansions2 =
-                tuple7.determineSmallestNormalRIExpansions(rcfSemantics, choice1);
+                tuple7.determineSmallestNormalRIExpansions(nsaCF2Semantics, choice1);
         Iterator<DungTheory> iterator2 = snriExpansions2.iterator();
         assertTrue(iterator2.next().prettyPrint().equals(testFrameworks.framework4.prettyPrint()));
 
@@ -195,8 +216,8 @@ public class AFTupleTest {
 
     @Test
     void determineSmallestNormalCMExpansions() {
-        Extension choice1 = rcfSemantics.getModel(testFrameworks.framework4);
-        Collection<DungTheory> sncmExpansions1 = tuple1.determineSmallestNormalCMExpansions(rcfSemantics, choice1);
+        Extension choice1 = nsaCF2Semantics.getModel(testFrameworks.framework4);
+        Collection<DungTheory> sncmExpansions1 = tuple1.determineSmallestNormalCMExpansions(nsaCF2Semantics, choice1);
         assertEquals(3, sncmExpansions1.size());
 
         Iterator<DungTheory> iterator1 = sncmExpansions1.iterator();

@@ -16,7 +16,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 public class SerializerTest {
-    Semantics rcfSemantics = new Semantics(SemanticsType.NSACF2);
+    Semantics nsaCF2Semantics = new Semantics(SemanticsType.NSACF2);
     TestFrameworks testFrameworks = new TestFrameworks();
     Serializer serializer = new Serializer();
     AFSequence sequence;
@@ -24,16 +24,16 @@ public class SerializerTest {
     @BeforeAll
     void init() {
         sequence = new AFSequence(SequenceType.EXPANDING, ResolutionType.EXPANSIONIST_REFERENCE_INDEPENDENT,
-                rcfSemantics, true);
+                nsaCF2Semantics, true);
         sequence.addFramework(testFrameworks.framework4);
         sequence.addFramework(testFrameworks.framework6);
         sequence.resolveFramework(0);
     }
     @Test
     void extensionToJSON() {
-        JSONArray jExtension1 = serializer.extensionToJSON(rcfSemantics.getModel(testFrameworks.framework4));
+        JSONArray jExtension1 = serializer.extensionToJSON(nsaCF2Semantics.getModel(testFrameworks.framework4));
         assertTrue(jExtension1.toString().equals(testFrameworks.extensionSerialization1));
-        JSONArray jExtension2 = serializer.extensionToJSON(rcfSemantics.getModel(testFrameworks.framework6));
+        JSONArray jExtension2 = serializer.extensionToJSON(nsaCF2Semantics.getModel(testFrameworks.framework6));
         assertTrue(jExtension2.toString().equals(testFrameworks.extensionSerialization2));
     }
 
@@ -53,7 +53,7 @@ public class SerializerTest {
 
     @Test
     void contextToJSON() {
-        Context context = new Context("testContext", rcfSemantics.getModel(testFrameworks.framework4));
+        Context context = new Context("testContext", nsaCF2Semantics.getModel(testFrameworks.framework4));
         JSONObject jContext = serializer.contextToJSON(context);
         assertTrue(jContext.toString().equals(testFrameworks.contextSerialization1));
     }
@@ -68,8 +68,8 @@ public class SerializerTest {
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        assertTrue(serializer.extensionFromJSON(jExtension1).equals(rcfSemantics.getModel(testFrameworks.framework4)));
-        assertTrue(serializer.extensionFromJSON(jExtension2).equals(rcfSemantics.getModel(testFrameworks.framework6)));
+        assertTrue(serializer.extensionFromJSON(jExtension1).equals(nsaCF2Semantics.getModel(testFrameworks.framework4)));
+        assertTrue(serializer.extensionFromJSON(jExtension2).equals(nsaCF2Semantics.getModel(testFrameworks.framework6)));
     }
 
     @Test

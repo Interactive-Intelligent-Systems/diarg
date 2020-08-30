@@ -72,6 +72,18 @@ public class AFTuple {
     }
 
     /**
+     * Checks if one argumentation framework is a Shkop expansion of another argumentation framework, i.e. if it is a
+     * normal expansion that adds exactly one argument to the original argumentation framework.
+     * @param framework1 The framework that is (supposedly) Shkop expanded by {@code framework2}
+     * @param framework2 The framework that is (supposedly) Shkop expanding {@code framework1}
+     * @return {@code true} or {@code false}
+     */
+    private static boolean isShkopExpansion(DungTheory framework1, DungTheory framework2) {
+        return isNormalExpansion(framework1, framework2) &&
+                framework1.getNodes().size() + 1 == framework2.getNodes().size();
+    }
+
+    /**
      * Checks if an extension ({@code resolution2}) is reference independent w.r.t. a framework ({@code framework1})
      * and its resolution ({@code resolution1}).
      * @param framework1 The base framework
@@ -140,6 +152,14 @@ public class AFTuple {
     }
 
     /**
+     * Checks if {@code framework2} in the tuple is a Shkop expansion of {@code framework1}.
+     * @return {@code true} or {@code false}
+     */
+    public boolean isShkopExpansion() {
+        return this.isShkopExpansion(this.framework1, this.framework2);
+    }
+
+    /**
      * Checks if {@code framework2} in the tuple is a submodule of {@code framework1}.
      * @return {@code true} or {@code false}
      */
@@ -153,6 +173,14 @@ public class AFTuple {
      */
     public boolean isNormalSubmodule() {
         return this.isNormalExpansion(this.framework2, this.framework1);
+    }
+
+    /**
+     * Checks if {@code framework2} in the tuple is a Shkop submodule of {@code framework1}.
+     * @return {@code true} or {@code false}
+     */
+    public boolean isShkopSubmodule() {
+        return this.isShkopExpansion(this.framework2, this.framework1);
     }
 
     /**
@@ -173,7 +201,7 @@ public class AFTuple {
                                     this.largestNormalRISubmodules.iterator().next().size() > submodule.size();
             boolean isIn = false;
             for(DungTheory lnriSubmodule: this.largestNormalRISubmodules) {
-                if(lnriSubmodule.getSignature().equals(submodule.getSignature())) {
+                if(lnriSubmodule.prettyPrint().equals(submodule.prettyPrint())) {
                     isIn = true;
                     break;
                 }
@@ -263,7 +291,7 @@ public class AFTuple {
                     this.largestNormalCMSubmodules.iterator().next().size() > submodule.size();
             boolean isIn = false;
             for(DungTheory lncmSubmodule: this.largestNormalCMSubmodules) {
-                if(lncmSubmodule.getSignature().equals(submodule.getSignature())) {
+                if(lncmSubmodule.prettyPrint().equals(submodule.prettyPrint())) {
                     isIn = true;
                     break;
                 }
