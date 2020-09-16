@@ -2,7 +2,7 @@
 
 # DiArg - An Argumentation-based Dialogue Reasoner
 
-DiArg is a Java library for argumentation-based dialogue reasoning.
+DiArg is a Java library for argumentation-based dialogue reasoning (introduced in [this paper](http://ceur-ws.org/Vol-2672/paper_2.pdf)).
 The focus of DiArg is the management of *argumentation framework sequences*.
 During a dialogue, arguments and attacks are iteratively added to an argumentation framework and the framework is
 resolved after each iteration (*i.e.*, after a set of arguments and attack relations have been added). For such types of
@@ -298,5 +298,16 @@ Run unit tests:
 
 * [Timotheus Kampik](https://github.com/TimKam/)
 * Dov Gabbay
+
+Cite as:
+
+```
+@inproceedings{kampik2020towards,
+  title={Towards DiArg: An Argumentation-based Dialogue Reasoning Engine},
+  author={Kampik, Timotheus and Gabbay, Dov},
+  booktitle={safa2020: The Third International Workshop on Systems and Algorithms for Formal Argumentation, Online, September 8, 2020},
+  year={2020}
+}
+```
 
 Implements theoretical work by Timotheus Kampik, Dov Gabbay, and Juan Carlos Nieves.
