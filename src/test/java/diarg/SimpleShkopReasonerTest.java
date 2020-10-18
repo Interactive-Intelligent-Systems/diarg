@@ -2,6 +2,7 @@ package diarg;
 
 import net.sf.tweety.arg.dung.semantics.Extension;
 import net.sf.tweety.arg.dung.syntax.Argument;
+import net.sf.tweety.arg.dung.syntax.Attack;
 import net.sf.tweety.arg.dung.syntax.DungTheory;
 import org.junit.jupiter.api.Test;
 
@@ -21,6 +22,14 @@ public class SimpleShkopReasonerTest {
         Argument d = new Argument("d");
         Argument e = new Argument("e");
         Argument f = new Argument("f");
+
+        DungTheory shkopTestFramework1 = new DungTheory();
+        shkopTestFramework1.add(a);
+        shkopTestFramework1.add(b);
+        shkopTestFramework1.add(c);
+        shkopTestFramework1.add(new Attack(a,b));
+        shkopTestFramework1.add(new Attack(b,c));
+        shkopTestFramework1.add(new Attack(c,b));
 
         TestFrameworks testFrameworks = new TestFrameworks();
 
@@ -163,5 +172,12 @@ public class SimpleShkopReasonerTest {
         extensionHBT10a.add(e);
         extensionHBT10a.add(f);
         assertTrue(extensionsHBT10.contains(extensionHBT10a));
+
+        Collection<Extension> extensionsShkop1 = shkopReasoner.getModels(shkopTestFramework1);
+        assertEquals(1, extensionsShkop1.size());
+        Extension extensionShkop1 = new Extension();
+        extensionShkop1.add(a);
+        extensionShkop1.add(c);
+        assertTrue(extensionsShkop1.contains(extensionShkop1));
     }
 }
