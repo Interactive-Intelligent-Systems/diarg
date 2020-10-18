@@ -35,6 +35,7 @@ import java.util.List;
 public class SimpleShkopReasoner extends AbstractExtensionReasoner {
 
     private SimpleGroundedReasoner groundedReasoner = new SimpleGroundedReasoner();
+    private ShkopTest shkopTest = new AdmissibleShkopTest();
 
     /* (non-Javadoc)
      * @see net.sf.tweety.arg.dung.reasoner.AbstractExtensionReasoner#getModels(net.sf.tweety.arg.dung.syntax.DungTheory)
@@ -60,6 +61,9 @@ public class SimpleShkopReasoner extends AbstractExtensionReasoner {
                     }
                 }
                 if(!addsCycle) {
+                    framework = shkopExpandFramework(bbase, framework, argument);
+                } else if(shkopTest.run(bbase, argument)) {
+                    framework.removeAll(counterfactualFramework.getAttackers(argument));
                     framework = shkopExpandFramework(bbase, framework, argument);
                 }
             }
@@ -105,5 +109,13 @@ public class SimpleShkopReasoner extends AbstractExtensionReasoner {
             }
         }
         return currentFramework;
+    }
+
+    /**
+     * Sets a custom ShkopTest
+     * @param shkopTest Custom ShkopTest
+     */
+    public void setShkopTest(ShkopTest shkopTest) {
+        this.shkopTest = shkopTest;
     }
 }

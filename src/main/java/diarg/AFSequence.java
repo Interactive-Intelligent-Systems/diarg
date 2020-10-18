@@ -19,6 +19,7 @@ import java.util.LinkedList;
 public class AFSequence {
 
     private ArrayList<DungTheory> frameworks = new ArrayList<>();
+    private ArrayList<Argument> shkopArguments = new ArrayList<>();
     private ArrayList<DungTheory> shadowFrameworks = new ArrayList<>();
     private ArrayList<Extension> resolutions = new ArrayList<>();
     private SequenceType sequenceType;
@@ -27,6 +28,8 @@ public class AFSequence {
     private boolean contextSupport;
     private ArrayList<Collection<Context>> contexts = new ArrayList<>();
     private ArrayList<Extension> contextSummaries = new ArrayList<>();
+    private SimpleGroundedReasoner shkopGroundedReasoner = new SimpleGroundedReasoner();
+    private ShkopTest shkopTest = new AdmissibleShkopTest();
 
     public AFSequence(SequenceType sequenceType, ResolutionType resolutionType,
                       Semantics semantics, boolean contextSupport) {
@@ -273,7 +276,7 @@ public class AFSequence {
                 DungTheory previousFramework;
                 DungTheory previousShadowFramework;
                 DungTheory counterfactualFramework;
-                Argument newArg;
+                Argument newArg = new Argument("a");
                 if(index == 0) {
                     previousFramework = new DungTheory();
                     previousShadowFramework = new DungTheory();
@@ -299,13 +302,19 @@ public class AFSequence {
                     }
                 }
                 if(counterfactualFramework.containsCycle()) {
-                    framework = previousFramework;
-                    this.frameworks.set(index, previousFramework);
+                    if(this.shkopTest.run(counterfactualFramework, newArg)) {
+                        framework = counterfactualFramework;
+                        counterfactualFramework.removeAll(counterfactualFramework.getAttackers(newArg));
+                        this.frameworks.set(index, previousFramework);
+                    } else {
+                        framework = previousFramework;
+                        this.frameworks.set(index, previousFramework);
+                    }
                 } else {
                     framework = counterfactualFramework;
                     this.frameworks.set(index, counterfactualFramework);
                 }
-                Extension resolution = new SimpleGroundedReasoner().getModel(framework);
+                Extension resolution = shkopGroundedReasoner.getModel(framework);
                 this.resolutions.add(resolution);
                 return resolution;
             case STANDARD:
@@ -495,5 +504,13 @@ public class AFSequence {
                 return null;
         }
         return frameworks;
+    }
+
+    /**
+     * Sets a custom ShkopTest
+     * @param shkopTest Custom ShkopTest
+     */
+    public void setShkopTest(ShkopTest shkopTest) {
+        this.shkopTest = shkopTest;
     }
 }
