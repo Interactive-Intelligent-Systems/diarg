@@ -9,24 +9,21 @@ import net.sf.tweety.arg.dung.syntax.DungTheory;
 
 import com.google.common.collect.Collections2;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
 
 /**
  * Determines the Shkop extensions, given any argumentation framework AF = (AR, AT), as follows:
  * 1. Generate all permutation sequences of AR.
- * 2. For each permutation, construct the permutation's Shkop framework.
- *    Start with an empty framework ("Shkop framework") and add the permutation's arguments one-by-one,
- *    following the order of the permutation sequence. For each argument:
- *    2.1. Add the argument to the Shkop framework and add all attack relations in AT that exist between the argument
- *         and arguments in the Shkop framework.
- *    2.2. If the argument "closes a loop" in the Shkop framework, i.e., if the argument is self-attacking or in an SCC
- *         such that |SCC| greater than 1, remove the argument from the Shkop framework.
- * 3. Remove duplicated Shkop frameworks, then determine their grounded extensions.
- *    Note that Shkop frameworks are always acyclic.
- * 4. Return the grounded extensions.
+ *    Technically, optimize by only considering one sub-sequence of all arguments in the grounded extensions,
+ *    arguments attacked by the grounded extensions, and self-attacking arguments. Generate all permutations that
+ *    "entail" this sequence.
+ * 2. For each permutation sequence:
+ *      2.1: Construct the corresponding Shkop sequence.
+ *      2.2: Resolve the Shkop sequence by adding arguments one-by-one to an initially empty extension, "rejecting"
+ *      arguments that are in conflict the extension or self-attacking and discarding a sequence/extension if it is
+ *      attacked by the grounded extension of nsa(AF_c), where nsa(AF_c) is the current argumentation framework without
+ *      self-attacking arguments
+ * 3. Return all extensions that have not been discarded
  *
  * @author Timotheus Kampik
  * @author Dov Gabbay
@@ -35,48 +32,54 @@ import java.util.List;
 public class SimpleShkopReasoner extends AbstractExtensionReasoner {
 
     private SimpleGroundedReasoner groundedReasoner = new SimpleGroundedReasoner();
-    private ShkopTest shkopTest = new AdmissibleShkopTest();
+    private ShkopTest shkopTest = new NSAGroundedShkopTest();
 
     /* (non-Javadoc)
      * @see net.sf.tweety.arg.dung.reasoner.AbstractExtensionReasoner#getModels(net.sf.tweety.arg.dung.syntax.DungTheory)
      */
     @Override
     public Collection<Extension> getModels(DungTheory bbase) {
-        Collection<DungTheory> permutationFrameworks = new ArrayList<>();
-        Collection<Extension> extensions = new LinkedList<>();
-        ArrayList args = new ArrayList(bbase.getNodes());
-        Collection<List<Argument>> permutations = Collections2.permutations(args);
-        for(List<Argument> permutation: permutations) {
-            DungTheory framework = new DungTheory();
-            for(Argument argument: permutation) {
-                DungTheory counterfactualFramework = new DungTheory();
-                counterfactualFramework.add(framework);
-                counterfactualFramework = shkopExpandFramework(bbase, counterfactualFramework, argument);
-                Collection<Collection<Argument>> sccs = counterfactualFramework.getStronglyConnectedComponents();
-                boolean addsCycle = false;
-                for(Collection<Argument> scc: sccs) {
-                    if(scc.size() > 1 || bbase.contains(new Attack(argument, argument))) {
-                        addsCycle = true;
-                        break;
-                    }
-                }
-                if(!addsCycle) {
-                    framework = shkopExpandFramework(bbase, framework, argument);
-                } else if(shkopTest.run(bbase, argument)) {
-                    framework.removeAll(counterfactualFramework.getAttackers(argument));
-                    framework = shkopExpandFramework(bbase, framework, argument);
-                }
-            }
-            if(!permutationFrameworks.contains(framework)){
-                permutationFrameworks.add(framework);
+        Extension groundedExtension = groundedReasoner.getModel(Utils.removeSelfAttackedArguments(bbase));
+        Extension baseSet = new Extension();
+        Extension remainingSet = new Extension();
+        baseSet.addAll(groundedExtension);
+        List<Argument> baseList = new ArrayList<>(groundedExtension);
+        for(Argument argument: bbase.getNodes()) {
+            if(!groundedExtension.contains(argument) && (
+                    bbase.isAttackedBy(argument, groundedExtension) ||
+                    bbase.isAttacked(argument, groundedExtension) ||
+                    bbase.isAttackedBy(argument, argument)
+            )) {
+                baseList.add(argument);
+            } else if (!groundedExtension.contains(argument)) {
+                remainingSet.add(argument);
             }
         }
-
-        for(DungTheory permutationNetwork: permutationFrameworks) {
-                Extension extension = groundedReasoner.getModels(permutationNetwork).iterator().next();
-                if(!extensions.contains(extension)) {
-                    extensions.add(extension);
+        Collection<Extension> extensions = new LinkedList<>();
+        Collection<List<Argument>> permutations = Collections2.permutations(remainingSet);
+        for(List<Argument> permutationTail: permutations) {
+            List<Argument> permutation = new ArrayList<>();
+            permutation.addAll(baseList);
+            permutation.addAll(permutationTail);
+            Extension extension = new Extension();
+            DungTheory framework = new DungTheory();
+            for(Argument argument: permutation) {
+                if(extension == null) {
+                    break;
                 }
+                framework = shkopExpandFramework(bbase, framework, argument);
+                Extension counterfactualExtension = new Extension();
+                counterfactualExtension.addAll(extension);
+                counterfactualExtension.add(argument);
+                if(counterfactualExtension.isConflictFree(framework)) {
+                    extension.add(argument);
+                } else if (this.shkopTest.run(framework, argument)) {
+                    extension = null;
+                }
+            }
+            if(!extensions.contains(extension) && extension != null){
+                extensions.add(extension);
+            }
         }
         return extensions;
     }
@@ -98,17 +101,11 @@ public class SimpleShkopReasoner extends AbstractExtensionReasoner {
      * @param argument Argument that should be added to the current framework
      * @return Shkop-expanded argumentation framework
      */
-    private static DungTheory shkopExpandFramework(
-            DungTheory bbase, DungTheory currentFramework, Argument argument) {
+    private static DungTheory shkopExpandFramework(DungTheory bbase, DungTheory currentFramework, Argument argument) {
         currentFramework.add(argument);
-        for(Attack attack: bbase.getAttacks()) {
-            if(     !currentFramework.contains(attack) &&
-                    currentFramework.contains(attack.getNodeA()) &&
-                    currentFramework.contains(attack.getNodeB())) {
-                currentFramework.add(attack);
-            }
-        }
-        return currentFramework;
+        Collection<Argument> arguments = currentFramework.getNodes();
+        arguments.add(argument);
+        return (DungTheory) bbase.getRestriction(arguments);
     }
 
     /**

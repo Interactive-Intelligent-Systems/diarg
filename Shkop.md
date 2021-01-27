@@ -16,13 +16,13 @@ in any Shkop sequence can be resolved by determining the unique grounded extensi
 exactly one argument, the unique grounded extension is empty in case of a self-attack; otherwise, it contains the only
 argument). Then, we proceed as follows, starting with i=1:
 
-1. Check if the "new" argument in AF<sub>i</sub> closes a loop.
+1. Check if the "new" argument in AF<sub>i</sub> attacks the determined extension.
 2. If this is the case, check if the argument passes the
-   *Shkop test*, given the current argumentation framework. The default Shkop test checks if the argument is strongly
-   admissible in the current argumentation framework (custom Shkop tests can be implemented). If the argument fails the
-   Shkop test, remove it from the argumentation framework.
-3. Determine the unique grounded extension of the argumentation framework AF<sub>i</sub>.
-4. If i < n, set i := i+1 and go to 1.
+   *Shkop test*, given the current argumentation framework. The default Shkop test checks if the argument is in the
+   grounded extension of the current argumentation framework, from which all self-attacking arguments have been removed
+   (custom Shkop tests can be implemented). If the argument fails the Shkop test, move on. If it passes the Shkop test,
+   we need to reject the current extension, *i.e.* we set the new extension to *null*.
+3. If i < n, set i := i+1 and go to 1.
 
 We call this approach *sequential Shkop*.
 With DiArg, we can create and resolve Shkop sequences as follows, for example:
@@ -67,12 +67,11 @@ framework AF = (AR, AT):
     2.1.  Generate a Shkop sequence <AF<sub>0</sub>, ..., AF<sub>m</sub>>, where for any AF<sub>j</sub>,
           0 &le; j &le; m, AF<sub>j</sub> is the restriction of AF to the set of arguments in
           <a<sub>0</sub>, ..., a<sub>j</sub>>.  
-    2.2.  Determine the *Shkop resolution* of the Shkop sequence by applying the sequential Shkop approach. However,
-          in this case, the *Shkop test* is executed considering the full initial argumentation framework, and not
-          the current permutation.
-3. Return the set of all *Shkop resolutions* as the argumentation framework's extensions.
+    2.2.  Determine the *Shkop resolution* of the Shkop sequence by applying the sequential Shkop approach.
+3. Return the set of all *Shkop resolutions* as the argumentation framework's extensions, ignoring the Shkop
+   resolutions that are *null*.
 
-With DiArg, the Shkop extensions of an argumentation framework can be determine as follows, for example:
+With DiArg, the Shkop extensions of an argumentation framework can be determined as follows, for example:
 
 ```java
 SimpleShkopReasoner shkopReasoner = new SimpleShkopReasoner();
@@ -95,7 +94,7 @@ To customize the Shkop test, we can use the abstract ShkopTest class and impleme
 follows:
 
 ```java
-ShkopTest shkopTest = new AdmissibleShkopTest();
+ShkopTest shkopTest = new GroundedShkopTest();
 shkopReasoner.setShkopTest(shkopTest);
 ```
 

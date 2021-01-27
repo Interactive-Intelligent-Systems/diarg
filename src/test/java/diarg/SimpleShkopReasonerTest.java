@@ -51,7 +51,10 @@ public class SimpleShkopReasonerTest {
 
         DungTheory framework2 = testFrameworks.framework2;
         Collection<Extension> extensions2 = shkopReasoner.getModels(framework2);
-        assertEquals(2, extensions2.size());
+        assertEquals(3, extensions2.size());
+        Extension extension2a = new Extension();
+        extension2a.add(a);
+        assertTrue(extensions2.contains(extension2a));
         Extension extension2b = new Extension();
         extension2b.add(b);
         assertTrue(extensions2.contains(extension2b));
