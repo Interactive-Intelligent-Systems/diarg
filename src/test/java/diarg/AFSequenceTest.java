@@ -164,7 +164,7 @@ public class AFSequenceTest {
         assertTrue(resolutionIs6b.containsAll(resolutionShould6a));
         Extension resolutionIs6c = shkopSequence.resolveFramework(2);
         Extension resolutionShould6c = new Extension();
-        resolutionShould6c.add(c);
+        resolutionShould6c.add(a);
         assertTrue(resolutionIs6c.containsAll(resolutionShould6c));
     }
 
@@ -213,11 +213,8 @@ public class AFSequenceTest {
         Extension aExtension = new Extension();
         aExtension.add(a);
         resolutionsShould6.add(aExtension);
-        resolutionsShould6.add(aExtension);
-        Extension cExtension = new Extension();
-        cExtension.add(c);
-        resolutionsShould6.add(cExtension);
         assertTrue(resolutionsIs6.containsAll(resolutionsShould6));
+        assertTrue(resolutionsShould6.containsAll(resolutionsIs6));
     }
 
     @Test

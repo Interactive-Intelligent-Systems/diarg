@@ -19,8 +19,6 @@ import java.util.LinkedList;
 public class AFSequence {
 
     private ArrayList<DungTheory> frameworks = new ArrayList<>();
-    private ArrayList<Argument> shkopArguments = new ArrayList<>();
-    private ArrayList<DungTheory> shadowFrameworks = new ArrayList<>();
     private ArrayList<Extension> resolutions = new ArrayList<>();
     private SequenceType sequenceType;
     private ResolutionType resolutionType;
@@ -28,8 +26,7 @@ public class AFSequence {
     private boolean contextSupport;
     private ArrayList<Collection<Context>> contexts = new ArrayList<>();
     private ArrayList<Extension> contextSummaries = new ArrayList<>();
-    private SimpleGroundedReasoner shkopGroundedReasoner = new SimpleGroundedReasoner();
-    private ShkopTest shkopTest = new AdmissibleShkopTest();
+    private ShkopTest shkopTest = new NSAGroundedShkopTest();
 
     public AFSequence(SequenceType sequenceType, ResolutionType resolutionType,
                       Semantics semantics, boolean contextSupport) {
@@ -112,6 +109,15 @@ public class AFSequence {
                     this.sequenceType == SequenceType.NORMALLY_EXPANDING &&
                     currentFramework.containsAll(previousFramework.getNodes()) &&
                     currentFramework.containsAll(previousFramework.getAttacks())
+            ){
+
+                return i;
+            }
+            if(
+                    this.sequenceType == SequenceType.SHKOP &&
+                            currentFramework.containsAll(previousFramework.getNodes()) &&
+                            currentFramework.containsAll(previousFramework.getAttacks()) &&
+                            currentFramework.getNodes().size() == previousFramework.getNodes().size() + 1
             ){
 
                 return i;
@@ -271,50 +277,32 @@ public class AFSequence {
                 frameworks = sequenceLink.determineLargestNormalRISubmodules(this.semantics, previousResolution);
                 break;
             case SHKOP:
+                if(previousResolution == null) {
+                    this.resolutions.add(null);
+                    return null;
+                }
                 DungTheory currentFramework = this.frameworks.get(index);
-                shadowFrameworks.add(currentFramework);
                 DungTheory previousFramework;
-                DungTheory previousShadowFramework;
-                DungTheory counterfactualFramework;
-                Argument newArg = new Argument("a");
                 if(index == 0) {
                     previousFramework = new DungTheory();
-                    previousShadowFramework = new DungTheory();
                 } else {
                     previousFramework = this.frameworks.get(index - 1);
-                    previousShadowFramework = this.shadowFrameworks.get(index - 1);
                 }
-                counterfactualFramework = new DungTheory();
-                counterfactualFramework.add(previousFramework);
-                for(Argument arg: currentFramework.getNodes()) {
-                    if(!previousShadowFramework.getNodes().contains(arg)) {
-                        newArg = arg;
-                        counterfactualFramework.add(newArg);
-                        break;
-                    }
-                }
-                for(Attack attack: currentFramework.getAttacks()) {
-                    if(
-                        counterfactualFramework.contains(attack.getAttacker()) &&
-                        counterfactualFramework.contains(attack.getAttacked())
-                    ) {
-                        counterfactualFramework.add(attack);
-                    }
-                }
-                if(counterfactualFramework.containsCycle()) {
-                    if(this.shkopTest.run(counterfactualFramework, newArg)) {
-                        framework = counterfactualFramework;
-                        counterfactualFramework.removeAll(counterfactualFramework.getAttackers(newArg));
-                        this.frameworks.set(index, previousFramework);
-                    } else {
-                        framework = previousFramework;
-                        this.frameworks.set(index, previousFramework);
-                    }
+                Collection<Argument> newArgs = new Extension();
+                newArgs.addAll(currentFramework.getNodes());
+                newArgs.removeAll(previousFramework.getNodes());
+                Argument newArg = newArgs.iterator().next();
+                Extension counterfactualResolution = new Extension();
+                counterfactualResolution.addAll(previousResolution);
+                counterfactualResolution.add(newArg);
+                Extension resolution;
+                if(counterfactualResolution.isConflictFree(currentFramework)) {
+                    resolution = counterfactualResolution;
+                } else if(this.shkopTest.run(currentFramework, newArg)) {
+                    resolution = null;
                 } else {
-                    framework = counterfactualFramework;
-                    this.frameworks.set(index, counterfactualFramework);
+                   resolution = previousResolution;
                 }
-                Extension resolution = shkopGroundedReasoner.getModel(framework);
                 this.resolutions.add(resolution);
                 return resolution;
             case STANDARD:
