@@ -14,5 +14,6 @@ public enum SemanticsType {
     RS,
     SCF2,
     SHKOP,
-    STAGE
+    STAGE,
+    SUBJECTIVE
 }

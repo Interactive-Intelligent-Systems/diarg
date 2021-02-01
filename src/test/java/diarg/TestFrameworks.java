@@ -14,19 +14,23 @@ import net.sf.tweety.arg.dung.syntax.Attack;
  * framework6: ({a, b, c,  d}, {(a, b), (b, a), (c, d), (d, c)})
  * framework7: ({a, b, c, d}, {(a, b), (b, c), (c, a), (d, a)})
  * framework8 ({a, b, c, d}, {(a, b), (b, a), (b, c), (c, d), (d, c)})
+ * framework9: ({a, b, c, d, e}, {(e, a), (d, b), (b, d), (d, c), (c, d), (d, d), (e, e)})
+ * framework10: ({a, b, c, d}, {(a, b), (b, a), (c, b), (d, c)})
  * @author Timotheus Kampik
  */
 
 public final class TestFrameworks {
 
-    DungTheory framework1 = new DungTheory();
-    DungTheory framework2 = new DungTheory();
-    DungTheory framework3 = new DungTheory();
-    DungTheory framework4 = new DungTheory();
-    DungTheory framework5 = new DungTheory();
-    DungTheory framework6 = new DungTheory();
-    DungTheory framework7 = new DungTheory();
-    DungTheory framework8 = new DungTheory();
+    public DungTheory framework1 = new DungTheory();
+    public DungTheory framework2 = new DungTheory();
+    public DungTheory framework3 = new DungTheory();
+    public DungTheory framework4 = new DungTheory();
+    public DungTheory framework5 = new DungTheory();
+    public DungTheory framework6 = new DungTheory();
+    public DungTheory framework7 = new DungTheory();
+    public DungTheory framework8 = new DungTheory();
+    public DungTheory framework9 = new DungTheory();
+    public DungTheory framework10 = new DungTheory();
     String extensionSerialization1 = "[\"a\"]";
     String extensionSerialization2 = "[\"a\",\"c\"]";
     String frameworkSerialization1 = "{\"arguments\":[\"a\",\"b\"],\"attacks\":[[\"a\",\"b\"]]}";
@@ -105,6 +109,28 @@ public final class TestFrameworks {
         framework8.add(new Attack (b, c));
         framework8.add(new Attack (c, d));
         framework8.add(new Attack (d, c));
+
+        framework9.add(a);
+        framework9.add(b);
+        framework9.add(c);
+        framework9.add(d);
+        framework9.add(e);
+        framework9.add(new Attack(e, a));
+        framework9.add(new Attack(d, b));
+        framework9.add(new Attack(b, d));
+        framework9.add(new Attack(d, c));
+        framework9.add(new Attack(c, d));
+        framework9.add(new Attack(d, d));
+        framework9.add(new Attack(e, e));
+
+        framework10.add(a);
+        framework10.add(b);
+        framework10.add(c);
+        framework10.add(d);
+        framework10.add(new Attack(a, b));
+        framework10.add(new Attack(b, a));
+        framework10.add(new Attack(c, b));
+        framework10.add(new Attack(d, c));
     }
 }
 

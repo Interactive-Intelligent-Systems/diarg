@@ -14,6 +14,15 @@ import java.util.Collection;
 public class Semantics {
 
     public SemanticsType semanticsType;
+    private Collection<Extension> subjectiveExtensions;
+
+    public void setSubjectiveExtensions(Collection<Extension> subjectiveExtensions) {
+        this.subjectiveExtensions = subjectiveExtensions;
+    }
+
+    public Collection<Extension> getSubjectiveExtensions() {
+        return subjectiveExtensions;
+    }
 
     public Semantics(SemanticsType semanticsType) {
         this.semanticsType = semanticsType;
@@ -53,6 +62,8 @@ public class Semantics {
             case SHKOP:
                 SimpleShkopReasoner shkopReasoner = new SimpleShkopReasoner();
                 return shkopReasoner.getModels(framework);
+            case SUBJECTIVE:
+                return subjectiveExtensions;
             default:
             case STAGE:
                 SimpleStageReasoner stageReasoner = new SimpleStageReasoner();
