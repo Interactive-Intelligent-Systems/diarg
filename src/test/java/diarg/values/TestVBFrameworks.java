@@ -10,7 +10,7 @@ import java.util.Collection;
 /**
  * Provides example value-based argumentation frameworks for test purposes
  * vbFramework1: ({a, b, c, d},{(a, b), (b, a), (c, b), (c, d)}, {av, bv, cv, dv},
- * {a -> av, b -> bv, c -> cv, d -> dv}, ({av > bv}, {bv > av), {cv > dv}))
+ * {a &rarr; av, b &rarr; bv, c &rarr; cv, d &rarr; dv}, ({av &gt; bv}, {bv &gt; av), {cv &gt; dv}))
  */
 public final class TestVBFrameworks {
 
