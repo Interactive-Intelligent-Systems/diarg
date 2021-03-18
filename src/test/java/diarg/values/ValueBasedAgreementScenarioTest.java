@@ -141,8 +141,8 @@ public class ValueBasedAgreementScenarioTest {
 
     @Test
     void determineMedianAgreementImpact() {
-        double meanAgreementImpact = vbScenario.determineMeanAgreementImpact(bv);
-        assertEquals(0.16666666666666663d, meanAgreementImpact);
+        double medianAgreementImpact = vbScenario.determineMedianAgreementImpact(bv);
+        assertEquals(1/4d, medianAgreementImpact);
     }
 
 }

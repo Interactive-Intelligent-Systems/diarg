@@ -85,8 +85,8 @@ public class AgreementScenarioTest {
 
     @Test
     void determineMedianAgreement() {
-        double meanAgreement = aScenario1.determineMeanAgreement();
-        assertEquals(2/3d, meanAgreement);
+        double medianAgreement = aScenario1.determineMedianAgreement();
+        assertEquals(2/3d, medianAgreement);
     }
 
     @Test

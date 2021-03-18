@@ -170,8 +170,6 @@ public class ValueBasedAgreementScenario {
     public double determineMinimalAgreementImpact(Value value) {
         ValueBasedAgreementScenario counterfactualVBAScenario = this.clone();
         counterfactualVBAScenario.removeValue(value);
-        System.out.println(counterfactualVBAScenario.getVbFramework().getValues());
-        System.out.println(vbFramework.getValues());
         return counterfactualVBAScenario.determineMinimalAgreement() - determineMinimalAgreement();
     }
 
