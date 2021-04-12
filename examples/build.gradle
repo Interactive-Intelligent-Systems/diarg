@@ -3,11 +3,12 @@ plugins {
 }
 
 group 'diarg-example'
-version '0.2-SNAPSHOT'
+version '0.3-SNAPSHOT'
 
 sourceCompatibility = 1.8
 
 repositories {
+    mavenLocal()
     maven {
         url 'https://people.cs.umu.se/~tkampik/mvn/'
     }
@@ -22,7 +23,7 @@ dependencies {
         exclude group: 'org.ojalgo', module: 'ojalgo'
         exclude group: 'jspf', module: 'core'
     }
-    compile group: 'diarg', name: 'di-arg', version: '0.6-SNAPSHOT'
+    compile group: 'diarg', name: 'di-arg', version: '0.7-SNAPSHOT'
     testCompile 'org.junit.jupiter:junit-jupiter-api:5.6.1'
 
 }

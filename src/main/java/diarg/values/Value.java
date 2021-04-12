@@ -2,7 +2,9 @@ package diarg.values;
 
 /**
  * Atomic item that defines a value for value-based argumentation
+ * @author Timotheus Kampik
  */
+
 public class Value {
     public String getId() {
         return id;

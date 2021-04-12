@@ -87,7 +87,7 @@ public class AgreementScenario {
      * Adds a new topic argument to the agreement scenario's argumentation framework and also
      * adds this argument to the scenario's topic. Note that it is not possible to add an argument
      * to the topic that is not "new", i.e., that has already previously been added to the argumentation framework.
-     * @param argument
+     * @param argument Topic argument that is to be added
      */
     public void addTopicArgument(Argument argument) {
         try {

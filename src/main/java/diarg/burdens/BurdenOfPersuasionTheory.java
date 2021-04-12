@@ -10,6 +10,10 @@ import net.sf.tweety.arg.dung.syntax.DungTheory;
 import java.util.ArrayList;
 import java.util.Collection;
 
+/**
+ * Abstractions and solver for burden of persuasion frameworks
+ * @author Timotheus Kampik
+ */
 public class BurdenOfPersuasionTheory {
 
     /**

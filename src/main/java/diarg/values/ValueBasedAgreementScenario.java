@@ -11,6 +11,10 @@ import net.sf.tweety.arg.dung.syntax.DungTheory;
 import java.util.ArrayList;
 import java.util.Collection;
 
+/**
+ * Abstraction and solver for value-based agreement scenarios
+ * @author Timotheus Kampik
+ */
 public class ValueBasedAgreementScenario {
 
     @Override
