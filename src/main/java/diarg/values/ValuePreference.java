@@ -1,7 +1,8 @@
 package diarg.values;
 
 /**
- * Preference between two values
+ * Preference between two values, for value-based argumentation frameworks
+ * @author Timotheus Kampik
  */
 
 public class ValuePreference {

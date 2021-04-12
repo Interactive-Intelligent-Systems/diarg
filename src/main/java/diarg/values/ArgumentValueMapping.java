@@ -4,6 +4,10 @@ import net.sf.tweety.arg.dung.syntax.Argument;
 
 import java.util.HashMap;
 
+/**
+ * Abstraction to create maps with (argument, value) pairs for value-based argumentation frameworks
+ * @author Timotheus Kampik
+ */
 public class ArgumentValueMapping {
 
     public HashMap<Argument, Value> getMap() {

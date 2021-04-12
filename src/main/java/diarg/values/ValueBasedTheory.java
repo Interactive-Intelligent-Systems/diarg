@@ -9,6 +9,10 @@ import net.sf.tweety.arg.dung.syntax.DungTheory;
 import java.util.ArrayList;
 import java.util.Collection;
 
+/**
+ * Abstractions and solver for value-based argumentation frameworks
+ * @author Timotheus Kampik
+ */
 public class ValueBasedTheory implements Cloneable {
 
     @Override

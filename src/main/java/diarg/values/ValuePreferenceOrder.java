@@ -5,6 +5,8 @@ import java.util.Collection;
 
 /**
  * Value preference order for value based argumentation
+ * Preference between two values, for value-based argumentation frameworks
+ * @author Timotheus Kampik
  */
 public class ValuePreferenceOrder {
 
@@ -20,7 +22,7 @@ public class ValuePreferenceOrder {
 
     /**
      * Adds a new value preference to the value preference order
-     * @param valuePreference
+     * @param valuePreference Value preference that is to be added
      */
     public void addValuePreference(ValuePreference valuePreference) {
         Collection<ValuePreference> counterFactualvaluePreferences = new ArrayList<>(valuePreferences);
@@ -41,7 +43,7 @@ public class ValuePreferenceOrder {
 
     /**
      * Removes a value preference from the value preference order
-     * @param valuePreference
+     * @param valuePreference Value preference that is to be added
      */
     public void removeValuePreference(ValuePreference valuePreference) {
         Collection<ValuePreference> counterFactualvaluePreferences = new ArrayList<>(valuePreferences);
