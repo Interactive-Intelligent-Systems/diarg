@@ -17,7 +17,18 @@ import java.util.LinkedList;
  */
 
 public class AFTuple {
-    private DungTheory framework1, framework2, smallerEqualFramework, largerEqualFramework;
+
+    public DungTheory getFramework1() {
+        return framework1;
+    }
+
+    public DungTheory getFramework2() {
+        return framework2;
+    }
+
+    private final DungTheory framework1, framework2;
+    private DungTheory smallerEqualFramework;
+    private DungTheory largerEqualFramework;
     private Collection<DungTheory>  largestNormalRISubmodules, largestNormalCMSubmodules,
                                     smallestNormalRIExpansions, smallestNormalCMExpansions;
 
