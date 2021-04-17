@@ -3,6 +3,7 @@ package diarg.explanations;
 import diarg.AFTuple;
 import net.sf.tweety.arg.dung.semantics.Extension;
 import net.sf.tweety.arg.dung.syntax.Argument;
+import net.sf.tweety.arg.dung.syntax.DungTheory;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
@@ -70,5 +71,19 @@ public class NonmonotonyExplainerTest {
                 NonmonotonyExplainer.determineMonotonyViolationExplanations(afTuple3, baseExtension3, targetExtension3);
         assertEquals(1, actualExplanations3.size());
         assertTrue(actualExplanations3.containsAll(expectedExplanations3));
+
+        DungTheory framework0 = new DungTheory();
+        AFTuple afTuple4 = new AFTuple(framework0, testFrameworks.framework1);
+        framework0.add(a);
+        Extension baseExtension4 = new Extension();
+        baseExtension4.add(a);
+        Extension targetExtension4 = new Extension();
+        targetExtension4.add(a);
+        targetExtension4.add(c);
+        targetExtension4.add(d);
+        Collection<Argument> expectedExplanations4 = new ArrayList<>();
+        Collection<Argument> actualExplanations4 =
+                NonmonotonyExplainer.determineMonotonyViolationExplanations(afTuple4, baseExtension4, targetExtension4);
+        assertEquals(0, actualExplanations4.size());
     }
 }
