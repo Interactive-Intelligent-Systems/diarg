@@ -239,7 +239,7 @@ public class Utils {
      * @param baseExtension Base extensions that is the reference point for determining maximal monotony
      * @return Collection of maximally monotonic extensions
      */
-    static Collection<Extension> determineCardinalityMaxMonotonicExtensions(Collection<Extension> extensions, Extension baseExtension) {
+    public static Collection<Extension> determineCardinalityMaxMonotonicExtensions(Collection<Extension> extensions, Extension baseExtension) {
         Collection<Extension> maxMonExtensions = new ArrayList<>();
         Set<Argument> baseSet = new HashSet<>(baseExtension);
         int maxMon = 0;

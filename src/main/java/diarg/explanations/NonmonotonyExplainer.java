@@ -25,7 +25,7 @@ public class NonmonotonyExplainer {
      * @param targetExtension The target extension that has been inferred from the normal expansion
      * @return The monotony violation explanations
      */
-    static Collection<Argument> determineMonotonyViolationExplanations(AFTuple afTuple, Extension baseExtension, Extension targetExtension) {
+    public static Collection<Argument> determineMonotonyViolationExplanations(AFTuple afTuple, Extension baseExtension, Extension targetExtension) {
         DungTheory afPrime = afTuple.getFramework2();
         Collection<Argument> args = afTuple.getFramework1().getNodes();
         Collection<Argument> newArgs = new ArrayList<>(afTuple.getFramework2().getNodes());
