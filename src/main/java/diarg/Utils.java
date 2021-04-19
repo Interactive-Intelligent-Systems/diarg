@@ -232,5 +232,26 @@ public class Utils {
         }
         return subsetMaxExtensions;
     }
+
+    /**
+     * Determines the maximally (wrt. cardinality) monotonic extensions from a collection of extensions wrt. one base extensions
+     * @param extensions Collection of extensions, from which the ones are to be determined that are maximally monotonic wrt. the base extension
+     * @param baseExtension Base extensions that is the reference point for determining maximal monotony
+     * @return Collection of maximally monotonic extensions
+     */
+    public static Collection<Extension> determineCardinalityMaxMonotonicExtensions(Collection<Extension> extensions, Extension baseExtension) {
+        Collection<Extension> maxMonExtensions = new ArrayList<>();
+        Set<Argument> baseSet = new HashSet<>(baseExtension);
+        int maxMon = 0;
+        for(Extension targetExtension: extensions) {
+            Set<Argument> intersection = baseSet.stream().filter(targetExtension::contains).collect(Collectors.toSet());
+            if(intersection.size() > maxMon) maxMon = intersection.size();
+        }
+        for(Extension targetExtension: extensions) {
+            Set<Argument> intersection = baseSet.stream().filter(targetExtension::contains).collect(Collectors.toSet());
+            if(intersection.size() >= maxMon) maxMonExtensions.add(targetExtension);
+        }
+        return maxMonExtensions;
+    }
 }
 
