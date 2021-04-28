@@ -73,7 +73,7 @@ if(results.size() > 1) { // if results are indecisive, construct argumentation f
     }
     argFramework.addAllAttacks(attacks);
     System.out.println("Initial argumentation framework: \n" + argFramework.prettyPrint());
-    // Note that we continue in this 'if'-statement
+    // Note that we continue in this 'if'-clause
 }
 ```
 
