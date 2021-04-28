@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns="https://www.omg.org/spec/DMN/20191111/MODEL/" xmlns:dmndi="https://www.omg.org/spec/DMN/20191111/DMNDI/" xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/" xmlns:biodi="http://bpmn.io/schema/dmn/biodi/2.0" id="Definitions_1f3s01n" name="DRD" namespace="http://camunda.org/schema/1.0/dmn" exporter="Camunda Modeler" exporterVersion="4.4.0">
+  <decision id="decision" name="AdmissionElegibility">
+    <decisionTable id="DecisionTable_06qpvte" hitPolicy="COLLECT">
+      <input id="Input_1" label="totalScore" biodi:width="192">
+        <inputExpression id="InputExpression_1" typeRef="integer">
+          <text>totalScore</text>
+        </inputExpression>
+      </input>
+      <input id="InputClause_1hgl1ml" label="experienceYears" biodi:width="241">
+        <inputExpression id="LiteralExpression_18l6af1" typeRef="integer">
+          <text>experienceYears</text>
+        </inputExpression>
+      </input>
+      <input id="InputClause_02t4ykz" label="references">
+        <inputExpression id="LiteralExpression_01c5e7g" typeRef="string">
+          <text>references</text>
+        </inputExpression>
+        <inputValues id="UnaryTests_0cucenf">
+          <text>"good","mediocre","bad"</text>
+        </inputValues>
+      </input>
+      <output id="Output_1" name="IsEligible" typeRef="boolean" />
+      <rule id="DecisionRule_1s1avhs">
+        <inputEntry id="UnaryTests_0aggqq9">
+          <text><![CDATA[< 240]]></text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_0dnox5d">
+          <text></text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_0b80iex">
+          <text></text>
+        </inputEntry>
+        <outputEntry id="LiteralExpression_0qbjh00">
+          <text>false</text>
+        </outputEntry>
+      </rule>
+      <rule id="DecisionRule_0vi4qa2">
+        <inputEntry id="UnaryTests_10ulo71">
+          <text><![CDATA[>= 240]]></text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_0cfwjnz">
+          <text><![CDATA[< 9]]></text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_07h1j7q">
+          <text>"mediocre","bad"</text>
+        </inputEntry>
+        <outputEntry id="LiteralExpression_1e6n2wx">
+          <text>false</text>
+        </outputEntry>
+      </rule>
+      <rule id="DecisionRule_1bf0ltk">
+        <inputEntry id="UnaryTests_150acac">
+          <text><![CDATA[>= 240]]></text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_11jqfsv">
+          <text><![CDATA[>= 9]]></text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_0hz3bsr">
+          <text></text>
+        </inputEntry>
+        <outputEntry id="LiteralExpression_08uwnhi">
+          <text>true</text>
+        </outputEntry>
+      </rule>
+      <rule id="DecisionRule_1uzc18h">
+        <inputEntry id="UnaryTests_0gj0vv5">
+          <text><![CDATA[>= 240]]></text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_1wdsmpi">
+          <text><![CDATA[< 9]]></text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_1y0udpb">
+          <text>"good"</text>
+        </inputEntry>
+        <outputEntry id="LiteralExpression_1q3lbb0">
+          <text>true</text>
+        </outputEntry>
+      </rule>
+      <rule id="DecisionRule_1bbffn9">
+        <inputEntry id="UnaryTests_0nfg74x">
+          <text><![CDATA[>= 240]]></text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_02gvelc">
+          <text><![CDATA[< 9]]></text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_1w5qjtt">
+          <text>"good"</text>
+        </inputEntry>
+        <outputEntry id="LiteralExpression_1r4imnd">
+          <text>false</text>
+        </outputEntry>
+      </rule>
+    </decisionTable>
+  </decision>
+  <dmndi:DMNDI>
+    <dmndi:DMNDiagram>
+      <dmndi:DMNShape dmnElementRef="Decision_0npmyjb">
+        <dc:Bounds height="80" width="180" x="338" y="220" />
+      </dmndi:DMNShape>
+    </dmndi:DMNDiagram>
+  </dmndi:DMNDI>
+</definitions>

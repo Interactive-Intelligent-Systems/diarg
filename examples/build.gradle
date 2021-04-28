@@ -19,11 +19,14 @@ repositories {
 }
 
 dependencies {
+    implementation platform('org.camunda.bpm.dmn:camunda-engine-dmn-bom:7.15.0')
     implementation('net.sf.tweety:tweety-full:1.16') {
         exclude group: 'org.ojalgo', module: 'ojalgo'
         exclude group: 'jspf', module: 'core'
     }
     compile group: 'diarg', name: 'di-arg', version: '0.8-SNAPSHOT'
+    compile group: 'org.camunda.bpm.dmn', name: 'camunda-engine-dmn', version: '7.15.0'
+    compile group: 'org.slf4j', name: 'slf4j-jdk14', version: '1.7.26'
     testCompile 'org.junit.jupiter:junit-jupiter-api:5.6.1'
 
 }
@@ -41,4 +44,14 @@ task runAgreementScenarios(type: JavaExec) {
 task explainabilityExample(type: JavaExec) {
     classpath sourceSets.main.runtimeClasspath
     main = "examples.Explainability"
+}
+
+task dialogueExampleSimple(type: JavaExec) {
+    classpath sourceSets.main.runtimeClasspath
+    main = "examples.FormalDialoguesSimple"
+}
+
+task dialogueExampleExtended(type: JavaExec) {
+    classpath sourceSets.main.runtimeClasspath
+    main = "examples.FormalDialoguesExtended"
 }
