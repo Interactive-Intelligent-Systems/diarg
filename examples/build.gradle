@@ -50,8 +50,3 @@ task dialogueExampleSimple(type: JavaExec) {
     classpath sourceSets.main.runtimeClasspath
     main = "examples.FormalDialoguesSimple"
 }
-
-task dialogueExampleExtended(type: JavaExec) {
-    classpath sourceSets.main.runtimeClasspath
-    main = "examples.FormalDialoguesExtended"
-}

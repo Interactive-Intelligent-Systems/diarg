@@ -1,14 +1,9 @@
 # Formal Argumentation Dialogues and Business Decision Management
 This programming tutorial illustrates how to integrate formal argumentation-based dialogues and business decision
 management approaches (using Camunda's [DMN execution engine](https://docs.camunda.org/manual/7.4/user-guide/dmn-engine/embed/)):
-
-* In the first example, we start with an ambiguous decision result that a Decision Model and Notation (DMN) decision
+In our example, we start with an ambiguous decision result that a Decision Model and Notation (DMN) decision
   table returns, and that is then enriched with human-provided arguments until a final decision is reached.
 
-* In the second example (TODO), we use argumentation-based approaches for the alignment of different IT systems that we
-  'model' as DMN decisions.
-
-## Basic Argumentation Dialogues
 Let us assume we want to determine the hiring *eligibility* of an applicant for a software engineering position, *i.e.*,
 we are only looking at the part of the early screening process that determines whether an offer can potentially be made
 according to organizational rules and guidelines. A part of the eligibility assessment is automated as a DMN decision
@@ -138,5 +133,3 @@ It can be edited with different editors for example [this one](https://editor.si
 However, there are typically some  interoperability issues between DMN editors and DMN engines, even when editor and
 engine are provided by the same vendor.  The full Java code is available [here](./src/main/java/examples/FormalDialoguesSimple.java).
 To run the example, execute `./gradlew run dialogueExampleSimple` in the git project's `examples` directory.
-
-## Advanced Argumentation Dialogues with Relational Consistency Properties
