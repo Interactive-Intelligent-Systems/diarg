@@ -9,10 +9,10 @@ import net.sf.tweety.arg.dung.syntax.DungTheory;
  */
 abstract class ShkopTest {
     /**
-     * Takes a framework and an argument, and determines whether the argument passes the Shkop test
-     * @param framework
-     * @param argument
-     * @return
+     * Takes an argumentation framework and an argument, and determines whether the argument passes the Shkop test
+     * @param framework Argumentation framework for the test
+     * @param argument Argument for the test
+     * @return Pass or failure of the test
      */
     abstract boolean run(DungTheory framework, Argument argument);
 }

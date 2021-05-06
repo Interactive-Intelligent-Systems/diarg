@@ -4,7 +4,6 @@ import net.sf.tweety.arg.dung.reasoner.AbstractExtensionReasoner;
 import net.sf.tweety.arg.dung.reasoner.SimpleGroundedReasoner;
 import net.sf.tweety.arg.dung.semantics.Extension;
 import net.sf.tweety.arg.dung.syntax.Argument;
-import net.sf.tweety.arg.dung.syntax.Attack;
 import net.sf.tweety.arg.dung.syntax.DungTheory;
 
 import com.google.common.collect.Collections2;
@@ -32,7 +31,7 @@ import java.util.*;
 public class SimpleShkopReasoner extends AbstractExtensionReasoner {
 
     private SimpleGroundedReasoner groundedReasoner = new SimpleGroundedReasoner();
-    private ShkopTest shkopTest = new NSAGroundedShkopTest();
+    private ShkopTest shkopTest = new GroundedShkopTest();
 
     /* (non-Javadoc)
      * @see net.sf.tweety.arg.dung.reasoner.AbstractExtensionReasoner#getModels(net.sf.tweety.arg.dung.syntax.DungTheory)
