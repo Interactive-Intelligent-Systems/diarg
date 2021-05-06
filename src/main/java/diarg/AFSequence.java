@@ -1,6 +1,5 @@
 package diarg;
 
-import com.sun.org.apache.xpath.internal.Arg;
 import diarg.enums.ResolutionType;
 import diarg.enums.SequenceType;
 import net.sf.tweety.arg.dung.syntax.Argument;
