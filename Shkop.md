@@ -21,7 +21,8 @@ argument). Then, we proceed as follows, starting with i=1:
    *Shkop test*, given the current argumentation framework. The default Shkop test checks if the argument is in the
    grounded extension of the current argumentation framework, from which all self-attacking arguments have been removed
    (custom Shkop tests can be implemented). If the argument fails the Shkop test, move on. If it passes the Shkop test,
-   we need to reject the current extension, *i.e.* we set the new extension to *null*.
+   we need to reject the current extension, *i.e.* we set the new extension to *null*; to mitigate the null pointer,
+   we may move the tested argument to the beginning of our Shkop sequence, and start anew.
 3. If i < n, set i := i+1 and go to 1.
 
 We call this approach *sequential Shkop*.
@@ -90,11 +91,11 @@ Collection<Extension> extensions = shkopReasoner.getModels(framework);
 ```
    
 To customize the Shkop test, we can use the abstract ShkopTest class and implement our ShkopTest analogously to the
-[AdmissibleShkopTest](./src/main/java/diarg/AdmissibleShkopTest.java) class. Then, we can set the custom ShkopTest as
+[GroundedShkopTest](./src/main/java/diarg/GroundedShkopTest.java) class. Then, we can set the custom ShkopTest as
 follows:
 
 ```java
-ShkopTest shkopTest = new GroundedShkopTest();
+ShkopTest shkopTest = new MyShkopTest();
 shkopReasoner.setShkopTest(shkopTest);
 ```
 

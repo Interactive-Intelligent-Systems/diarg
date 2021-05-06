@@ -18,14 +18,14 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.LinkedList;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 public class AFSequenceTest {
     TestFrameworks testFrameworks;
     DungTheory oneArgFramework = new DungTheory();
-    AFSequence standardSequence, expandingSequence, eriSequence, rriSequence, ecmSequence, rcmSequence, shkopSequence;
+    AFSequence standardSequence, expandingSequence, eriSequence, rriSequence, ecmSequence, rcmSequence,
+            shkopSequence1, shkopSequence2, shkopSequence3;
     Argument a, b, c;
     Semantics nsaCF2Semantics;
 
@@ -51,7 +51,11 @@ public class AFSequenceTest {
                 nsaCF2Semantics, true);
         rcmSequence = new AFSequence(SequenceType.NORMALLY_EXPANDING, ResolutionType.REDUCTIONIST_CAUTIOUSLY_MONOTONIC,
                 nsaCF2Semantics, true);
-        shkopSequence = new AFSequence(SequenceType.SHKOP, ResolutionType.SHKOP, new Semantics(SemanticsType.SHKOP),
+        shkopSequence1 = new AFSequence(SequenceType.SHKOP, ResolutionType.SHKOP, new Semantics(SemanticsType.SHKOP),
+                true);
+        shkopSequence2 = new AFSequence(SequenceType.SHKOP, ResolutionType.SHKOP, new Semantics(SemanticsType.SHKOP),
+                true);
+        shkopSequence3 = new AFSequence(SequenceType.SHKOP, ResolutionType.SHKOP, new Semantics(SemanticsType.SHKOP),
                 true);
     }
 
@@ -72,14 +76,14 @@ public class AFSequenceTest {
         eriSequence.addFramework(testFrameworks.framework2);
         assertEquals(2, eriSequence.getFrameworks().size());
 
-        shkopSequence.addFramework(testFrameworks.framework5);
-        assertEquals(0, shkopSequence.getFrameworks().size());
-        shkopSequence.addFramework(oneArgFramework);
-        shkopSequence.addFramework(testFrameworks.framework5);
-        shkopSequence.addFramework(testFrameworks.framework3);
-        assertEquals(2, shkopSequence.getFrameworks().size());
-        shkopSequence.addFramework(testFrameworks.framework2);
-        assertEquals(3, shkopSequence.getFrameworks().size());
+        shkopSequence1.addFramework(testFrameworks.framework5);
+        assertEquals(0, shkopSequence1.getFrameworks().size());
+        shkopSequence1.addFramework(oneArgFramework);
+        shkopSequence1.addFramework(testFrameworks.framework5);
+        shkopSequence1.addFramework(testFrameworks.framework3);
+        assertEquals(2, shkopSequence1.getFrameworks().size());
+        shkopSequence1.addFramework(testFrameworks.framework2);
+        assertEquals(3, shkopSequence1.getFrameworks().size());
     }
 
     @Test
@@ -104,7 +108,7 @@ public class AFSequenceTest {
         standardSequence.addFramework(testFrameworks.framework3);
         standardSequence.addFramework(testFrameworks.framework4);
         Extension resolutionIs1a = standardSequence.resolveFramework(1);
-        assertTrue(resolutionIs1a == null);
+        assertNull(resolutionIs1a);
         Extension resolutionIs1b = standardSequence.resolveFramework(0);
         Extension resolutionShould1b = new Extension();
         resolutionShould1b.add(a);
@@ -153,19 +157,37 @@ public class AFSequenceTest {
         Extension resolutionIs5b = rcmSequence.resolveFramework(1);
         assertTrue(resolutionIs5b.containsAll(resolutionShould5b));
 
-        shkopSequence.addFramework(oneArgFramework);
-        shkopSequence.addFramework(testFrameworks.framework5);
-        shkopSequence.addFramework(testFrameworks.framework2);
-        Extension resolutionIs6a = shkopSequence.resolveFramework(0);
+        shkopSequence3.addFramework(oneArgFramework);
+        shkopSequence3.addFramework(testFrameworks.framework5);
+        shkopSequence3.addFramework(testFrameworks.framework2);
+        Extension resolutionIs6a = shkopSequence3.resolveFramework(0);
         Extension resolutionShould6a = new Extension();
         resolutionShould6a.add(a);
         assertTrue(resolutionIs6a.containsAll(resolutionShould6a));
-        Extension resolutionIs6b = shkopSequence.resolveFramework(1);
+        Extension resolutionIs6b = shkopSequence3.resolveFramework(1);
         assertTrue(resolutionIs6b.containsAll(resolutionShould6a));
-        Extension resolutionIs6c = shkopSequence.resolveFramework(2);
+        Extension resolutionIs6c = shkopSequence3.resolveFramework(2);
         Extension resolutionShould6c = new Extension();
         resolutionShould6c.add(a);
         assertTrue(resolutionIs6c.containsAll(resolutionShould6c));
+
+        shkopSequence2.addFramework(oneArgFramework);
+        DungTheory bAttacksAAF = new DungTheory();
+        bAttacksAAF.add(a);
+        bAttacksAAF.add(b);
+        bAttacksAAF.add(new Attack(b, a));
+        shkopSequence2.addFramework(bAttacksAAF);
+        Extension resolutionIs7a = shkopSequence2.resolveFramework(0);
+        Extension resolutionShould7a = new Extension();
+        resolutionShould7a.add(a);
+        assertEquals(1, resolutionIs7a.size());
+        assertTrue(resolutionIs7a.containsAll(resolutionShould7a));
+        Extension resolutionIs7b = shkopSequence2.resolveFramework(1);
+        Extension resolutionShould7b = new Extension();
+        resolutionShould7b.add(b);
+        assertEquals(1, resolutionIs7b.size());
+        assertTrue(resolutionIs7b.containsAll(resolutionShould7b));
+
     }
 
     @Test
@@ -205,10 +227,10 @@ public class AFSequenceTest {
         assertEquals(2, resolutionsIs5.size());
         assertTrue(resolutionsIs5.containsAll(resolutionsShould1));
 
-        shkopSequence.addFramework(oneArgFramework);
-        shkopSequence.addFramework(testFrameworks.framework5);
-        shkopSequence.addFramework(testFrameworks.framework2);
-        Collection<Extension> resolutionsIs6 = shkopSequence.resolveFrameworks();
+        shkopSequence1.addFramework(oneArgFramework);
+        shkopSequence1.addFramework(testFrameworks.framework5);
+        shkopSequence1.addFramework(testFrameworks.framework2);
+        Collection<Extension> resolutionsIs6 = shkopSequence1.resolveFrameworks();
         Collection<Extension> resolutionsShould6 = new LinkedList<>();
         Extension aExtension = new Extension();
         aExtension.add(a);

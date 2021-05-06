@@ -2,7 +2,6 @@ package diarg;
 
 import diarg.enums.ResolutionType;
 import diarg.enums.SequenceType;
-import net.sf.tweety.arg.dung.reasoner.SimpleGroundedReasoner;
 import net.sf.tweety.arg.dung.syntax.Argument;
 import net.sf.tweety.arg.dung.syntax.Attack;
 import net.sf.tweety.arg.dung.syntax.DungTheory;
@@ -26,7 +25,7 @@ public class AFSequence {
     private boolean contextSupport;
     private ArrayList<Collection<Context>> contexts = new ArrayList<>();
     private ArrayList<Extension> contextSummaries = new ArrayList<>();
-    private ShkopTest shkopTest = new NSAGroundedShkopTest();
+    private ShkopTest shkopTest = new GroundedShkopTest();
 
     public AFSequence(SequenceType sequenceType, ResolutionType resolutionType,
                       Semantics semantics, boolean contextSupport) {
@@ -277,10 +276,6 @@ public class AFSequence {
                 frameworks = sequenceLink.determineLargestNormalRISubmodules(this.semantics, previousResolution);
                 break;
             case SHKOP:
-                if(previousResolution == null) {
-                    this.resolutions.add(null);
-                    return null;
-                }
                 DungTheory currentFramework = this.frameworks.get(index);
                 DungTheory previousFramework;
                 if(index == 0) {
@@ -299,7 +294,20 @@ public class AFSequence {
                 if(counterfactualResolution.isConflictFree(currentFramework)) {
                     resolution = counterfactualResolution;
                 } else if(this.shkopTest.run(currentFramework, newArg)) {
-                    resolution = null;
+                    AFSequence newSequence =
+                            new AFSequence(this.sequenceType, this.resolutionType, this.semantics, this.contextSupport);
+                    DungTheory afStart = new DungTheory();
+                    afStart.add(newArg);
+                    newSequence.addFramework(afStart);
+                    for(DungTheory af: this.frameworks) {
+                        if (af.contains(newArg)) break;
+                        Collection<Argument> arguments = new ArrayList<>(af.getNodes());
+                        arguments.add(newArg);
+                        DungTheory newAF = (DungTheory) this.frameworks.get(this.frameworks.size() - 1).getRestriction(arguments);
+                        newSequence.addFramework(newAF);
+                    }
+                    ArrayList<Extension> resolutions = newSequence.resolveFrameworks();
+                    resolution = resolutions.get(newSequence.getFrameworks().size() - 1);
                 } else {
                    resolution = previousResolution;
                 }
@@ -329,8 +337,8 @@ public class AFSequence {
      * list of frameworks.
      * @return The resolutions of all frameworks.
      */
-    public Collection<Extension> resolveFrameworks() {
-        Collection<Extension> extensions = new LinkedList<>();
+    public ArrayList<Extension> resolveFrameworks() {
+        ArrayList<Extension> extensions = new ArrayList<>();
         if(this.frameworks.size() == this.resolutions.size()) {
             return this.resolutions;
         }
