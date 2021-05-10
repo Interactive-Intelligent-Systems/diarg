@@ -17,11 +17,11 @@ import java.util.*;
  *    arguments attacked by the grounded extensions, and self-attacking arguments. Generate all permutations that
  *    "entail" this sequence.
  * 2. For each permutation sequence:
- *      2.1: Construct the corresponding Shkop sequence.
- *      2.2: Resolve the Shkop sequence by adding arguments one-by-one to an initially empty extension, "rejecting"
- *      arguments that are in conflict the extension or self-attacking and discarding a sequence/extension if it is
- *      attacked by the grounded extension of nsa(AF_c), where nsa(AF_c) is the current argumentation framework without
- *      self-attacking arguments
+ *      2.1: Construct the corresponding Shkop sequence; start with an empty extension.
+ *      2.2: Resolve the Shkop sequence by adding arguments one-by-one to an initially empty extension, "discard"
+ *      extensions that fail the Shkop testM, by default: extensions that are in conflict with the grounded extension of
+ *      the current expansion. If an extensions is not discarded; add the new argument to it if this argument is neither
+ *      self-attacking nor in conflict with the previously inferred extension.
  * 3. Return all extensions that have not been discarded
  *
  * @author Timotheus Kampik
@@ -38,7 +38,8 @@ public class SimpleShkopReasoner extends AbstractExtensionReasoner {
      */
     @Override
     public Collection<Extension> getModels(DungTheory bbase) {
-        Extension groundedExtension = groundedReasoner.getModel(Utils.removeSelfAttackedArguments(bbase));
+        bbase = Utils.removeSelfAttackedArguments(bbase);
+        Extension groundedExtension = groundedReasoner.getModel(bbase);
         Extension baseSet = new Extension();
         Extension remainingSet = new Extension();
         baseSet.addAll(groundedExtension);
@@ -67,13 +68,15 @@ public class SimpleShkopReasoner extends AbstractExtensionReasoner {
                     break;
                 }
                 framework = shkopExpandFramework(bbase, framework, argument);
-                Extension counterfactualExtension = new Extension();
-                counterfactualExtension.addAll(extension);
-                counterfactualExtension.add(argument);
-                if(counterfactualExtension.isConflictFree(framework)) {
-                    extension.add(argument);
-                } else if (this.shkopTest.run(framework, argument)) {
+                if(!this.shkopTest.run(framework, extension)) {
                     extension = null;
+                } else {
+                    Extension counterfactualExtension = new Extension();
+                    counterfactualExtension.addAll(extension);
+                    counterfactualExtension.add(argument);
+                    if (counterfactualExtension.isConflictFree(framework)) {
+                        extension.add(argument);
+                    }
                 }
             }
             if(!extensions.contains(extension) && extension != null){

@@ -1,7 +1,7 @@
 package diarg;
 
 import net.sf.tweety.arg.dung.reasoner.SimpleGroundedReasoner;
-import net.sf.tweety.arg.dung.syntax.Argument;
+import net.sf.tweety.arg.dung.semantics.Extension;
 import net.sf.tweety.arg.dung.syntax.DungTheory;
 
 /**
@@ -12,10 +12,11 @@ import net.sf.tweety.arg.dung.syntax.DungTheory;
 public class GroundedShkopTest extends ShkopTest{
     SimpleGroundedReasoner groundedReasoner = new SimpleGroundedReasoner();
     @Override
-    boolean run(DungTheory framework, Argument argument) {
-        if(groundedReasoner.getModel(Utils.removeSelfAttackedArguments(framework)).contains(argument)) {
-            return true;
+    boolean run(DungTheory framework, Extension extension) {
+        Extension groundedExtension = groundedReasoner.getModel(Utils.removeSelfAttackedArguments(framework));
+        if(framework.isAttacked(extension, groundedExtension)) {
+            return false;
         }
-        return false;
+        return true;
     }
 }
