@@ -16,13 +16,13 @@ in any Shkop sequence can be resolved by determining the unique grounded extensi
 exactly one argument, the unique grounded extension is empty in case of a self-attack; otherwise, it contains the only
 argument). Then, we proceed as follows, starting with i=1:
 
-1. Check if the "new" argument in AF<sub>i</sub> attacks the determined extension.
-2. If this is the case, check if the argument passes the
-   *Shkop test*, given the current argumentation framework. The default Shkop test checks if the argument is in the
-   grounded extension of the current argumentation framework, from which all self-attacking arguments have been removed
-   (custom Shkop tests can be implemented). If the argument fails the Shkop test, move on. If it passes the Shkop test,
-   we need to reject the current extension, *i.e.* we set the new extension to *null*; to mitigate the null pointer,
-   we may move the tested argument to the beginning of our Shkop sequence, and start anew.
+2. Check if the currently inferred set of arguments passes the *Shkop test*, given the current argumentation framework.
+   The default Shkop test checks if the set of arguments is conflict-free with the grounded extension of the current
+   argumentation framework, from which all self-attacking arguments have been removed (custom Shkop tests can be
+   implemented). If the argument fails the Shkop test, we need to reject the current extension, *i.e.* we set the new
+   extension to *null*; to mitigate the null pointer, we may move the new argument to the beginning of our Shkop 
+   sequence, and start anew. If our inferred set of arguments passes the Shkop test, we add the new argument to the
+   inference set, if it does not have any conflicts with this set.
 3. If i < n, set i := i+1 and go to 1.
 
 We call this approach *sequential Shkop*.

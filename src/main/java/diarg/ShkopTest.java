@@ -1,6 +1,6 @@
 package diarg;
 
-import net.sf.tweety.arg.dung.syntax.Argument;
+import net.sf.tweety.arg.dung.semantics.Extension;
 import net.sf.tweety.arg.dung.syntax.DungTheory;
 
 /**
@@ -11,8 +11,8 @@ abstract class ShkopTest {
     /**
      * Takes an argumentation framework and an argument, and determines whether the argument passes the Shkop test
      * @param framework Argumentation framework for the test
-     * @param argument Argument for the test
+     * @param extension Extension for the test
      * @return Pass or failure of the test
      */
-    abstract boolean run(DungTheory framework, Argument argument);
+    abstract boolean run(DungTheory framework, Extension extension);
 }

@@ -287,13 +287,19 @@ public class AFSequence {
                 newArgs.addAll(currentFramework.getNodes());
                 newArgs.removeAll(previousFramework.getNodes());
                 Argument newArg = newArgs.iterator().next();
-                Extension counterfactualResolution = new Extension();
-                counterfactualResolution.addAll(previousResolution);
-                counterfactualResolution.add(newArg);
                 Extension resolution;
-                if(counterfactualResolution.isConflictFree(currentFramework)) {
-                    resolution = counterfactualResolution;
-                } else if(this.shkopTest.run(currentFramework, newArg)) {
+                if(this.shkopTest.run(currentFramework, previousResolution)) {
+                    Extension counterfactualResolution = new Extension();
+                    counterfactualResolution.addAll(previousResolution);
+                    counterfactualResolution.add(newArg);
+                    if(counterfactualResolution.isConflictFree(currentFramework)) {
+                        resolution = counterfactualResolution;
+                    }
+                    else {
+                        resolution = previousResolution;
+                    }
+                }
+                else {
                     AFSequence newSequence =
                             new AFSequence(this.sequenceType, this.resolutionType, this.semantics, this.contextSupport);
                     DungTheory afStart = new DungTheory();
@@ -308,8 +314,6 @@ public class AFSequence {
                     }
                     ArrayList<Extension> resolutions = newSequence.resolveFrameworks();
                     resolution = resolutions.get(newSequence.getFrameworks().size() - 1);
-                } else {
-                   resolution = previousResolution;
                 }
                 this.resolutions.add(resolution);
                 return resolution;
