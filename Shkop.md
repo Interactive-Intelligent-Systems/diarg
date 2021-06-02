@@ -17,8 +17,10 @@ exactly one argument, the unique grounded extension is empty in case of a self-a
 argument). Then, we proceed as follows, starting with i=1:
 
 2. Check if the currently inferred set of arguments passes the *Shkop test*, given the current argumentation framework.
-   The default Shkop test checks if the set of arguments is conflict-free with the grounded extension of the current
-   argumentation framework, from which all self-attacking arguments have been removed (custom Shkop tests can be
+   As a 'pre-test' to the Shkop-test, we check if an upstream attacker is added to the argumentation framework
+   (ignoring self-attacking arguments). If this is the case, the pre-test fails, which implies failure of the Shkop
+   test. The default Shkop test checks if the set of arguments is conflict-free with the grounded extension of the
+   current argumentation framework, from which all self-attacking arguments have been removed (custom Shkop tests can be
    implemented). If the argument fails the Shkop test, we need to reject the current extension, *i.e.* we set the new
    extension to *null*; to mitigate the null pointer, we may move the new argument to the beginning of our Shkop 
    sequence, and start anew. If our inferred set of arguments passes the Shkop test, we add the new argument to the

@@ -31,6 +31,19 @@ public class SimpleShkopReasonerTest {
         shkopTestFramework1.add(new Attack(b,c));
         shkopTestFramework1.add(new Attack(c,b));
 
+        DungTheory shkopTestFramework2 = new DungTheory();
+        shkopTestFramework2.add(a);
+        shkopTestFramework2.add(b);
+        shkopTestFramework2.add(c);
+        shkopTestFramework2.add(d);
+        shkopTestFramework2.add(e);
+        shkopTestFramework2.add(new Attack(a,b));
+        shkopTestFramework2.add(new Attack(b,a));
+        shkopTestFramework2.add(new Attack(a,c));
+        shkopTestFramework2.add(new Attack(b,c));
+        shkopTestFramework2.add(new Attack(c,d));
+        shkopTestFramework2.add(new Attack(d,e));
+
         TestFrameworks testFrameworks = new TestFrameworks();
 
         DungTheory framework1 = testFrameworks.framework1;
@@ -182,5 +195,16 @@ public class SimpleShkopReasonerTest {
         extensionShkop1.add(a);
         extensionShkop1.add(c);
         assertTrue(extensionsShkop1.contains(extensionShkop1));
+
+        Collection<Extension> extensionsShkop2 = shkopReasoner.getModels(shkopTestFramework2);
+        assertEquals(2, extensionsShkop2.size());
+        Extension extensionShkop2a = new Extension();
+        extensionShkop2a.add(a);
+        extensionShkop2a.add(d);
+        assertTrue(extensionsShkop2.contains(extensionShkop2a));
+        Extension extensionShkop2b = new Extension();
+        extensionShkop2b.add(b);
+        extensionShkop2b.add(d);
+        assertTrue(extensionsShkop2.contains(extensionShkop2b));
     }
 }
