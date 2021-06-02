@@ -288,7 +288,7 @@ public class AFSequence {
                 newArgs.removeAll(previousFramework.getNodes());
                 Argument newArg = newArgs.iterator().next();
                 Extension resolution;
-                if(this.shkopTest.run(currentFramework, previousResolution)) {
+                if(this.shkopTest.run(currentFramework, previousResolution) && !Utils.isUpstreamAttacker(newArg, currentFramework.getNodes(), currentFramework)) {
                     Extension counterfactualResolution = new Extension();
                     counterfactualResolution.addAll(previousResolution);
                     counterfactualResolution.add(newArg);

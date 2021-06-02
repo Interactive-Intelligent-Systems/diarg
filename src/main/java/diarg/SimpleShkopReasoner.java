@@ -68,7 +68,7 @@ public class SimpleShkopReasoner extends AbstractExtensionReasoner {
                     break;
                 }
                 framework = shkopExpandFramework(bbase, framework, argument);
-                if(!this.shkopTest.run(framework, extension)) {
+                if(!this.shkopTest.run(framework, extension) || (Utils.isUpstreamAttacker(argument, framework.getNodes(), framework) && !baseList.contains(argument))) {
                     extension = null;
                 } else {
                     Extension counterfactualExtension = new Extension();

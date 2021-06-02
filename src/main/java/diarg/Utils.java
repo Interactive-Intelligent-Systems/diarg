@@ -253,5 +253,26 @@ public class Utils {
         }
         return maxMonExtensions;
     }
+
+    /**
+     *
+     * Determines if an argument ``attacker`` is an 'upstream' attacker of any argument in a set of arguments ``args``.
+     * Ignores self-attacking arguments.
+     * @param attacker The potential upstream attacker
+     * @param args The set of arguments that is checked for upstream attacks by the attacker
+     * @param framework The argumentation framework that is the 'test environment'
+     * @return ``true`` if the argument is an upstream attacker; else, false.
+     */
+    public static boolean isUpstreamAttacker(Argument attacker, Collection<Argument> args, DungTheory framework) {
+        if(framework.getAttackers(attacker).contains(attacker)) return false;
+        DungTheory nsaFramework = removeSelfAttackedArguments(framework);
+        for(Argument arg: args) {
+            if(
+                    !framework.getAttackers(arg).contains(arg) &&
+                    nsaFramework.existsDirectedPath(attacker, arg) && !nsaFramework.existsDirectedPath(arg, attacker)
+            ) return true;
+        }
+        return false;
+    }
 }
 
