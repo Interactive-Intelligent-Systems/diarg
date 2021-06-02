@@ -15,13 +15,13 @@ import java.util.*;
  * 1. Generate all permutation sequences of AR.
  *    Technically, optimize by only considering one sub-sequence of all arguments in the grounded extensions,
  *    arguments attacked by the grounded extensions, and self-attacking arguments. Generate all permutations that
- *    "entail" this sequence.
+ *    "entail" this sequence. Only consider "directional" permutation sequences.
  * 2. For each permutation sequence:
  *      2.1: Construct the corresponding Shkop sequence; start with an empty extension.
  *      2.2: Resolve the Shkop sequence by adding arguments one-by-one to an initially empty extension, "discard"
- *      extensions that fail the Shkop testM, by default: extensions that are in conflict with the grounded extension of
- *      the current expansion. If an extensions is not discarded; add the new argument to it if this argument is neither
- *      self-attacking nor in conflict with the previously inferred extension.
+ *      extensions that fail the Shkop test, by default: extensions that are in conflict with the grounded extension of
+ *      the current expansion (not considering self-attacking arguments). If an extensions is not discarded; add the new
+ *      argument to it if this argument is neither self-attacking nor in conflict with the previously inferred extension.
  * 3. Return all extensions that have not been discarded
  *
  * @author Timotheus Kampik
