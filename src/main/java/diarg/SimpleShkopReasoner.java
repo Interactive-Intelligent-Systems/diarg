@@ -20,8 +20,9 @@ import java.util.*;
  *      2.1: Construct the corresponding Shkop sequence; start with an empty extension.
  *      2.2: Resolve the Shkop sequence by adding arguments one-by-one to an initially empty extension, "discard"
  *      extensions that fail the Shkop test, by default: extensions that are in conflict with the grounded extension of
- *      the current expansion (not considering self-attacking arguments). If an extensions is not discarded; add the new
- *      argument to it if this argument is neither self-attacking nor in conflict with the previously inferred extension.
+ *      the current expansion (not considering self-attacking arguments, not considering "upstream" arguments that have
+ *      been discarded before). If an extensions is not discarded; add the new argument to it if this argument is
+ *      neither self-attacking nor in conflict with the previously inferred extension.
  * 3. Return all extensions that have not been discarded
  *
  * @author Timotheus Kampik
@@ -68,7 +69,7 @@ public class SimpleShkopReasoner extends AbstractExtensionReasoner {
                     break;
                 }
                 framework = shkopExpandFramework(bbase, framework, argument);
-                if(!this.shkopTest.run(framework, extension) || (Utils.isUpstreamAttacker(argument, framework.getNodes(), framework) && !baseList.contains(argument))) {
+                if(!this.shkopTest.run(framework, extension, argument) || (Utils.isUpstreamAttacker(argument, framework.getNodes(), framework) && !baseList.contains(argument))) {
                     extension = null;
                 } else {
                     Extension counterfactualExtension = new Extension();

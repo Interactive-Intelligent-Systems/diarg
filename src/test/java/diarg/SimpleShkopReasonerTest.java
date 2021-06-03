@@ -22,6 +22,7 @@ public class SimpleShkopReasonerTest {
         Argument d = new Argument("d");
         Argument e = new Argument("e");
         Argument f = new Argument("f");
+        Argument g = new Argument("g");
 
         DungTheory shkopTestFramework1 = new DungTheory();
         shkopTestFramework1.add(a);
@@ -43,6 +44,24 @@ public class SimpleShkopReasonerTest {
         shkopTestFramework2.add(new Attack(b,c));
         shkopTestFramework2.add(new Attack(c,d));
         shkopTestFramework2.add(new Attack(d,e));
+
+        DungTheory shkopTestFramework3 = new DungTheory();
+        shkopTestFramework3.add(a);
+        shkopTestFramework3.add(b);
+        shkopTestFramework3.add(c);
+        shkopTestFramework3.add(d);
+        shkopTestFramework3.add(e);
+        shkopTestFramework3.add(f);
+        shkopTestFramework3.add(g);
+        shkopTestFramework3.add(new Attack(a,b));
+        shkopTestFramework3.add(new Attack(b,a));
+        shkopTestFramework3.add(new Attack(a,c));
+        shkopTestFramework3.add(new Attack(b,c));
+        shkopTestFramework3.add(new Attack(c,d));
+        shkopTestFramework3.add(new Attack(d,e));
+        shkopTestFramework3.add(new Attack(e,f));
+        shkopTestFramework3.add(new Attack(f,g));
+        shkopTestFramework3.add(new Attack(g,e));
 
         TestFrameworks testFrameworks = new TestFrameworks();
 
@@ -134,7 +153,7 @@ public class SimpleShkopReasonerTest {
 
         DungTheory hbtFramework6 = hbtFrameworks.framework6;
         Collection<Extension> extensionsHBT6 = shkopReasoner.getModels(hbtFramework6);
-        assertEquals(5, extensionsHBT6.size());
+        assertEquals(4, extensionsHBT6.size());
         Extension extensionHBT6a = new Extension();
         extensionHBT6a.add(a);
         extensionHBT6a.add(c);
@@ -151,10 +170,6 @@ public class SimpleShkopReasonerTest {
         extensionHBT6d.add(b);
         extensionHBT6d.add(d);
         assertTrue(extensionsHBT6.contains(extensionHBT6d));
-        Extension extensionHBT6e = new Extension();
-        extensionHBT6e.add(b);
-        extensionHBT6e.add(e);
-        assertTrue(extensionsHBT6.contains(extensionHBT6e));
 
         DungTheory hbtFramework7 = hbtFrameworks.framework7;
         Collection<Extension> extensionsHBT7 = shkopReasoner.getModels(hbtFramework7);
@@ -206,5 +221,18 @@ public class SimpleShkopReasonerTest {
         extensionShkop2b.add(b);
         extensionShkop2b.add(d);
         assertTrue(extensionsShkop2.contains(extensionShkop2b));
+
+        Collection<Extension> extensionsShkop3 = shkopReasoner.getModels(shkopTestFramework3);
+        assertEquals(2, extensionsShkop3.size());
+        Extension extensionShkop3a = new Extension();
+        extensionShkop3a.add(a);
+        extensionShkop3a.add(d);
+        extensionShkop3a.add(f);
+        assertTrue(extensionsShkop3.contains(extensionShkop3a));
+        Extension extensionShkop3b = new Extension();
+        extensionShkop3b.add(b);
+        extensionShkop3b.add(d);
+        extensionShkop3b.add(f);
+        assertTrue(extensionsShkop3.contains(extensionShkop3b));
     }
 }
