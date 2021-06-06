@@ -20,12 +20,12 @@ argument). Then, we proceed as follows, starting with i=1:
    As a 'pre-test' to the Shkop-test, we check if an upstream attacker is added to the argumentation framework
    (ignoring self-attacking arguments). If this is the case, the pre-test fails, which implies failure of the Shkop
    test. The default Shkop test checks if the set of arguments is conflict-free with the grounded extension of the
-   current argumentation framework, from which all self-attacking arguments, as well as all alread
+   current argumentation framework, from which all self-attacking arguments, as well as all already
    'discarded' upstream arguments have been removed (custom Shkop tests can be implemented). If the argument fails the
    Shkop test, we need to reject the current extension, *i.e.* we set the new extension to *null*; to mitigate the null
-   pointer, we may move the new argument to the beginning of our Shkop sequence, and start anew. If our inferred set of
-   arguments passes the Shkop test, we add the new argument to the inference set, if it does not have any conflicts with
-   this set.
+   pointer, we may swap the new argument with its 'predecessor' in the Shkop sequence, and start anew. If our inferred
+   set of arguments passes the Shkop test, we add the new argument to the inference set, if it does not have any
+   conflicts with this set.
 3. If i < n, set i := i+1 and go to 1.
 
 We call this approach *sequential Shkop*.
