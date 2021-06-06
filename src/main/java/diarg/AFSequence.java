@@ -306,11 +306,26 @@ public class AFSequence {
                     afStart.add(newArg);
                     newSequence.addFramework(afStart);
                     for(DungTheory af: this.frameworks) {
-                        if (af.contains(newArg)) break;
-                        Collection<Argument> arguments = new ArrayList<>(af.getNodes());
-                        arguments.add(newArg);
-                        DungTheory newAF = (DungTheory) this.frameworks.get(this.frameworks.size() - 1).getRestriction(arguments);
-                        newSequence.addFramework(newAF);
+                        int afIndex = this.frameworks.indexOf(af);
+                        DungTheory successor = new DungTheory();
+                        if(afIndex < this.frameworks.size() - 1) successor = this.getFramework(afIndex + 1);
+                        if (!af.contains(newArg) && successor != null && successor.contains(newArg)) {
+                            DungTheory predecessor = new DungTheory();
+                            if(afIndex > 0) predecessor = this.getFramework(afIndex - 2);
+                            if(predecessor == null) {
+                                Collection<Argument> newArgCollection = new ArrayList<>();
+                                newArgCollection.add(newArg);
+                                DungTheory newAF = (DungTheory) this.frameworks.get(this.frameworks.size() - 1).getRestriction(newArgCollection);
+                                newSequence.addFramework(newAF);
+                            } else {
+                                Collection<Argument> restrictionArgs = predecessor.getNodes();
+                                restrictionArgs.add(newArg);
+                                DungTheory newAF = (DungTheory) this.frameworks.get(this.frameworks.size() - 1).getRestriction(restrictionArgs);
+                                newSequence.addFramework(newAF);
+                            }
+                        } else {
+                            newSequence.addFramework(af);
+                        }
                     }
                     ArrayList<Extension> resolutions = newSequence.resolveFrameworks();
                     resolution = resolutions.get(newSequence.getFrameworks().size() - 1);
