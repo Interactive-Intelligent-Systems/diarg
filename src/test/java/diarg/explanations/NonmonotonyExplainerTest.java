@@ -23,9 +23,12 @@ public class NonmonotonyExplainerTest {
 
     @Test
     void determineMonotonyViolationExplanations() {
+        DungTheory oneArgFramework = new DungTheory();
+        oneArgFramework.add(a);
         AFTuple afTuple1 = new AFTuple(testFrameworks.framework1, testFrameworks.framework2);
         AFTuple afTuple2 = new AFTuple(testFrameworks.framework3, testFrameworks.framework4);
         AFTuple afTuple3 = new AFTuple(testFrameworks.framework1, testFrameworks.framework5);
+        AFTuple afTuple5 = new AFTuple(oneArgFramework, testFrameworks.framework6);
 
         Extension baseExtension1 = new Extension();
         baseExtension1.add(a);
@@ -81,9 +84,17 @@ public class NonmonotonyExplainerTest {
         targetExtension4.add(a);
         targetExtension4.add(c);
         targetExtension4.add(d);
-        Collection<Argument> expectedExplanations4 = new ArrayList<>();
         Collection<Argument> actualExplanations4 =
                 NonmonotonyExplainer.determineMonotonyViolationExplanations(afTuple4, baseExtension4, targetExtension4);
         assertEquals(0, actualExplanations4.size());
+
+        Extension baseExtension5 = new Extension();
+        baseExtension5.add(a);
+        Extension targetExtension5 = new Extension();
+        targetExtension5.add(a);
+        targetExtension5.add(c);
+        Collection<Argument> actualExplanations5 =
+                NonmonotonyExplainer.determineMonotonyViolationExplanations(afTuple5, baseExtension5, targetExtension5);
+        assertEquals(0, actualExplanations5.size());
     }
 }

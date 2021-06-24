@@ -71,12 +71,13 @@ conclusion but not part of the current conclusion, *i.e.* `|{ a, c, d } \ { b, c
 Collection<Extension> maxMonExtensions = Utils.determineCardinalityMaxMonotonicExtensions(af2Extensions, af1Extension);
 ```
 
-To *explain* the violation of monotony, we can proceed by highlighting *monotony violation explanations*, *i.e.*,
+To *explain* the violation of monotony, we can proceed by highlighting *monotony violation explanations*, *i.e.*
 arguments that satisfy the following constraints:
 
 * The argument has been newly added.
 * The argument attacks an argument that was in the previous conclusion.
-* The argument is not attacked by the previous conclusion, or it is not attacked by the new conclusion.
+* The argument is not attacked by any subset of arguments in the new conclusion that defends itself against all
+  attackers and is not in conflict with the previous conclusion.
 
 The *monotony violation explanations* of the conclusion `{b, c, d, f}` as inferred from `AF'` w.r.t. the previous
 conclusion `{a, c, d}` that has been inferred from `AF` are the arguments comprising the set `{e, f}`:
