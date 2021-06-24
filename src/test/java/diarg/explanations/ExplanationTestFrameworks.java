@@ -12,6 +12,7 @@ import net.sf.tweety.arg.dung.syntax.DungTheory;
  * framework3: ({a, b, c}, {(a, b), (b, a)})
  * framework4: ({a, b, c, d}, {(a, b), (b, a), (d, c)})
  * framework5: ({a, b, c, d, e}, {(a, b), (b, a), (b, e), (e, c), (e, d)})
+ * framework6: ({a, b, c}, {(c, b), (b, a)})
  * @author Timotheus Kampik
  */
 public final class ExplanationTestFrameworks {
@@ -21,6 +22,7 @@ public final class ExplanationTestFrameworks {
     public DungTheory framework3 = new DungTheory();
     public DungTheory framework4 = new DungTheory();
     public DungTheory framework5 = new DungTheory();
+    public DungTheory framework6 = new DungTheory();
 
     public ExplanationTestFrameworks() {
         Argument a = new Argument("a");
@@ -79,5 +81,11 @@ public final class ExplanationTestFrameworks {
         framework5.add(new Attack(b, e));
         framework5.add(new Attack(e, c));
         framework5.add(new Attack(e, d));
+
+        framework6.add(a);
+        framework6.add(b);
+        framework6.add(c);
+        framework6.add(new Attack(c, b));
+        framework6.add(new Attack(b, a));
     }
 }
