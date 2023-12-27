@@ -3,6 +3,7 @@ package diarg;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Sets;
 import com.google.common.math.Quantiles;
+import diarg.distances.DistanceMeasure;
 import net.sf.tweety.arg.dung.semantics.Extension;
 import net.sf.tweety.arg.dung.syntax.Argument;
 import net.sf.tweety.arg.dung.syntax.Attack;
@@ -24,6 +25,7 @@ public class AgreementScenario {
     private DungTheory argumentationFramework;
     private Collection<Argument> topic;
     private ArrayList<Semantics> semantics;
+    private DistanceMeasure distanceMeasure;
 
     /**
      * Returns the agreement scenario's argumentation framework.
@@ -52,7 +54,8 @@ public class AgreementScenario {
     public AgreementScenario (
             DungTheory argumentationFramework,
             Collection<Argument> topic,
-            ArrayList<Semantics> semantics
+            ArrayList<Semantics> semantics,
+            DistanceMeasure distanceMeasure
     ) {
         try {
             if (!argumentationFramework.containsAll(topic)) {
@@ -64,6 +67,7 @@ public class AgreementScenario {
         this.argumentationFramework = argumentationFramework;
         this.topic = topic;
         this.semantics = semantics;
+        this.distanceMeasure = distanceMeasure;
     }
 
     /**
@@ -136,7 +140,7 @@ public class AgreementScenario {
         double greatestSimilarity = 0;
         for(Extension extension1: extensions1) {
             for(Extension extension2: extensions2) {
-                double similarity = Utils.determineSetSimilarity(extension1, extension2, topic);
+                double similarity = distanceMeasure.determineDistance(extension1, extension2, topic);
                 if(similarity > greatestSimilarity) greatestSimilarity = similarity;
             }
         }
@@ -157,7 +161,7 @@ public class AgreementScenario {
             for(Semantics currentSemantics: semantics) {
                 double bestExtensionSimilarity = 0;
                 for(Extension extension: currentSemantics.getModels(argumentationFramework)) {
-                    double extensionSimilarity = Utils.determineSetSimilarity(extension, currentArgumentSet, topic);
+                    double extensionSimilarity = distanceMeasure.determineDistance(extension, currentArgumentSet, topic);
                     if(extensionSimilarity > bestExtensionSimilarity) {
                         bestExtensionSimilarity = extensionSimilarity;
                     }
@@ -185,7 +189,7 @@ public class AgreementScenario {
             for(Semantics currentSemantics: semantics) {
                 double bestExtensionSimilarity = 0;
                 for(Extension extension: currentSemantics.getModels(argumentationFramework)) {
-                    double extensionSimilarity = Utils.determineSetSimilarity(extension, currentArgumentSet, topic);
+                    double extensionSimilarity = distanceMeasure.determineDistance(extension, currentArgumentSet, topic);
                     if(extensionSimilarity > bestExtensionSimilarity) {
                         bestExtensionSimilarity = extensionSimilarity;
                     }
@@ -211,7 +215,7 @@ public class AgreementScenario {
             for(Semantics currentSemantics: semantics) {
                 double bestExtensionSimilarity = 0;
                 for(Extension extension: currentSemantics.getModels(argumentationFramework)) {
-                    double extensionSimilarity = Utils.determineSetSimilarity(extension, currentArgumentSet, topic);
+                    double extensionSimilarity = distanceMeasure.determineDistance(extension, currentArgumentSet, topic);
                     if(extensionSimilarity > bestExtensionSimilarity) {
                         bestExtensionSimilarity = extensionSimilarity;
                     }

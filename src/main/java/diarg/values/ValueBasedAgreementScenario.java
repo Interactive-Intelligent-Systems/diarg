@@ -2,6 +2,7 @@ package diarg.values;
 
 import diarg.AgreementScenario;
 import diarg.Semantics;
+import diarg.distances.DistanceMeasure;
 import diarg.enums.SemanticsType;
 import net.sf.tweety.arg.dung.semantics.Extension;
 import net.sf.tweety.arg.dung.syntax.Argument;
@@ -20,12 +21,13 @@ public class ValueBasedAgreementScenario {
     @Override
     public ValueBasedAgreementScenario clone() {
         Collection<Argument> clonedTopic = new ArrayList<>(this.topic);
-        return new ValueBasedAgreementScenario(this.vbFramework.clone(), clonedTopic, this.semantics);
+        return new ValueBasedAgreementScenario(this.vbFramework.clone(), clonedTopic, this.semantics, this.distanceMeasure);
     }
 
     ValueBasedTheory vbFramework;
     Collection<Argument> topic;
     Semantics semantics;
+    private DistanceMeasure distanceMeasure;
 
     public ValueBasedTheory getVbFramework() {
         return vbFramework;
@@ -39,10 +41,11 @@ public class ValueBasedAgreementScenario {
         return semantics;
     }
 
-    public ValueBasedAgreementScenario(ValueBasedTheory vbFramework, Collection<Argument> topic, Semantics semantics) {
+    public ValueBasedAgreementScenario(ValueBasedTheory vbFramework, Collection<Argument> topic, Semantics semantics, DistanceMeasure distanceMeasure) {
         this.vbFramework = vbFramework;
         this.topic = topic;
         this.semantics = semantics;
+        this.distanceMeasure = distanceMeasure;
     }
 
     /**
@@ -112,7 +115,7 @@ public class ValueBasedAgreementScenario {
             subjectiveSemantics.setSubjectiveExtensions(subjectiveExtensions);
             subjectiveSemanticsList.add(subjectiveSemantics);
         }
-        return new AgreementScenario(vbFramework.getDungTheory(), topic, subjectiveSemanticsList);
+        return new AgreementScenario(vbFramework.getDungTheory(), topic, subjectiveSemanticsList, distanceMeasure);
     }
 
     /**
