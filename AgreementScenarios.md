@@ -41,7 +41,8 @@ Semantics grounded = new Semantics(SemanticsType.GROUNDED);
 semantics.add(stage);
 semantics.add(preferred);
 semantics.add(grounded);
-aScenario = new AgreementScenario(framework, topic, semantics);
+CombinedDistance measure = new CombinedDistance();
+aScenario = new AgreementScenario(framework, topic, semantics, measure);
 ```
 The agreement scenario has the argumentation framework
 ({a, b, c, d, e}, {(e, a), (d, b), (b, d), (d, c), (c, d), (d, d), (e, e)}), the topic {a, b, c} and three agents with
@@ -167,7 +168,7 @@ vTopic.add(a);
 vTopic.add(b);
 vTopic.add(c);
 vTopic.add(d);
-ValueBasedAgreementScenario vbScenario = new ValueBasedAgreementScenario(vbFramework, vTopic, preferredSemantics);
+ValueBasedAgreementScenario vbScenario = new ValueBasedAgreementScenario(vbFramework, vTopic, preferredSemantics, measure);
 ```
 
 For a VAAS, we can determine the degrees of satisfaction and agreements, in the same way we do this for an AAS:

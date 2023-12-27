@@ -1,5 +1,6 @@
 package diarg;
 
+import diarg.distances.CombinedDistance;
 import diarg.enums.SemanticsType;
 import net.sf.tweety.arg.dung.semantics.Extension;
 import net.sf.tweety.arg.dung.syntax.Argument;
@@ -35,6 +36,7 @@ public class AgreementScenarioTest {
     Semantics preferred = new Semantics(SemanticsType.PREFERRED);
     Semantics grounded = new Semantics(SemanticsType.GROUNDED);
     Semantics cf2 = new Semantics(SemanticsType.CF2);
+    CombinedDistance measure = new CombinedDistance();
 
     @BeforeAll
     public void init() {
@@ -44,21 +46,21 @@ public class AgreementScenarioTest {
         semantics1.add(stage);
         semantics1.add(preferred);
         semantics1.add(grounded);
-        aScenario1 = new AgreementScenario(testFramework9, topic1, semantics1);
+        aScenario1 = new AgreementScenario(testFramework9, topic1, semantics1, measure);
 
         topic2.addAll(topic1);
         topic2.add(d);
         semantics2.addAll(semantics1);
-        aScenario2 = new AgreementScenario(testFramework9, topic2, semantics2);
+        aScenario2 = new AgreementScenario(testFramework9, topic2, semantics2, measure);
 
         semantics3.addAll(semantics1);
         semantics3.add(cf2);
-        aScenario3 = new AgreementScenario(testFramework9, topic2, semantics3);
+        aScenario3 = new AgreementScenario(testFramework9, topic2, semantics3, measure);
 
         testFramework10.addAll(testFramework9);
         testFramework10.addAllAttacks(testFramework9.getAttacks());
         testFramework10.add(f);
-        aScenario4 = new AgreementScenario(testFramework10, topic1, semantics1);
+        aScenario4 = new AgreementScenario(testFramework10, topic1, semantics1, measure);
     }
 
     @Test

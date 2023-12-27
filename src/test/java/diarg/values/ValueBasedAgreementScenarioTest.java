@@ -2,6 +2,7 @@ package diarg.values;
 
 import diarg.AgreementScenario;
 import diarg.Semantics;
+import diarg.distances.CombinedDistance;
 import diarg.enums.SemanticsType;
 import net.sf.tweety.arg.dung.semantics.Extension;
 import net.sf.tweety.arg.dung.syntax.Argument;
@@ -25,11 +26,12 @@ public class ValueBasedAgreementScenarioTest {
     Collection<Argument> topic = new ArrayList<>();
     Semantics preferredSemantics = new Semantics(SemanticsType.PREFERRED);
     ValueBasedAgreementScenario vbScenario;
+    CombinedDistance measure = new CombinedDistance();
 
     @BeforeAll
     public void init() {
         vbFramework = new TestVBFrameworks().vbFramework1;
-        vbScenario = new ValueBasedAgreementScenario(vbFramework, topic, preferredSemantics);
+        vbScenario = new ValueBasedAgreementScenario(vbFramework, topic, preferredSemantics, measure);
         topic.add(a);
         topic.add(b);
         topic.add(c);
@@ -93,7 +95,7 @@ public class ValueBasedAgreementScenarioTest {
         semanticsList.add(semantics1);
         semanticsList.add(semantics2);
         semanticsList.add(semantics3);
-        AgreementScenario aScenario = new AgreementScenario(vbFramework.getDungTheory(), topic, semanticsList);
+        AgreementScenario aScenario = new AgreementScenario(vbFramework.getDungTheory(), topic, semanticsList, measure);
         assertEquals(aScenario.determineMeanAgreement(), vbScenario.determineMeanAgreement());
     }
 
