@@ -1,6 +1,5 @@
 package diarg.distances;
 
-import diarg.Utils;
 import net.sf.tweety.arg.dung.semantics.Extension;
 import net.sf.tweety.arg.dung.syntax.Argument;
 import org.junit.jupiter.api.Test;

@@ -56,7 +56,7 @@ public class ValuePreferenceOrder {
                 throw new Exception("Value preference order must be asymmetric.");
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            //e.printStackTrace();
             return;
         }
         valuePreferences = counterFactualvaluePreferences;
@@ -67,7 +67,7 @@ public class ValuePreferenceOrder {
      * @param valuePreferences The to-be-checked value preference order
      * @return the results of the check
      */
-    private static boolean checkTransitivity(Collection<ValuePreference> valuePreferences) {
+    public static boolean checkTransitivity(Collection<ValuePreference> valuePreferences) {
         for(ValuePreference currentValuePreference: valuePreferences) {
             for(ValuePreference otherValuePreference: valuePreferences) {
                 Value currentSuperior = currentValuePreference.getSuperiorValue();
