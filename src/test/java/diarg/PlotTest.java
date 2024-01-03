@@ -26,7 +26,7 @@ public class PlotTest {
         List<Double> minDegrees = new ArrayList<>();
         List<Double> medDegrees = new ArrayList<>();
         List<Double> meanDegrees = new ArrayList<>();
-        boolean topicFixed = false;
+        boolean topicFixed = true;
         int iterations = 15;
         int sample_per_iteration = 20;
         for (int i = 0; i < iterations; i++) {
@@ -80,7 +80,7 @@ public class PlotTest {
                     valueMap.put(argument.getName(), value);
                     argValMapping.setValueAssignment(argument, value);
                     // add arguments to topic
-                    if(Math.random() < 0.5  && argIndex < 5) { // comment out the "&& argIndex < 5" part to have topic expansion
+                    if(Math.random() < 0.5) { // && argIndex < 5 comment out the "&& argIndex < 5" part to have topic expansion
                         topic.add(argument);
                     }
                     argIndex++;
@@ -178,48 +178,50 @@ public class PlotTest {
                             newAttacks.add(newAttack);
                         }
                     }
+                    argIndex++;
                 }
-                // add new value preferences, by sampling from the i new values and add new value preference relating to
-                // a value with 20% probability
+                // add new value preferences for every 2nd new argument
                 for(int k = 0; k < 3; k++) {
-                    boolean valueFound = false;
-                    Value value0;
-                    Value value1;
-                    Collection<ValuePreference> valPrefOrder = new ArrayList<>();
-                    valPrefOrder.addAll(valPrefOrders.get(k).getValuePreferences());
-                    Collection<ValuePreference> cValPrefOrder = new ArrayList<>();
-                    while (!valueFound) {
-                        Optional<Attack> randomOptionalAttack = newAttacks.stream()
-                                .skip((int) (newAttacks.size() * Math.random()))
-                                .findFirst();
-                        Attack randomAttack;
-                        if (randomOptionalAttack.isPresent()) {
-                            randomAttack = randomOptionalAttack.get();
-                            // System.out.println(randomAttack.toString());
-                            if (newArguments.contains(randomAttack.getNodeA()) || newArguments.contains(randomAttack.getNodeB())) {
-                                String attackedName = randomAttack.getNodeB().getName();
-                                String attackerName = randomAttack.getNodeA().getName();
-                                value0 = valueMap.get(attackedName);
-                                value1 = valueMap.get(attackerName);
-                                ValuePreference valuePreference = new ValuePreference(value0, value1);
-                                Collection<ValuePreference> ccValPrefOrder = new ArrayList<>();
-                                ccValPrefOrder.addAll(valPrefOrder);
-                                ccValPrefOrder.add(valuePreference);
-                                if (ValuePreferenceOrder.checkTransitivity(ccValPrefOrder)) {
-                                    // System.out.println(ccValPrefOrder.toString());
-                                    cValPrefOrder.add(valuePreference);
-                                    valPrefOrder.add(valuePreference);
-                                    relevantValues.add(value0);
+                    for(int l = 0; l < Math.ceil(i/2); l++) {
+                        boolean valueFound = false;
+                        Value value0;
+                        Value value1;
+                        Collection<ValuePreference> valPrefOrder = new ArrayList<>();
+                        valPrefOrder.addAll(valPrefOrders.get(k).getValuePreferences());
+                        Collection<ValuePreference> cValPrefOrder = new ArrayList<>();
+                        while (!valueFound) {
+                            Optional<Attack> randomOptionalAttack = newAttacks.stream()
+                                    .skip((int) (newAttacks.size() * Math.random()))
+                                    .findFirst();
+                            Attack randomAttack;
+                            if (randomOptionalAttack.isPresent()) {
+                                randomAttack = randomOptionalAttack.get();
+                                // System.out.println(randomAttack.toString());
+                                if (newArguments.contains(randomAttack.getNodeA()) || newArguments.contains(randomAttack.getNodeB())) {
+                                    String attackedName = randomAttack.getNodeB().getName();
+                                    String attackerName = randomAttack.getNodeA().getName();
+                                    value0 = valueMap.get(attackedName);
+                                    value1 = valueMap.get(attackerName);
+                                    ValuePreference valuePreference = new ValuePreference(value0, value1);
+                                    Collection<ValuePreference> ccValPrefOrder = new ArrayList<>();
+                                    ccValPrefOrder.addAll(valPrefOrder);
+                                    ccValPrefOrder.add(valuePreference);
+                                    if (ValuePreferenceOrder.checkTransitivity(ccValPrefOrder)) {
+                                        // System.out.println(ccValPrefOrder.toString());
+                                        cValPrefOrder.add(valuePreference);
+                                        valPrefOrder.add(valuePreference);
+                                        relevantValues.add(value0);
+                                    }
                                 }
                             }
+                            valueFound = true;
                         }
-                        valueFound = true;
+                        ValuePreferenceOrder newValPrefOrder = new ValuePreferenceOrder();
+                        for(ValuePreference valPref: valPrefOrder) {
+                            newValPrefOrder.addValuePreference(valPref);
+                        }
+                        valPrefOrders.add(k,newValPrefOrder);
                     }
-                    ValuePreferenceOrder newValPrefOrder = new ValuePreferenceOrder();
-                    for(ValuePreference valPref: valPrefOrder) {
-                        newValPrefOrder.addValuePreference(valPref);
-                    }
-                    valPrefOrders.add(k,newValPrefOrder);
                 }
                 // If topic is not fixed, expand topic by randomly selecting half of the new arguments
                 if(!topicFixed) {
