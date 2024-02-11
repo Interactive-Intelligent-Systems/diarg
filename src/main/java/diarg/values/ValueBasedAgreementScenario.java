@@ -163,8 +163,7 @@ public class ValueBasedAgreementScenario {
     public double determineSatisfactionImpact(int index1, int index2, Value value) {
         ValueBasedAgreementScenario counterfactualVBAScenario = this.clone();
         counterfactualVBAScenario.removeValue(value);
-        return counterfactualVBAScenario.determineSatisfaction(index1, index2) -
-                determineSatisfaction(index1, index2);
+        return determineSatisfaction(index1, index2) - counterfactualVBAScenario.determineSatisfaction(index1, index2);
     }
 
     /**
@@ -176,7 +175,7 @@ public class ValueBasedAgreementScenario {
     public double determineMinimalAgreementImpact(Value value) {
         ValueBasedAgreementScenario counterfactualVBAScenario = this.clone();
         counterfactualVBAScenario.removeValue(value);
-        return counterfactualVBAScenario.determineMinimalAgreement() - determineMinimalAgreement();
+        return determineMinimalAgreement() - counterfactualVBAScenario.determineMinimalAgreement();
     }
 
     /**
@@ -188,7 +187,7 @@ public class ValueBasedAgreementScenario {
     public double determineMeanAgreementImpact(Value value) {
         ValueBasedAgreementScenario counterfactualVBAScenario = this.clone();
         counterfactualVBAScenario.removeValue(value);
-        return counterfactualVBAScenario.determineMeanAgreement() - determineMeanAgreement();
+        return determineMeanAgreement() - counterfactualVBAScenario.determineMeanAgreement();
     }
 
     /**
@@ -200,7 +199,7 @@ public class ValueBasedAgreementScenario {
     public double determineMedianAgreementImpact(Value value) {
         ValueBasedAgreementScenario counterfactualVBAScenario = this.clone();
         counterfactualVBAScenario.removeValue(value);
-        return counterfactualVBAScenario.determineMedianAgreement() - determineMedianAgreement();
+        return determineMedianAgreement()- counterfactualVBAScenario.determineMedianAgreement();
     }
 
 
