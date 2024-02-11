@@ -126,25 +126,25 @@ public class ValueBasedAgreementScenarioTest {
     @Test
     void determineSatisfactionImpact() {
         double satisfactionImpact = vbScenario.determineSatisfactionImpact(0, 1, bv);
-        assertEquals(1/2d, satisfactionImpact);
+        assertEquals(-1/2d, satisfactionImpact);
     }
 
    @Test
     void determineMinimalAgreementImpact() {
         double minimalAgreementImpact = vbScenario.determineMinimalAgreementImpact(bv);
-        assertEquals(1/4d, minimalAgreementImpact);
+        assertEquals(-1/4d, minimalAgreementImpact);
     }
 
     @Test
     void determineMeanAgreementImpact() {
         double meanAgreementImpact = vbScenario.determineMeanAgreementImpact(bv);
-        assertEquals(0.16666666666666663d, meanAgreementImpact);
+        assertEquals(-0.16666666666666663d, meanAgreementImpact);
     }
 
     @Test
     void determineMedianAgreementImpact() {
         double medianAgreementImpact = vbScenario.determineMedianAgreementImpact(bv);
-        assertEquals(1/4d, medianAgreementImpact);
+        assertEquals(-1/4d, medianAgreementImpact);
     }
 
 }

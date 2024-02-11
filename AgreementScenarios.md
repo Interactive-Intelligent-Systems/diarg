@@ -184,9 +184,9 @@ In addition, we can determine the impact of a value on a degree of satisfaction 
 counterfactual measure that determines the change to the degree when "removing" all preferences that relate to this value.
 
 ```java
-double satisfactionImpact = vbScenario.determineSatisfactionImpact(0, 1, bv); // 1/2
-double minimalAgreementImpact = vbScenario.determineMinimalAgreementImpact(bv); // 1/4
-double meanAgreementImpact = vbScenario.determineMeanAgreementImpact(bv); // 1/6
-double medianAgreementImpact = vbScenario.determineMedianAgreementImpact(bv); // 1/4
+double satisfactionImpact = vbScenario.determineSatisfactionImpact(0, 1, bv); // -1/2
+double minimalAgreementImpact = vbScenario.determineMinimalAgreementImpact(bv); // -1/4
+double meanAgreementImpact = vbScenario.determineMeanAgreementImpact(bv); // -1/6
+double medianAgreementImpact = vbScenario.determineMedianAgreementImpact(bv); // -1/4
 ```
 
